@@ -31,6 +31,10 @@ namespace DataTrue {
       this.save("put", uri);
     }
 
+    run(): void {
+      
+    }
+
     private save(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string): void {
       const options = {
         "method": method,

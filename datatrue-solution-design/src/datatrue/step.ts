@@ -13,14 +13,19 @@ namespace DataTrue {
     }
 
     toJSON(): string {
-      return JSON.stringify({
+      let obj = {
         name: this.name,
         description: this.description,
         action: this.action,
         js_code: this.js_code,
-        target: this.target,
-        tag_validations: this.tag_validations.map(tag_validation => JSON.parse(tag_validation.toJSON()))
-      });
+        target: this.target
+      };
+
+      if (this.tag_validations.length) {
+        obj["tag_validations"] = this.tag_validations.map(tag_validation => JSON.parse(tag_validation.toJSON()));
+      }
+
+      return JSON.stringify(obj);
     }
   }
 }

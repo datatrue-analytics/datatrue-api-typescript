@@ -14,13 +14,13 @@ namespace DataTrue {
     }
 
     toJSON(): string {
-      let object = {};
-      object[this.resourceType] = {
+      let obj = {};
+      obj[this.resourceType] = {
         name: this.name,
         steps: this.steps.map(step => JSON.parse(step.toJSON()))
       };
 
-      return JSON.stringify(object);
+      return JSON.stringify(obj);
     }
   }
 }
