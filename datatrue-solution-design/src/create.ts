@@ -33,7 +33,7 @@ function create() {
     if (row[0] === "") {
       return;
     }
-    steps.push(new DataTrue.Step(row[0], 13, undefined, row[1]));
+    steps.push(new DataTrue.Step(row[0], 13, undefined, row[1], undefined, row[2]));
     let tagValidation = new DataTrue.TagValidation(row[0], tagType);
     row.slice(3).some((param, i) => {
       if (param === "") {
