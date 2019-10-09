@@ -8,7 +8,7 @@ namespace DataTrue {
     contextID: string;
     resourceType: string;
 
-    constructor(public name: string, public description: string="") { }
+    constructor(public name: string, public description: string = "") { }
 
     abstract toJSON(): string;
 

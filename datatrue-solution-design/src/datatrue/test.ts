@@ -1,6 +1,6 @@
 namespace DataTrue {
   export class Test extends DataTrue.Resource {
-    private steps: Step[];
+    private steps: Step[] = [];
 
     constructor(name: string, contextId: string, description: string="") {
       super(name, description);
