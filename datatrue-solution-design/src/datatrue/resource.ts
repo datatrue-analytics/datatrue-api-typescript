@@ -1,7 +1,7 @@
 namespace DataTrue {
-  var api_endpoint: string = "datatrue.com";
-  var management_token: string = "";
-  var ci_token: string = "";
+  export var api_endpoint: string = "datatrue.com";
+  export var management_token: string = "";
+  export var ci_token: string = "";
 
   export abstract class Resource {
     contextType: string;
@@ -14,7 +14,7 @@ namespace DataTrue {
 
     create(): void {
       const uri = [
-        api_endpoint,
+        DataTrue.api_endpoint,
         "management_api/v1",
         this.contextType + "s",
         this.contextID,
@@ -23,6 +23,12 @@ namespace DataTrue {
     }
 
     update(): void {
+      const uri = [
+        DataTrue.api_endpoint,
+        "management_api/v1",
+        this.resourceType + "s",
+        this.contextID].join("/");
+      this.save("put", uri);
     }
 
     private save(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string): void {
@@ -32,7 +38,7 @@ namespace DataTrue {
         "payload": this.toJSON(),
         "headers": {
           "content-type": "application/json",
-          "authorization": "Token " + management_token
+          "authorization": "Token " + DataTrue.management_token
         }
       };
 

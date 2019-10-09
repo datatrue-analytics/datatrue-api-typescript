@@ -2,10 +2,9 @@ namespace DataTrue {
   export class Step extends DataTrue.Resource {
     private tag_validations: TagValidation[] = [];
 
-    constructor(name: string, private action: number, contextId: string, description: string="", private js_code: string="") {
+    constructor(name: string, private action: number, public contextId?: string, description: string="", private target: string="", private js_code: string="") {
       super(name, description);
       this.contextType = "test";
-      this.contextID = contextId;
       this.resourceType = "step";
     }
 

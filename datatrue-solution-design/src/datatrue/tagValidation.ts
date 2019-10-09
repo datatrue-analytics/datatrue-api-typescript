@@ -10,7 +10,7 @@ namespace DataTrue {
   export class TagValidation extends DataTrue.Resource {
     private queryValidations: QueryValidation[] = [];
 
-    constructor(name: string, private key: string, contextId: string, description: string="", private enabled: boolean=true) {
+    constructor(name: string, private key: string, contextId?: string, description: string="", private enabled: boolean=true) {
       super(name, description);
       this.contextType = "step";
       this.contextID = contextId;
