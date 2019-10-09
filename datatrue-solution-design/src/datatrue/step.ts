@@ -18,6 +18,7 @@ namespace DataTrue {
         description: this.description,
         action: this.action,
         js_code: this.js_code,
+        target: this.target,
         tag_validations: this.tag_validations.map(tag_validation => JSON.parse(tag_validation.toJSON()))
       });
     }
