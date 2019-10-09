@@ -17,7 +17,7 @@ namespace DataTrue {
       let object = {};
       object[this.resourceType] = {
         name: this.name,
-        steps: this.steps
+        steps: this.steps.map(step => JSON.parse(step.toJSON()))
       };
 
       return JSON.stringify(object);
