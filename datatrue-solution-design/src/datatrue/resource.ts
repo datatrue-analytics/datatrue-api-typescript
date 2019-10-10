@@ -124,7 +124,7 @@ namespace DataTrue {
       this.jobID = JSON.parse(request.getContentText())["job_id"];
     }
 
-    progress(): void {
+    progress(): DataTrue.JobStatus {
       const uri = [
         DataTrue.apiEndpoint,
         "ci_api",
@@ -141,7 +141,7 @@ namespace DataTrue {
         }
       };
 
-      const request = UrlFetchApp.fetch(uri, options);
+      return JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
     }
 
     private save(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string): GoogleAppsScript.URL_Fetch.HTTPResponse {
