@@ -11,9 +11,9 @@ function run() {
     lookups[row[0]] = row[1];
   });
 
-  DataTrue.management_token = lookups["management_token"];
-  DataTrue.ci_token = lookups["ci_token"];
-  DataTrue.api_endpoint = lookups["api_endpoint"] || DataTrue.api_endpoint;
+  DataTrue.managementToken = lookups["management_token"];
+  DataTrue.ciToken = lookups["ci_token"];
+  DataTrue.apiEndpoint = lookups["api_endpoint"] || DataTrue.apiEndpoint;
 
   const testID: number = parseInt(sheet.getRange("B7").getValue());
 

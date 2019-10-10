@@ -1,7 +1,7 @@
 namespace DataTrue {
-  export var api_endpoint: string = "datatrue.com";
-  export var management_token: string = "";
-  export var ci_token: string = "";
+  export var apiEndpoint: string = "datatrue.com";
+  export var managementToken: string = "";
+  export var ciToken: string = "";
 
   export abstract class Resource {
     static readonly contextType: string;
@@ -21,7 +21,7 @@ namespace DataTrue {
 
     static getResource(id: number, resourceType: string): string {
       const uri = [
-        DataTrue.api_endpoint,
+        DataTrue.apiEndpoint,
         "management_api/v1",
         resourceType + "s",
         id].join("/");
@@ -31,7 +31,7 @@ namespace DataTrue {
         "contentType": "application/json",
         "headers": {
           "content-type": "application/json",
-          "authorization": "Token " + DataTrue.management_token
+          "authorization": "Token " + DataTrue.managementToken
         }
       };
 
@@ -40,7 +40,7 @@ namespace DataTrue {
 
     create(): void {
       const uri = [
-        DataTrue.api_endpoint,
+        DataTrue.apiEndpoint,
         "management_api/v1",
         (this.constructor as any).contextType + "s",
         this.contextID,
@@ -53,7 +53,7 @@ namespace DataTrue {
 
     update(): void {
       const uri = [
-        DataTrue.api_endpoint,
+        DataTrue.apiEndpoint,
         "management_api/v1",
         (this.constructor as any).resourceType + "s",
         this.contextID].join("/");
@@ -61,11 +61,21 @@ namespace DataTrue {
       const request = this.save("put", uri);
     }
 
+    delete(): void {
+      const uri = [
+        DataTrue.apiEndpoint,
+        "management_api/v1",
+        (this.constructor as any).resourceType + "s",
+        this.contextID].join("/");
+
+      const request = this.save("delete", uri);
+    }
+
     run(email_users: number[] = []): void {
       const uri = [
-        DataTrue.api_endpoint,
+        DataTrue.apiEndpoint,
         "ci_api",
-        `test_runs?api_key=${DataTrue.ci_token}`
+        `test_runs?api_key=${DataTrue.ciToken}`
       ].join("/");
       const options = {
         "method": "post" as GoogleAppsScript.URL_Fetch.HttpMethod,
@@ -94,7 +104,7 @@ namespace DataTrue {
         "payload": this.toJSON(),
         "headers": {
           "content-type": "application/json",
-          "authorization": "Token " + DataTrue.management_token
+          "authorization": "Token " + DataTrue.managementToken
         }
       };
 
