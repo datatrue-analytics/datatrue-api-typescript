@@ -4,25 +4,25 @@ namespace DataTrue {
   export var ciToken: string = "";
 
   export interface JobStatus {
-    status?: string,
-    options?: {
-      test_run_id?: number
+    status: string,
+    options: {
+      test_run_id: number
     },
     num?: number,
     total?: number,
     progress?: {
-      percentage?: number,
-      tests?: {
-        test_result_id?: number,
-        id?: number,
-        name?: string,
-        state?: string,
-        running?: boolean,
-        steps_completed?: number,
-        pii?: {
-          num_pii_exposure?: number,
-          num_pii_data_types?: number,
-          num_pii_data_processors?: number
+      percentage: number,
+      tests: {
+        test_result_id: number,
+        id: number,
+        name: string,
+        state: string,
+        running: boolean,
+        steps_completed: number,
+        pii: {
+          num_pii_exposure: number,
+          num_pii_data_types: number,
+          num_pii_data_processors: number
         }
       }[]
     },
