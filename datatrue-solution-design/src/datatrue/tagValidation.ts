@@ -22,8 +22,8 @@ namespace DataTrue {
   }
 
   export class TagValidation extends DataTrue.Resource {
-    readonly contextType: string = "step";
-    readonly resourceType: string = "tag_validations";
+    static readonly contextType: string = "step";
+    static readonly resourceType: string = "tag_validations";
 
     private queryValidations: QueryValidation[] = [];
     private tagDefinition: Object;
@@ -47,9 +47,9 @@ namespace DataTrue {
         query_validation: this.queryValidations
       };
 
-      Object.entries(this.options).forEach(([option, value]) => {
-        obj[option] = value;
-      });
+      for (let option in this.options) {
+        obj[option] = this.options[option];
+      }
 
       return JSON.stringify(obj);
     }

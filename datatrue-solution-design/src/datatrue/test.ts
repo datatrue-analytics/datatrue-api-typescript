@@ -20,9 +20,9 @@ namespace DataTrue {
   }
 
   export class Test extends DataTrue.Resource {
-    readonly contextType: string = "suite";
+    static readonly contextType: string = "suite";
     static readonly resourceType: string = "test";
-    readonly resourceTypeRun: string = "TestScenario";
+    static readonly resourceTypeRun: string = "TestScenario";
 
     private steps: Step[] = [];
 
@@ -53,14 +53,14 @@ namespace DataTrue {
     toJSON(): string {
       let obj = {};
 
-      obj[this.resourceType] = {
+      obj[Test.resourceType] = {
         name: this.name,
         steps: this.steps.map(step => JSON.parse(step.toJSON()))
       };
 
-      Object.entries(this.options).forEach(([option, value]) => {
-        obj[this.resourceType][option] = value;
-      });
+      for (let option in this.options) {
+        obj[option] = this.options[option];
+      }
 
       return JSON.stringify(obj);
     }

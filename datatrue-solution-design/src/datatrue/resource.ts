@@ -4,9 +4,9 @@ namespace DataTrue {
   export var ci_token: string = "";
 
   export abstract class Resource {
-    readonly contextType: string;
-    readonly resourceType: string;
-    readonly resourceTypeRun: string = "";
+    static readonly contextType: string;
+    static readonly resourceType: string;
+    static readonly resourceTypeRun: string;
 
     jobID: number;
     contextID: number;
@@ -41,20 +41,20 @@ namespace DataTrue {
       const uri = [
         DataTrue.api_endpoint,
         "management_api/v1",
-        this.contextType + "s",
+        (this.constructor as any).contextType + "s",
         this.contextID,
-        this.resourceType + "s"].join("/");
+        (this.constructor as any).resourceType + "s"].join("/");
 
       const request = this.save("post", uri);
 
-      this.resourceID = JSON.parse(request.getContentText())[this.resourceType]["id"];
+      this.resourceID = JSON.parse(request.getContentText())[(this.constructor as any).resourceType]["id"];
     }
 
     update(): void {
       const uri = [
         DataTrue.api_endpoint,
         "management_api/v1",
-        this.resourceType + "s",
+        (this.constructor as any).resourceType + "s",
         this.contextID].join("/");
 
       const request = this.save("put", uri);

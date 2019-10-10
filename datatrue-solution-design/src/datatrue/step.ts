@@ -50,8 +50,8 @@ namespace DataTrue {
   }
 
   export class Step extends DataTrue.Resource {
-    readonly contextType: string = "test";
-    readonly resourceType: string = "step";
+    static readonly contextType: string = "test";
+    static readonly resourceType: string = "step";
 
     private tag_validations: TagValidation[] = [];
 
@@ -69,9 +69,9 @@ namespace DataTrue {
         action: this.action
       };
 
-      Object.entries(this.options).forEach(([option, value]) => {
-        obj[option] = value;
-      });
+      for (let option in this.options) {
+        obj[option] = this.options[option];
+      }
 
       if (this.tag_validations.length) {
         obj["tag_validations"] = this.tag_validations.map(tag_validation => JSON.parse(tag_validation.toJSON()));
