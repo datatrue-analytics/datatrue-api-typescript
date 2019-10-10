@@ -1,8 +1,13 @@
 namespace DataTrue {
+  export interface SuiteOptions {
+    description?: string,
+    variables?: DataTrue.Variables
+  }
+
   export class Suite extends DataTrue.Resource {
     private tests: Test[] = [];
 
-    constructor(name: string, contextId: string, description: string="") {
+    constructor(name: string, contextId: number, description: string="") {
       super(name, description);
       this.contextType = "account";
       this.contextID = contextId;
@@ -10,10 +15,14 @@ namespace DataTrue {
     }
 
     toJSON(): string {
-      return JSON.stringify({
+      let obj = {};
+
+      obj[this.resourceType] = {
         name: this.name,
         description: this.description
-      });
+      };
+
+      return JSON.stringify(obj);
     }
   }
 }

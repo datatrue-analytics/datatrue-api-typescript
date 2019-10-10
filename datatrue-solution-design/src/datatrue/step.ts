@@ -1,9 +1,59 @@
 namespace DataTrue {
+  export enum StepActions {
+    GOTO_URL = 0,
+    CLICK_LINK = 1,
+    CLICK_BUTTON = 2,
+    TEXT_FIELD = 3,
+    SELECT_LIST = 4,
+    CLICK_ELEMENT = 5,
+    HOVER = 6,
+    COVERAGE = 7,
+    ENTER = 8,
+    CLOSE = 9,
+    EMAIL = 10,
+    GO_BACK = 11,
+    SCROLL_TO = 12,
+    RUN_SCRIPT = 13,
+    START_APPLICATION = 14,
+    SEND_KEYS = 15,
+    CLICK_MOBILE_ELEMENT = 16,
+    RESTART_APP = 17,
+    TAP_COORDS = 18,
+    HIDE_KEYBOARD = 19,
+    SWIPE = 20,
+    MOBILE_SELECT_LIST = 21,
+    PRESS_BACK = 22
+  }
+
+  export interface StepOptions {
+    description?: string,
+    js_code?: string,
+    target?: string,
+    selector_type?: string,
+    selector?: string,
+    iframe_selector_type?: string,
+    iframe_selector?: string,
+    pause?: number,
+    wait_while_present?: string
+  }
+
+  export enum StepStrategies {
+    BREADTH_FIRST = "breadth_first",
+    DEPTH_FIRST = "depth_first"
+  }
+
+  export interface StepSettings {
+    strategy?: DataTrue.StepStrategies
+    obey_robots?: boolean,
+    template_detection?: boolean,
+    use_common_tag_validations?: boolean
+  }
+
   export class Step extends DataTrue.Resource {
     private tag_validations: TagValidation[] = [];
 
-    constructor(name: string, private action: number, public contextId?: string, description: string="", private target: string="", private js_code: string="") {
-      super(name, description);
+    constructor(name: string, private action: DataTrue.StepActions, public contextId?: number, public options: DataTrue.StepOptions={}) {
+      super(name);
       this.contextType = "test";
       this.resourceType = "step";
     }
@@ -15,11 +65,12 @@ namespace DataTrue {
     toJSON(): string {
       let obj = {
         name: this.name,
-        description: this.description,
-        action: this.action,
-        js_code: this.js_code,
-        target: this.target
+        action: this.action
       };
+
+      Object.entries(this.options).forEach(([option, value]) => {
+        obj[option] = value;
+      });
 
       if (this.tag_validations.length) {
         obj["tag_validations"] = this.tag_validations.map(tag_validation => JSON.parse(tag_validation.toJSON()));

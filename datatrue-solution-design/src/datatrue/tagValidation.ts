@@ -1,20 +1,38 @@
 namespace DataTrue {
-  interface QueryValidation {
+  export interface QueryValidation {
     key: string,
-    regex: boolean,
     value: string,
-    json_path: string,
-    use_json_path: boolean
+    regex: boolean,
+    json_path?: string,
+    use_json_path: boolean,
+    decode_result_as?: string
+  }
+
+  export interface TagValidationOptions {
+    description?: string,
+    enable?: boolean,
+    do_validation?: boolean,
+    validate_absence?: boolean,
+    hostname_validation?: string,
+    pathname_validation?: string
+  }
+
+  export interface TagDefinition {
+
   }
 
   export class TagValidation extends DataTrue.Resource {
     private queryValidations: QueryValidation[] = [];
+    private tagDefinition: Object;
 
-    constructor(name: string, private key: string, contextId?: string, description: string = "", private validate_absence: boolean = true, private enabled: boolean = true) {
-      super(name, description);
+    constructor(name: string, key: string, contextId?: number, public options: DataTrue.TagValidationOptions={enable: true, validate_absence: false}) {
+      super(name);
       this.contextType = "step";
       this.contextID = contextId;
       this.resourceType = "tag_validations";
+      this.tagDefinition = {
+        key: key
+      };
     }
 
     addQueryValidation(queryValidation: QueryValidation) {
@@ -22,15 +40,17 @@ namespace DataTrue {
     }
 
     toJSON() {
-      return JSON.stringify({
+      let obj = {
         name: this.name,
-        enabled: this.enabled,
-        validate_absence: this.validate_absence,
-        tag_definition: {
-          key: this.key
-        },
+        tag_definition: this.tagDefinition,
         query_validation: this.queryValidations
+      };
+
+      Object.entries(this.options).forEach(([option, value]) => {
+        obj[option] = value;
       });
+
+      return JSON.stringify(obj);
     }
   }
 }

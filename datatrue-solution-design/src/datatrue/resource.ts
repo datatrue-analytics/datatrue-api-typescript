@@ -5,8 +5,10 @@ namespace DataTrue {
 
   export abstract class Resource {
     contextType: string;
-    contextID: string;
+    contextID: number;
     resourceType: string;
+    resourceID: number;
+    options: Object;
 
     constructor(public name: string, public description: string = "") { }
 
@@ -19,7 +21,7 @@ namespace DataTrue {
         this.contextType + "s",
         this.contextID,
         this.resourceType + "s"].join("/");
-      this.save("post", uri);
+      const request = this.save("post", uri);
     }
 
     update(): void {
@@ -28,14 +30,33 @@ namespace DataTrue {
         "management_api/v1",
         this.resourceType + "s",
         this.contextID].join("/");
-      this.save("put", uri);
+      const request = this.save("put", uri);
     }
 
-    run(): void {
-      
+    run(email_users: number[] = []): void {
+      const uri = [
+        DataTrue.api_endpoint,
+        "ci_api",
+        `test_runs?${DataTrue.ci_token}`
+      ].join("/");
+      const options = {
+        "method": "post" as GoogleAppsScript.URL_Fetch.HttpMethod,
+        "contentType": "application/json",
+        "payload": JSON.stringify({
+          "test_run": {
+            "test_id": this.resourceID,
+            "email_users": email_users
+          }
+        }),
+        "headers": {
+          "content-type": "application/json"
+        }
+      };
+
+      const request = UrlFetchApp.fetch(uri, options);
     }
 
-    private save(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string): void {
+    private save(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string): GoogleAppsScript.URL_Fetch.HTTPResponse {
       const options = {
         "method": method,
         "contentType": "application/json",
@@ -46,7 +67,7 @@ namespace DataTrue {
         }
       };
 
-      const request = UrlFetchApp.fetch(uri, options);
+      return UrlFetchApp.fetch(uri, options);
     }
   }
 }

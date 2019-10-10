@@ -1,8 +1,20 @@
 namespace DataTrue {
+  export interface TestOptions {
+    description?: string,
+    variables?: DataTrue.Variables
+  }
+
+  export interface Variables {
+    [s: string]: {
+      type: string,
+      value: string
+    }
+  }
+
   export class Test extends DataTrue.Resource {
     private steps: Step[] = [];
 
-    constructor(name: string, contextId: string, description: string="") {
+    constructor(name: string, contextId: number, description: string = "") {
       super(name, description);
       this.contextType = "suite";
       this.contextID = contextId;
@@ -15,6 +27,7 @@ namespace DataTrue {
 
     toJSON(): string {
       let obj = {};
+
       obj[this.resourceType] = {
         name: this.name,
         steps: this.steps.map(step => JSON.parse(step.toJSON()))
