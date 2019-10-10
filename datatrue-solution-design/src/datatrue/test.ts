@@ -20,13 +20,15 @@ namespace DataTrue {
   }
 
   export class Test extends DataTrue.Resource {
+    readonly contextType: string = "suite";
+    readonly resourceType: string = "test";
+    readonly resourceTypeRun: string = "TestScenario";
+
     private steps: Step[] = [];
 
     constructor(name: string, contextId: number, description: string = "") {
       super(name, description);
-      this.contextType = "suite";
       this.contextID = contextId;
-      this.resourceType = "test";
     }
 
     addStep(step: Step) {

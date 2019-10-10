@@ -22,14 +22,15 @@ namespace DataTrue {
   }
 
   export class TagValidation extends DataTrue.Resource {
+    readonly contextType: string = "step";
+    readonly resourceType: string = "tag_validations";
+
     private queryValidations: QueryValidation[] = [];
     private tagDefinition: Object;
 
     constructor(name: string, key: string, contextId?: number, public options: DataTrue.TagValidationOptions={enable: true, validate_absence: false}) {
       super(name);
-      this.contextType = "step";
       this.contextID = contextId;
-      this.resourceType = "tag_validations";
       this.tagDefinition = {
         key: key
       };

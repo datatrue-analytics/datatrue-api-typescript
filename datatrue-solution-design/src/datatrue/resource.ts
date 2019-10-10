@@ -4,9 +4,11 @@ namespace DataTrue {
   export var ci_token: string = "";
 
   export abstract class Resource {
-    contextType: string;
+    readonly contextType: string;
+    readonly resourceType: string;
+    readonly resourceTypeRun: string = "";
+
     contextID: number;
-    resourceType: string;
     resourceID: number;
     options: Object;
 

@@ -11,13 +11,15 @@ namespace DataTrue {
   }
 
   export class Suite extends DataTrue.Resource {
+    readonly contextType: string = "account";
+    readonly resourceType: string = "suite";
+    readonly resourceTypeRun: string = "Suite";
+
     private tests: Test[] = [];
 
     constructor(name: string, contextId: number, description: string="") {
       super(name, description);
-      this.contextType = "account";
       this.contextID = contextId;
-      this.resourceType = "suite";
     }
 
     toJSON(): string {

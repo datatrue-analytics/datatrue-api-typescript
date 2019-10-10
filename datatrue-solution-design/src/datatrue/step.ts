@@ -50,12 +50,13 @@ namespace DataTrue {
   }
 
   export class Step extends DataTrue.Resource {
+    readonly contextType: string = "test";
+    readonly resourceType: string = "step";
+
     private tag_validations: TagValidation[] = [];
 
     constructor(name: string, private action: DataTrue.StepActions, public contextId?: number, public options: DataTrue.StepOptions={}) {
       super(name);
-      this.contextType = "test";
-      this.resourceType = "step";
     }
 
     addTagValidation(tagValidation: TagValidation) {
