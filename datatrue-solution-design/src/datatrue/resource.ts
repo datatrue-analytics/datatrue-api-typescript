@@ -8,13 +8,34 @@ namespace DataTrue {
     readonly resourceType: string;
     readonly resourceTypeRun: string = "";
 
+    jobID: number;
     contextID: number;
     resourceID: number;
     options: Object;
 
-    constructor(public name: string, public description: string = "") { }
+    constructor(public name: string) { }
 
     abstract toJSON(): string;
+
+    static fromID(id: number): void { }
+
+    static getResource(id: number, resourceType: string): string {
+      const uri = [
+        DataTrue.api_endpoint,
+        "management_api/v1",
+        resourceType + "s",
+        id].join("/");
+
+      const options = {
+        "method": "get" as GoogleAppsScript.URL_Fetch.HttpMethod,
+        "contentType": "application/json",
+        "headers": {
+          "content-type": "application/json"
+        }
+      };
+
+      return UrlFetchApp.fetch(uri, options).getContentText();
+    }
 
     create(): void {
       const uri = [
@@ -60,6 +81,8 @@ namespace DataTrue {
       };
 
       const request = UrlFetchApp.fetch(uri, options);
+
+      this.jobID = JSON.parse(request.getContentText())["job_id"];
     }
 
     private save(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string): GoogleAppsScript.URL_Fetch.HTTPResponse {

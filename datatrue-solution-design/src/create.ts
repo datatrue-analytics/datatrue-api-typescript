@@ -21,7 +21,7 @@ function create() {
   const tagType: string = sheet.getRange("B11").getValue();
   const url: string = sheet.getRange("B10").getValue();
 
-  const test = new DataTrue.Test(testName, parseInt(suiteID), testDescription);
+  const test = new DataTrue.Test(testName, parseInt(suiteID), {description: testDescription});
   const steps: DataTrue.Step[] = [];
 
   steps.push(new DataTrue.Step(`Go To ${url}`, DataTrue.StepActions.GOTO_URL, undefined, {target: url}));
@@ -52,4 +52,6 @@ function create() {
   steps.forEach(step => test.addStep(step));
 
   test.create();
+
+  sheet.getRange("B7").setValue(test.resourceID);
 }

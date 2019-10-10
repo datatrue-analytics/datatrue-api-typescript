@@ -17,8 +17,8 @@ namespace DataTrue {
 
     private tests: Test[] = [];
 
-    constructor(name: string, contextId: number, description: string="") {
-      super(name, description);
+    constructor(name: string, contextId: number, public options: DataTrue.SuiteOptions={}) {
+      super(name);
       this.contextID = contextId;
     }
 
@@ -27,8 +27,11 @@ namespace DataTrue {
 
       obj[this.resourceType] = {
         name: this.name,
-        description: this.description
       };
+
+      Object.entries(this.options).forEach(([option, value]) => {
+        obj[this.resourceType][option] = value;
+      });
 
       return JSON.stringify(obj);
     }
