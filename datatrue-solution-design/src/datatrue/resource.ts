@@ -21,7 +21,10 @@ namespace DataTrue {
         this.contextType + "s",
         this.contextID,
         this.resourceType + "s"].join("/");
+
       const request = this.save("post", uri);
+
+      this.resourceID = JSON.parse(request.getContentText())[this.resourceType]["id"];
     }
 
     update(): void {
@@ -30,6 +33,7 @@ namespace DataTrue {
         "management_api/v1",
         this.resourceType + "s",
         this.contextID].join("/");
+
       const request = this.save("put", uri);
     }
 

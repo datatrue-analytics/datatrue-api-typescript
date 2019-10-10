@@ -1,7 +1,15 @@
 namespace DataTrue {
   export interface TestOptions {
     description?: string,
-    variables?: DataTrue.Variables
+    variables?: DataTrue.Variables,
+    test_type?: DataTrue.TestTypes
+  }
+
+  export enum TestTypes {
+    SIMULATION = 0,
+    COVERAGE = 1,
+    EMAIL = 2,
+    MOBILE = 3
   }
 
   export interface Variables {
