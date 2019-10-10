@@ -26,19 +26,19 @@ namespace DataTrue {
 
     private steps: Step[] = [];
 
-    constructor(name: string, contextId?: number, public options: DataTrue.TestOptions={}) {
+    constructor(name: string, contextId?: number, public options: DataTrue.TestOptions = {}) {
       super(name);
       this.contextID = contextId;
     }
 
     static fromID(id: number): Test {
-      const obj = JSON.parse(super.getResource(id, this.resourceType));
+      const obj = JSON.parse(super.getResource(id, DataTrue.Test.resourceType));
 
-      const test = new Test(obj["test"]["name"]);
-      test.resourceID = obj.test.id;
+      const test = new DataTrue.Test(obj["name"]);
+      test.resourceID = obj.id;
 
-      obj.test.steps.array.forEach(stepObj => {
-        let step = new Step(stepObj.name, stepObj.action, test.resourceID);
+      obj.steps.forEach(stepObj => {
+        let step = new DataTrue.Step(stepObj.name, stepObj.action, test.resourceID);
         step.resourceID = stepObj.id;
         test.addStep(step);
       });

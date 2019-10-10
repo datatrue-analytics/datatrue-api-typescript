@@ -55,7 +55,7 @@ namespace DataTrue {
 
     private tag_validations: TagValidation[] = [];
 
-    constructor(name: string, private action: DataTrue.StepActions, public contextId?: number, public options: DataTrue.StepOptions={}) {
+    constructor(name: string, private action: DataTrue.StepActions, public contextId?: number, public options: DataTrue.StepOptions = {}) {
       super(name);
     }
 

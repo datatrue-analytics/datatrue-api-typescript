@@ -30,7 +30,8 @@ namespace DataTrue {
         "method": "get" as GoogleAppsScript.URL_Fetch.HttpMethod,
         "contentType": "application/json",
         "headers": {
-          "content-type": "application/json"
+          "content-type": "application/json",
+          "authorization": "Token " + DataTrue.management_token
         }
       };
 
@@ -64,13 +65,14 @@ namespace DataTrue {
       const uri = [
         DataTrue.api_endpoint,
         "ci_api",
-        `test_runs?${DataTrue.ci_token}`
+        `test_runs?api_key=${DataTrue.ci_token}`
       ].join("/");
       const options = {
         "method": "post" as GoogleAppsScript.URL_Fetch.HttpMethod,
         "contentType": "application/json",
         "payload": JSON.stringify({
           "test_run": {
+            "test_class": (this.constructor as any).resourceTypeRun,
             "test_id": this.resourceID,
             "email_users": email_users
           }

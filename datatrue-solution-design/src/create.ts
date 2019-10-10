@@ -21,10 +21,10 @@ function create() {
   const tagType: string = sheet.getRange("B11").getValue();
   const url: string = sheet.getRange("B10").getValue();
 
-  const test = new DataTrue.Test(testName, parseInt(suiteID), {description: testDescription});
+  const test = new DataTrue.Test(testName, parseInt(suiteID), { description: testDescription });
   const steps: DataTrue.Step[] = [];
 
-  steps.push(new DataTrue.Step(`Go To ${url}`, DataTrue.StepActions.GOTO_URL, undefined, {target: url}));
+  steps.push(new DataTrue.Step(`Go To ${url}`, DataTrue.StepActions.GOTO_URL, undefined, { target: url }));
 
   const queryParams = sheet.getRange("D21:Z21").getValues();
   const stepRows = sheet.getRange("A22:Z").getValues();
@@ -33,7 +33,7 @@ function create() {
     if (row[0] === "") {
       return;
     }
-    steps.push(new DataTrue.Step(row[0], DataTrue.StepActions.RUN_SCRIPT, undefined, {description: row[1], js_code: row[2]}));
+    steps.push(new DataTrue.Step(row[0], DataTrue.StepActions.RUN_SCRIPT, undefined, { description: row[1], js_code: row[2] }));
     let tagValidation = new DataTrue.TagValidation(row[0], tagType);
     row.slice(3).some((param, i) => {
       if (param === "") {

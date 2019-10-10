@@ -10,7 +10,7 @@ namespace DataTrue {
 
   export interface TagValidationOptions {
     description?: string,
-    enable?: boolean,
+    enabled?: boolean,
     do_validation?: boolean,
     validate_absence?: boolean,
     hostname_validation?: string,
@@ -28,7 +28,7 @@ namespace DataTrue {
     private queryValidations: QueryValidation[] = [];
     private tagDefinition: Object;
 
-    constructor(name: string, key: string, contextId?: number, public options: DataTrue.TagValidationOptions={enable: true, validate_absence: false}) {
+    constructor(name: string, key: string, contextId?: number, public options: DataTrue.TagValidationOptions = { enabled: true, validate_absence: false }) {
       super(name);
       this.contextID = contextId;
       this.tagDefinition = {

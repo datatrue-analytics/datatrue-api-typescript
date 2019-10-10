@@ -17,7 +17,7 @@ namespace DataTrue {
 
     private tests: Test[] = [];
 
-    constructor(name: string, contextId: number, public options: DataTrue.SuiteOptions={}) {
+    constructor(name: string, contextId: number, public options: DataTrue.SuiteOptions = {}) {
       super(name);
       this.contextID = contextId;
     }
