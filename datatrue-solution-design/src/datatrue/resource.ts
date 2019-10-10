@@ -3,6 +3,32 @@ namespace DataTrue {
   export var managementToken: string = "";
   export var ciToken: string = "";
 
+  export interface JobStatus {
+    status?: string,
+    options?: {
+      test_run_id?: number
+    },
+    num?: number,
+    total?: number,
+    progress?: {
+      percentage?: number,
+      tests?: {
+        test_result_id?: number,
+        id?: number,
+        name?: string,
+        state?: string,
+        running?: boolean,
+        steps_completed?: number,
+        pii?: {
+          num_pii_exposure?: number,
+          num_pii_data_types?: number,
+          num_pii_data_processors?: number
+        }
+      }[]
+    },
+    message?: string
+  }
+
   export abstract class Resource {
     static readonly contextType: string;
     static readonly resourceType: string;
@@ -77,6 +103,7 @@ namespace DataTrue {
         "ci_api",
         `test_runs?api_key=${DataTrue.ciToken}`
       ].join("/");
+
       const options = {
         "method": "post" as GoogleAppsScript.URL_Fetch.HttpMethod,
         "contentType": "application/json",
@@ -95,6 +122,26 @@ namespace DataTrue {
       const request = UrlFetchApp.fetch(uri, options);
 
       this.jobID = JSON.parse(request.getContentText())["job_id"];
+    }
+
+    progress(): void {
+      const uri = [
+        DataTrue.apiEndpoint,
+        "ci_api",
+        "test_runs",
+        "progress",
+        `${this.jobID}?api_key=${DataTrue.ciToken}`
+      ].join("/");
+
+      const options = {
+        "method": "get" as GoogleAppsScript.URL_Fetch.HttpMethod,
+        "contentType": "application/json",
+        "headers": {
+          "content-type": "application/json"
+        }
+      };
+
+      const request = UrlFetchApp.fetch(uri, options);
     }
 
     private save(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string): GoogleAppsScript.URL_Fetch.HTTPResponse {
