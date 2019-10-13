@@ -53,14 +53,26 @@ namespace DataTrue {
     static readonly contextType: string = "test";
     static readonly resourceType: string = "step";
 
-    private tag_validations: TagValidation[] = [];
+    private tagValidations: DataTrue.TagValidation[] = [];
+    private dataLayerValidations: DataTrue.DataLayerValidation[] = [];
 
-    constructor(name: string, private action: DataTrue.StepActions, public contextId?: number, public options: DataTrue.StepOptions = {}) {
+    public options: DataTrue.StepOptions = {};
+
+    constructor(name: string, private action: DataTrue.StepActions, public contextID?: number, options: DataTrue.StepOptions = {}) {
       super(name);
+      this.setOptions(options);
     }
 
-    addTagValidation(tagValidation: TagValidation) {
-      this.tag_validations.push(tagValidation);
+    addTagValidation(tagValidation: DataTrue.TagValidation) {
+      this.tagValidations.push(tagValidation);
+    }
+
+    addDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation) {
+      this.dataLayerValidations.push(dataLayerValidation);
+    }
+
+    setOptions(options: DataTrue.StepOptions, override: boolean = false): void {
+      super.setOptions(options, override);
     }
 
     toJSON(): string {
@@ -73,11 +85,19 @@ namespace DataTrue {
         obj[option] = this.options[option];
       }
 
-      if (this.tag_validations.length) {
-        obj["tag_validations"] = this.tag_validations.map(tag_validation => JSON.parse(tag_validation.toJSON()));
+      if (this.tagValidations.length) {
+        obj["tag_validations"] = this.tagValidations.map(tag_validation => JSON.parse(tag_validation.toJSON()));
       }
 
       return JSON.stringify(obj);
+    }
+
+    run(): void {
+      throw new Error("Unable to run Step");
+    }
+
+    progress(): DataTrue.JobStatus {
+      throw new Error("Unable to retrieve progress for Step");
     }
   }
 }

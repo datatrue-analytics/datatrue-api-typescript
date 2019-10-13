@@ -32,19 +32,63 @@ namespace DataTrue {
   export abstract class Resource {
     static readonly contextType: string;
     static readonly resourceType: string;
-    static readonly resourceTypeRun: string;
+    static readonly resourceTypeRun?: string;
 
-    jobID: number;
-    contextID: number;
-    resourceID: number;
+    jobID?: number;
+    contextID?: number;
+    resourceID?: number;
     options: Object;
 
-    constructor(public name: string) { }
+    constructor(public name: string) {
+    }
 
+    /**
+     * Convert the resource to a JSON string
+     *
+     * @abstract
+     * @returns {string} the resource represented as a JSON string
+     * @memberof Resource
+     */
     abstract toJSON(): string;
 
+    /**
+     * Create a resource from a given ID
+     *
+     * @static
+     * @param {number} id the ID of the resource
+     * @memberof Resource
+     */
     static fromID(id: number): void { }
 
+    static fromJSON(): void { }
+
+    /**
+     * Set options from the passed options object
+     *
+     * @param {Object} options the object to set options from
+     * @param {boolean} [override] whether to override the options object
+     * @memberof Resource
+     */
+    setOptions(options: Object, override?: boolean): void {
+      if (override) {
+        this.options = options;
+      } else {
+        this.options = {
+          ...this.options,
+          ...options
+        };
+      }
+    }
+
+    /**
+     * Fetch a resource from DataTrue
+     *
+     * @static
+     * @param {number} id the id of the resource to fetch
+     * @param {string} resourceType the type of the resource to fetch
+     * @returns {string} the resource represented as a JSON string
+     * @memberof Resource
+     */
     static getResource(id: number, resourceType: string): string {
       const uri = [
         DataTrue.apiEndpoint,
@@ -64,6 +108,11 @@ namespace DataTrue {
       return UrlFetchApp.fetch(uri, options).getContentText();
     }
 
+    /**
+     * Create the resource in DataTrue
+     *
+     * @memberof Resource
+     */
     create(): void {
       const uri = [
         DataTrue.apiEndpoint,
@@ -77,6 +126,11 @@ namespace DataTrue {
       this.resourceID = JSON.parse(request.getContentText())[(this.constructor as any).resourceType]["id"];
     }
 
+    /**
+     * Update the resource in DataTrue
+     *
+     * @memberof Resource
+     */
     update(): void {
       const uri = [
         DataTrue.apiEndpoint,
@@ -87,6 +141,11 @@ namespace DataTrue {
       const request = this.save("put", uri);
     }
 
+    /**
+     * Delete the resource in DataTrue
+     *
+     * @memberof Resource
+     */
     delete(): void {
       const uri = [
         DataTrue.apiEndpoint,
@@ -97,6 +156,12 @@ namespace DataTrue {
       const request = this.save("delete", uri);
     }
 
+    /**
+     * Run the resource in DataTrue
+     *
+     * @param {number[]} [email_users=[]] a list of IDs for who should be emailed regarding the test run
+     * @memberof Resource
+     */
     run(email_users: number[] = []): void {
       const uri = [
         DataTrue.apiEndpoint,
@@ -124,6 +189,12 @@ namespace DataTrue {
       this.jobID = JSON.parse(request.getContentText())["job_id"];
     }
 
+    /**
+     * Retrieve the progress of a running test
+     *
+     * @returns {DataTrue.JobStatus} the status of the running test
+     * @memberof Resource
+     */
     progress(): DataTrue.JobStatus {
       const uri = [
         DataTrue.apiEndpoint,

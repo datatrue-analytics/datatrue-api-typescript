@@ -39,16 +39,26 @@ namespace DataTrue {
     private queryValidations: QueryValidation[] = [];
     private tagDefinition: Object;
 
-    constructor(name: string, key: string, contextId?: number, public options: DataTrue.TagValidationOptions = { interception: {do_validation: true} }) {
+    public options: DataTrue.TagValidationOptions = {
+      interception: {
+        do_validation: true
+      }
+    };
+
+    constructor(name: string, key: string, public contextID?: number, options: DataTrue.TagValidationOptions = {}) {
       super(name);
-      this.contextID = contextId;
       this.tagDefinition = {
         key: key
       };
+      this.setOptions(options);
     }
 
     addQueryValidation(queryValidation: QueryValidation) {
       this.queryValidations.push(queryValidation);
+    }
+
+    setOptions(options: TagValidationOptions, override: boolean = false) {
+      super.setOptions(options, override);
     }
 
     toJSON() {
@@ -74,6 +84,14 @@ namespace DataTrue {
       Logger.log(JSON.stringify(obj));
 
       return JSON.stringify(obj);
+    }
+
+    run(): void {
+      throw new Error("Unable to run TagValidation");
+    }
+
+    progress(): DataTrue.JobStatus {
+      throw new Error("Unable to retrieve progress for TagValidation");
     }
   }
 }

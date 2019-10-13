@@ -24,11 +24,14 @@ namespace DataTrue {
     static readonly resourceType: string = "test";
     static readonly resourceTypeRun: string = "TestScenario";
 
-    private steps: Step[] = [];
+    private steps: DataTrue.Step[] = [];
+    private tagValidations: DataTrue.TagValidation[] = [];
 
-    constructor(name: string, contextId?: number, public options: DataTrue.TestOptions = {}) {
+    public options: DataTrue.TestOptions = {};
+
+    constructor(name: string, public contextID?: number, options: DataTrue.TestOptions = {}) {
       super(name);
-      this.contextID = contextId;
+      this.setOptions(options);
     }
 
     static fromID(id: number): Test {
@@ -48,6 +51,14 @@ namespace DataTrue {
 
     addStep(step: Step) {
       this.steps.push(step);
+    }
+
+    addTagValidation(tagValidation: DataTrue.TagValidation) {
+      this.tagValidations.push(tagValidation);
+    }
+
+    setOptions(options: DataTrue.TestOptions, override: boolean = false): void {
+      super.setOptions(options, override);
     }
 
     toJSON(): string {

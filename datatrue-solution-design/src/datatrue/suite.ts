@@ -17,9 +17,15 @@ namespace DataTrue {
 
     private tests: Test[] = [];
 
-    constructor(name: string, contextId: number, public options: DataTrue.SuiteOptions = {}) {
+    public options: DataTrue.SuiteOptions = {};
+
+    constructor(name: string, public contextID?: number, options: DataTrue.SuiteOptions = {}) {
       super(name);
-      this.contextID = contextId;
+      this.setOptions(options);
+    }
+
+    setOptions(options: DataTrue.SuiteOptions, override: boolean = false): void {
+      super.setOptions(options, override);
     }
 
     toJSON(): string {
