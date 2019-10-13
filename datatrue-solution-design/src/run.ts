@@ -20,4 +20,16 @@ function run() {
   const test = DataTrue.Test.fromID(testID);
 
   test.run();
+  let progress = test.progress();
+
+  while (progress.status !== "completed" && progress.status !== "aborted") {
+    if (Object.prototype.hasOwnProperty.call(progress, "progress") && Object.prototype.hasOwnProperty.call(progress.progress, "tests")) {
+      sheet.getRange("B9").setValue(progress.progress.tests[0].state);
+      SpreadsheetApp.flush();
+    }
+    progress = test.progress();
+    Utilities.sleep(1000);
+  }
+
+  sheet.getRange("B9").setValue(progress.progress.tests[0].state);
 }
