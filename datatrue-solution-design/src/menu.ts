@@ -2,7 +2,7 @@ function onOpen() {
   let sheet = SpreadsheetApp.getActiveSpreadsheet();
   let entries = [
     {
-      name: "Create/Edit Test",
+      name: "Create Test",
       functionName: "create"
     },
     {
