@@ -53,7 +53,7 @@ function create() {
   steps.forEach(step => test.addStep(step));
 
   if (testID) {
-    test.setID(parseInt(testID));
+    test.setResourceID(parseInt(testID));
     test.update();
   } else {
     test.create();
