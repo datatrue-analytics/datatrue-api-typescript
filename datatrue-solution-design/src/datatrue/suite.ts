@@ -28,6 +28,11 @@ namespace DataTrue {
       super.setOptions(options, override);
     }
 
+    setResourceID(id: number) {
+      super.setResourceID(id);
+      this.tests.forEach(tests => tests.setContextID(id));
+    }
+
     toJSON(): string {
       let obj = {};
 

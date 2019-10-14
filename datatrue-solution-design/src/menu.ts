@@ -2,11 +2,11 @@ function onOpen() {
   let sheet = SpreadsheetApp.getActiveSpreadsheet();
   let entries = [
     {
-      name: "Create Test",
+      name: "Create/Edit Test",
       functionName: "create"
     },
     {
-      name: "Run",
+      name: "Run Test",
       functionName: "run"
     }
   ];

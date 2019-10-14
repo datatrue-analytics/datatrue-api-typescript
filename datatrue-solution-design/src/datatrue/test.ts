@@ -61,6 +61,12 @@ namespace DataTrue {
       super.setOptions(options, override);
     }
 
+    setResourceID(id: number) {
+      super.setResourceID(id);
+      this.steps.forEach(step => step.setContextID(id));
+      this.tagValidations.forEach(tagValidation => tagValidation.setContextID(id));
+    }
+
     toJSON(): string {
       let obj = {};
 

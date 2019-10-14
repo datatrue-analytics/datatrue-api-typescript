@@ -60,6 +60,14 @@ namespace DataTrue {
      */
     static fromID(id: number): void { }
 
+    setResourceID(id: number): void {
+      this.resourceID = id;
+    }
+
+    setContextID(id: number): void {
+      this.contextID = id;
+    }
+
     static fromJSON(): void { }
 
     /**
@@ -136,7 +144,7 @@ namespace DataTrue {
         DataTrue.apiEndpoint,
         "management_api/v1",
         (this.constructor as any).resourceType + "s",
-        this.contextID].join("/");
+        this.resourceID].join("/");
 
       const request = this.save("put", uri);
     }
