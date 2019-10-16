@@ -17,10 +17,23 @@ function create() {
 
   const testName: string = sheet.getRange("A4").getValue();
   const testDescription: string = sheet.getRange("B18").getValue();
-  const suiteID: string = sheet.getRange("B6").getValue();
+  const accountID: string = sheet.getRange("B5").getValue();
+  let suiteID: string = sheet.getRange("B6").getValue();
   const testID: string = sheet.getRange("B7").getValue();
   const tagType: string = sheet.getRange("B11").getValue();
   const url: string = sheet.getRange("B10").getValue();
+
+  if (!suiteID) {
+    const sheetFile = DriveApp.getFileById(ss.getId());
+    const fileName = sheetFile.getName();
+
+    const suite = new DataTrue.Suite(fileName, parseInt(accountID));
+    suite.create();
+    suiteID = suite.resourceID.toString();
+
+    sheet.getRange("B6").setValue(suiteID);
+    SpreadsheetApp.flush();
+  }
 
   const test: DataTrue.Test = new DataTrue.Test(testName, parseInt(suiteID), { description: testDescription });
   const steps: DataTrue.Step[] = [];
