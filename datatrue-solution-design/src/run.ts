@@ -20,6 +20,8 @@ function run() {
   const test = DataTrue.Test.fromID(testID);
 
   test.run();
+  sheet.getRange("B9").setValue("queued");
+  SpreadsheetApp.flush();
   let progress = test.progress();
 
   while (progress.status !== "completed" && progress.status !== "aborted") {
