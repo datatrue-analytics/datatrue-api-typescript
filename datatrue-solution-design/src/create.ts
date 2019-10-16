@@ -4,16 +4,16 @@ function create() {
 
   const lookups = {};
 
-  ss.getSheetByName("Lookups").getRange("A1:B").getValues().some(row => {
+  ss.getSheetByName("Instructions").getRange("A9:B").getValues().some(row => {
     if (row[0] === "") {
       return;
     }
     lookups[row[0]] = row[1];
   });
 
-  DataTrue.managementToken = lookups["management_token"];
-  DataTrue.ciToken = lookups["ci_token"];
-  DataTrue.apiEndpoint = lookups["api_endpoint"] || DataTrue.apiEndpoint;
+  DataTrue.managementToken = lookups["User - Management API KEY"];
+  DataTrue.ciToken = lookups["Account - API Key"];
+  DataTrue.apiEndpoint = lookups["DataTrue Endpoint"] || DataTrue.apiEndpoint;
 
   const testName: string = sheet.getRange("A4").getValue();
   const testDescription: string = sheet.getRange("B18").getValue();
