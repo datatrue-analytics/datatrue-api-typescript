@@ -76,7 +76,7 @@ namespace DataTrue {
       };
 
       for (let option in this.options) {
-        obj[option] = this.options[option];
+        obj[Test.resourceType][option] = this.options[option];
       }
 
       return JSON.stringify(obj);

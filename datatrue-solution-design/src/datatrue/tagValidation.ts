@@ -81,8 +81,6 @@ namespace DataTrue {
         }
       }
 
-      Logger.log(JSON.stringify(obj));
-
       return JSON.stringify(obj);
     }
 

@@ -36,12 +36,12 @@ namespace DataTrue {
     toJSON(): string {
       let obj = {};
 
-      obj[(this.constructor as any).resourceType] = {
+      obj[Suite.resourceType] = {
         name: this.name,
       };
 
       for (let option in this.options) {
-        obj[option] = this.options[option];
+        obj[Suite.resourceType][option] = this.options[option];
       }
 
       return JSON.stringify(obj);
