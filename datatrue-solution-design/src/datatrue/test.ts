@@ -58,6 +58,16 @@ namespace DataTrue {
       this.tagValidations.splice(index, 0, tagValidation);
     }
 
+    deleteStep(index) {
+      this.steps[index].delete();
+      this.steps.splice(index, 1);
+    }
+
+    deleteTagValidation(index) {
+      this.tagValidations[index].delete();
+      this.tagValidations.splice(index, 1);
+    }
+
     setOptions(options: DataTrue.TestOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }

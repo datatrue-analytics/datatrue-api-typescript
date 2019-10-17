@@ -72,6 +72,16 @@ namespace DataTrue {
       this.dataLayerValidations.splice(index, 0, dataLayerValidation);
     }
 
+    deleteTagValidation(index: number) {
+      this.tagValidations[index].delete();
+      this.tagValidations.splice(index, 1);
+    }
+
+    deleteDataLayerValidation(index: number) {
+      this.dataLayerValidations[index].delete();
+      this.dataLayerValidations.splice(index, 1);
+    }
+
     setOptions(options: DataTrue.StepOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }

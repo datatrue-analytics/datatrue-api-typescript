@@ -38,6 +38,11 @@ namespace DataTrue {
       this.tests.splice(index, 0, test);
     }
 
+    deleteTest(index) {
+      this.tests[index].delete();
+      this.tests.splice(index, 1);
+    }
+
     create(): void {
       super.create();
       this.tests.forEach(test => {

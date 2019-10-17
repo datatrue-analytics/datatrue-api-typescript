@@ -58,6 +58,10 @@ namespace DataTrue {
       this.queryValidations.splice(index, 0, queryValidation);
     }
 
+    deleteQueryValidation(index: number) {
+      this.queryValidations.splice(index, 1);
+    }
+
     setOptions(options: TagValidationOptions, override: boolean = false) {
       super.setOptions(options, override);
     }
