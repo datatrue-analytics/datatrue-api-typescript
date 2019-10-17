@@ -5,7 +5,7 @@ namespace DataTrue {
     regex: boolean,
     json_path?: string,
     use_json_path: boolean,
-    decode_result_as?: string
+    decode_result_as?: string,
   }
 
   export interface TagValidationOptions {
@@ -25,20 +25,20 @@ namespace DataTrue {
       intercept_status?: string,
       intercept_headers?: string,
       intercept_body?: string,
-    }
+    },
   }
 
   export interface TagDefinition {
-
+    key: string,
   }
 
   export class TagValidation extends DataTrue.Resource {
-    static readonly contextType: string = "step";
-    static readonly resourceType: string = "tag_validations";
-    static readonly children: string[] = [];
+    public static readonly contextType: string = "step";
+    public static readonly resourceType: string = "tag_validations";
+    public static readonly children: string[] = [];
 
     private queryValidations: readonly QueryValidation[] = [];
-    private tagDefinition: Object;
+    private tagDefinition: DataTrue.TagDefinition;
 
     public options: DataTrue.TagValidationOptions = {
       interception: {
@@ -46,7 +46,7 @@ namespace DataTrue {
       }
     };
 
-    constructor(name: string, key: string, public contextID?: number, options: DataTrue.TagValidationOptions = {}) {
+    public constructor(name: string, key: string, public contextID?: number, options: DataTrue.TagValidationOptions = {}) {
       super(name);
       this.tagDefinition = {
         key: key
@@ -54,28 +54,28 @@ namespace DataTrue {
       this.setOptions(options);
     }
 
-    addQueryValidation(queryValidation: QueryValidation, index: number = -1) {
+    public addQueryValidation(queryValidation: QueryValidation, index: number = -1): void {
       super.addChild(queryValidation, index, "queryValidations");
     }
 
-    deleteQueryValidation(index: number) {
-      let queryValidations = this["queryValidations"].slice();
+    public deleteQueryValidation(index: number): void {
+      const queryValidations = this["queryValidations"].slice();
       queryValidations.splice(index, 1);
       this["queryValidations"] = queryValidations;
     }
 
-    setOptions(options: TagValidationOptions, override: boolean = false) {
+    public setOptions(options: TagValidationOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
 
-    toJSON(): Object {
-      let obj: Object = {
+    public toJSON(): object {
+      const obj: object = {
         name: this.name,
         tag_definition: this.tagDefinition,
         query_validation: this.queryValidations
       };
 
-      for (let option in this.options) {
+      for (const option in this.options) {
         obj[option] = this.options[option];
       }
 
@@ -91,11 +91,11 @@ namespace DataTrue {
       return obj;
     }
 
-    run(): void {
+    public run(): void {
       throw new Error("Unable to run TagValidation");
     }
 
-    progress(): DataTrue.JobStatus {
+    public progress(): DataTrue.JobStatus {
       throw new Error("Unable to retrieve progress for TagValidation");
     }
   }

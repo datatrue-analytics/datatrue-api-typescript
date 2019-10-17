@@ -16,42 +16,42 @@ namespace DataTrue {
     validation_enabled?: boolean,
     property_validations?: {
       name: string,
-      value: string
-    }[]
+      value: string,
+    }[],
   }
 
   export class DataLayerValidation extends DataTrue.Resource {
-    static readonly contextType: string = "step";
-    static readonly resourceType: string = "data_layer_validations";
-    static readonly children: readonly string[] = [];
+    public static readonly contextType: string = "step";
+    public static readonly resourceType: string = "data_layer_validations";
+    public static readonly children: readonly string[] = [];
 
     public options: DataTrue.DataLayerValidationOptions = {};
 
-    constructor(name: string, public contextID?: number, options: DataTrue.DataLayerValidationOptions = {}) {
+    public constructor(name: string, public contextID?: number, options: DataTrue.DataLayerValidationOptions = {}) {
       super(name);
       this.setOptions(options);
     }
 
-    setOptions(options: DataTrue.DataLayerValidationOptions, override: boolean = false) {
+    public setOptions(options: DataTrue.DataLayerValidationOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
 
-    toJSON(): Object {
-      let obj: Object = {
+    public toJSON(): object {
+      const obj: object = {
       };
 
-      for (let option in this.options) {
+      for (const option in this.options) {
         obj[option] = this.options[option];
       }
-      
+
       return obj;
     }
 
-    run(): void {
+    public run(): void {
       throw new Error("Unable to run DataLayerValidation");
     }
 
-    progress(): DataTrue.JobStatus {
+    public progress(): DataTrue.JobStatus {
       throw new Error("Unable to retrieve progress for DataLayerValidation");
     }
   }

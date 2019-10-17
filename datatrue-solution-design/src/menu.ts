@@ -1,6 +1,6 @@
-function onOpen() {
-  let sheet = SpreadsheetApp.getActiveSpreadsheet();
-  let entries = [
+function onOpen(): void {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet();
+  const entries = [
     {
       name: "Create Test",
       functionName: "create"

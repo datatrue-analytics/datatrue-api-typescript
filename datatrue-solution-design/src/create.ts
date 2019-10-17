@@ -1,4 +1,4 @@
-function create() {
+function create(): void {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
 
@@ -28,7 +28,7 @@ function create() {
     const fileName = sheetFile.getName();
 
     const suite = new DataTrue.Suite(fileName, parseInt(accountID));
-    suite.create();
+    suite.save();
     suiteID = suite.resourceID.toString();
 
     sheet.getRange("B6").setValue(suiteID);
@@ -49,7 +49,7 @@ function create() {
       return;
     }
     steps.push(new DataTrue.Step(row[0], DataTrue.StepActions.RUN_SCRIPT, undefined, { description: row[1], js_code: row[2] }));
-    let tagValidation = new DataTrue.TagValidation(row[0], tagType);
+    const tagValidation = new DataTrue.TagValidation(row[0], tagType);
     queryParams.forEach((param, i) => {
       if (row[i + 3] !== "") {
         tagValidation.addQueryValidation({

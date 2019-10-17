@@ -2,7 +2,7 @@ namespace DataTrue {
   export interface SuiteOptions {
     description?: string,
     variables?: DataTrue.Variables,
-    suite_type?: DataTrue.SuiteTypes
+    suite_type?: DataTrue.SuiteTypes,
   }
 
   export enum SuiteTypes {
@@ -11,38 +11,38 @@ namespace DataTrue {
   }
 
   export class Suite extends DataTrue.Resource {
-    static readonly contextType: string = "account";
-    static readonly resourceType: string = "suite";
-    static readonly resourceTypeRun: string = "Suite";
-    static readonly children: readonly string[] = ["tests"];
+    public static readonly contextType: string = "account";
+    public static readonly resourceType: string = "suite";
+    public static readonly resourceTypeRun: string = "Suite";
+    public static readonly children: readonly string[] = ["tests"];
 
     private tests: readonly Test[] = [];
 
     public options: DataTrue.SuiteOptions = {};
 
-    constructor(name: string, public contextID?: number, options: DataTrue.SuiteOptions = {}) {
+    public constructor(name: string, public contextID?: number, options: DataTrue.SuiteOptions = {}) {
       super(name);
       this.setOptions(options);
     }
 
-    setOptions(options: DataTrue.SuiteOptions, override: boolean = false): void {
+    public setOptions(options: DataTrue.SuiteOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
 
-    setResourceID(id: number) {
+    public setResourceID(id: number): void {
       super.setResourceID(id);
       this.tests.forEach(tests => tests.setContextID(id));
     }
 
-    addTest(test: DataTrue.Test,  index: number = -1) {
+    public addTest(test: DataTrue.Test, index: number = -1): void {
       super.addChild(test, index, "tests");
     }
 
-    deleteTest(index) {
+    public deleteTest(index): void {
       super.deleteChild(index, "tests");
     }
 
-    create(): void {
+    protected create(): void {
       super.create();
       this.tests.forEach(test => {
         test.setContextID(this.resourceID);
@@ -50,14 +50,14 @@ namespace DataTrue {
       });
     }
 
-    toJSON(): Object {
-      let obj = {};
+    public toJSON(): object {
+      const obj = {};
 
       obj[Suite.resourceType] = {
         name: this.name,
       };
 
-      for (let option in this.options) {
+      for (const option in this.options) {
         obj[Suite.resourceType][option] = this.options[option];
       }
 

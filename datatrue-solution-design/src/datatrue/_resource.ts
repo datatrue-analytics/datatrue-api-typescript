@@ -6,7 +6,7 @@ namespace DataTrue {
   export interface JobStatus {
     status: string,
     options: {
-      test_run_id: number
+      test_run_id: number,
     },
     num?: number,
     total?: number,
@@ -22,11 +22,11 @@ namespace DataTrue {
         pii: {
           num_pii_exposure: number,
           num_pii_data_types: number,
-          num_pii_data_processors: number
-        }
-      }[]
+          num_pii_data_processors: number,
+        },
+      }[],
     },
-    message?: string
+    message?: string,
   }
 
   const resourceTypes = {
@@ -38,29 +38,28 @@ namespace DataTrue {
   };
 
   export abstract class Resource {
-    static readonly contextType: string;
-    static readonly resourceType: string;
-    static readonly children: readonly string[];
-    static readonly resourceTypeRun?: string;
+    public static readonly contextType: string;
+    public static readonly resourceType: string;
+    public static readonly children: readonly string[];
+    public static readonly resourceTypeRun?: string;
 
-    jobID?: number;
-    contextID?: number;
-    resourceID?: number;
-    options: Object;
+    public jobID?: number;
+    public contextID?: number;
+    public resourceID?: number;
+    public options: object;
 
     protected toDelete: Resource[] = [];
 
-    constructor(public name: string) {
-    }
+    public constructor(public name: string) { }
 
     /**
      * Convert the resource to an Object
      *
      * @abstract
-     * @returns {Object} object representation of the resource
+     * @returns {object} object representation of the resource
      * @memberof Resource
      */
-    abstract toJSON(): Object;
+    abstract toJSON(): object;
 
     /**
      * Convert the resource to a JSON string
@@ -68,7 +67,7 @@ namespace DataTrue {
      * @returns {string} the resource represented as a JSON string
      * @memberof Resource
      */
-    toString(): string {
+    public toString(): string {
       return JSON.stringify(this.toJSON());
     }
 
@@ -79,26 +78,26 @@ namespace DataTrue {
      * @param {number} id the ID of the resource
      * @memberof Resource
      */
-    static fromID(id: number): void { }
+    public static fromID(id: number): void { }
 
-    setResourceID(id: number): void {
+    public setResourceID(id: number): void {
       this.resourceID = id;
     }
 
-    setContextID(id: number): void {
+    public setContextID(id: number): void {
       this.contextID = id;
     }
 
-    static fromJSON(): void { }
+    public static fromJSON(): void { }
 
     /**
      * Set options from the passed options object
      *
-     * @param {Object} options the object to set options from
+     * @param {object} options the object to set options from
      * @param {boolean} [override] whether to override the options object
      * @memberof Resource
      */
-    setOptions(options: Object, override?: boolean): void {
+    public setOptions(options: object, override?: boolean): void {
       if (override) {
         this.options = options;
       } else {
@@ -118,7 +117,7 @@ namespace DataTrue {
      * @returns {string} the resource represented as a JSON string
      * @memberof Resource
      */
-    static getResource(id: number, resourceType: string): string {
+    protected static getResource(id: number, resourceType: string): string {
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
@@ -188,7 +187,7 @@ namespace DataTrue {
 
       const request = this.makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
 
-      for (let childs of (this.constructor as any).children) {
+      for (const childs of (this.constructor as any).children) {
         this[childs].forEach(child => {
           child.save();
         });
@@ -199,13 +198,13 @@ namespace DataTrue {
      * Add a child to a resource
      *
      * @protected
-     * @param {Object} child child to add to the Resource
+     * @param {object} child child to add to the Resource
      * @param {number} [index=-1] index to add the child at
      * @param {string} childType type of the child
      * @memberof Resource
      */
-    protected addChild(child: Object, index: number = -1, childType: string) {
-      let children = this[childType].slice();
+    protected addChild(child: object, index: number = -1, childType: string): void {
+      const children = this[childType].slice();
       children.splice(index, 0, child);
       this[childType] = children;
     }
@@ -218,9 +217,9 @@ namespace DataTrue {
      * @param {string} childType type of the child
      * @memberof Resource
      */
-    protected deleteChild(index: number, childType: string) {
+    protected deleteChild(index: number, childType: string): void {
       this.toDelete.push(this[childType][index]);
-      let children = this[childType].slice();
+      const children = this[childType].slice();
       children.splice(index, 1);
       this[childType] = children;
     }
@@ -229,12 +228,12 @@ namespace DataTrue {
      * Removes children from obj so that the Resource can be updated
      *
      * @private
-     * @param {Object} obj object to remove children from
-     * @returns {Object} obj without children
+     * @param {object} obj object to remove children from
+     * @returns {object} obj without children
      * @memberof Resource
      */
-    private removeChildren(obj: Object): Object {
-      for (let child of (this.constructor as any).children) {
+    private removeChildren(obj: object): object {
+      for (const child of (this.constructor as any).children) {
         if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
           delete obj[(this.constructor as any).resourceType][resourceTypes[child]];
         } else {

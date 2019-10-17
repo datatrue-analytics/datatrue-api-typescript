@@ -1,4 +1,4 @@
-function run() {
+function run(): void {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
 
