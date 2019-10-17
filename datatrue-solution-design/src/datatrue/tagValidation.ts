@@ -37,7 +37,7 @@ namespace DataTrue {
     static readonly resourceType: string = "tag_validations";
     static readonly children: string[] = [];
 
-    private queryValidations: QueryValidation[] = [];
+    private queryValidations: readonly QueryValidation[] = [];
     private tagDefinition: Object;
 
     public options: DataTrue.TagValidationOptions = {
@@ -55,11 +55,13 @@ namespace DataTrue {
     }
 
     addQueryValidation(queryValidation: QueryValidation, index: number = -1) {
-      this.queryValidations.splice(index, 0, queryValidation);
+      super.addChild(queryValidation, index, "queryValidations");
     }
 
     deleteQueryValidation(index: number) {
-      this.queryValidations.splice(index, 1);
+      let queryValidations = this["queryValidations"].slice();
+      queryValidations.splice(index, 1);
+      this["queryValidations"] = queryValidations;
     }
 
     setOptions(options: TagValidationOptions, override: boolean = false) {

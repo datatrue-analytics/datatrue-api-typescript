@@ -23,7 +23,7 @@ namespace DataTrue {
   export class DataLayerValidation extends DataTrue.Resource {
     static readonly contextType: string = "step";
     static readonly resourceType: string = "data_layer_validations";
-    static readonly children: string[] = [];
+    static readonly children: readonly string[] = [];
 
     public options: DataTrue.DataLayerValidationOptions = {};
 

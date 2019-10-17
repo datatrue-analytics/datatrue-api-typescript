@@ -14,9 +14,9 @@ namespace DataTrue {
     static readonly contextType: string = "account";
     static readonly resourceType: string = "suite";
     static readonly resourceTypeRun: string = "Suite";
-    static readonly children: string[] = ["tests"];
+    static readonly children: readonly string[] = ["tests"];
 
-    private tests: Test[] = [];
+    private tests: readonly Test[] = [];
 
     public options: DataTrue.SuiteOptions = {};
 
@@ -35,12 +35,11 @@ namespace DataTrue {
     }
 
     addTest(test: DataTrue.Test,  index: number = -1) {
-      this.tests.splice(index, 0, test);
+      super.addChild(test, index, "tests");
     }
 
     deleteTest(index) {
-      this.toDelete.push(this.tests[index]);
-      this.tests.splice(index, 1);
+      super.deleteChild(index, "tests");
     }
 
     create(): void {

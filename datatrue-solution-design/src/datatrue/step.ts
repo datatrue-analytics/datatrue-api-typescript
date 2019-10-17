@@ -52,10 +52,10 @@ namespace DataTrue {
   export class Step extends DataTrue.Resource {
     static readonly contextType: string = "test";
     static readonly resourceType: string = "step";
-    static readonly children: string[] = ["tagValidations", "dataLayerValidations"];
+    static readonly children: readonly string[] = ["tagValidations", "dataLayerValidations"];
 
-    private tagValidations: DataTrue.TagValidation[] = [];
-    private dataLayerValidations: DataTrue.DataLayerValidation[] = [];
+    private tagValidations: readonly DataTrue.TagValidation[] = [];
+    private dataLayerValidations: readonly DataTrue.DataLayerValidation[] = [];
 
     public options: DataTrue.StepOptions = {};
 
@@ -65,21 +65,19 @@ namespace DataTrue {
     }
 
     addTagValidation(tagValidation: DataTrue.TagValidation, index: number = -1) {
-      this.tagValidations.splice(index, 0, tagValidation);
+      super.addChild(tagValidation, index, "tagValidations");
     }
 
     addDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation, index: number = -1) {
-      this.dataLayerValidations.splice(index, 0, dataLayerValidation);
+      super.addChild(dataLayerValidation, index, "dataLayerValidations");
     }
 
     deleteTagValidation(index: number) {
-      this.toDelete.push(this.tagValidations[index]);
-      this.tagValidations.splice(index, 1);
+      super.deleteChild(index, "tagValidations");
     }
 
     deleteDataLayerValidation(index: number) {
-      this.toDelete.push(this.dataLayerValidations[index]);
-      this.dataLayerValidations.splice(index, 1);
+      super.deleteChild(index, "dataLayerValidations");
     }
 
     setOptions(options: DataTrue.StepOptions, override: boolean = false): void {

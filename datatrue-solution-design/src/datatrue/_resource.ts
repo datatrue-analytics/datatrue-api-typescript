@@ -40,7 +40,7 @@ namespace DataTrue {
   export abstract class Resource {
     static readonly contextType: string;
     static readonly resourceType: string;
-    static readonly children: string[];
+    static readonly children: readonly string[];
     static readonly resourceTypeRun?: string;
 
     jobID?: number;
@@ -195,6 +195,44 @@ namespace DataTrue {
       }
     }
 
+    /**
+     * Add a child to a resource
+     *
+     * @protected
+     * @param {Object} child child to add to the Resource
+     * @param {number} [index=-1] index to add the child at
+     * @param {string} childType type of the child
+     * @memberof Resource
+     */
+    protected addChild(child: Object, index: number = -1, childType: string) {
+      let children = this[childType].slice();
+      children.splice(index, 0, child);
+      this[childType] = children;
+    }
+
+    /**
+     * Delete a child from a resource
+     *
+     * @protected
+     * @param {number} index index to delete the child from
+     * @param {string} childType type of the child
+     * @memberof Resource
+     */
+    protected deleteChild(index: number, childType: string) {
+      this.toDelete.push(this[childType][index]);
+      let children = this[childType].slice();
+      children.splice(index, 1);
+      this[childType] = children;
+    }
+
+    /**
+     * Removes children from obj so that the Resource can be updated
+     *
+     * @private
+     * @param {Object} obj object to remove children from
+     * @returns {Object} obj without children
+     * @memberof Resource
+     */
     private removeChildren(obj: Object): Object {
       for (let child of (this.constructor as any).children) {
         if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
@@ -271,6 +309,16 @@ namespace DataTrue {
       return JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
     }
 
+    /**
+     * Make a HTTP request to DataTrue
+     *
+     * @private
+     * @param {GoogleAppsScript.URL_Fetch.HttpMethod} method HTTP method
+     * @param {string} uri uri to make request to
+     * @param {string} [payload=""] payload to include in request
+     * @returns {GoogleAppsScript.URL_Fetch.HTTPResponse} HTTP response
+     * @memberof Resource
+     */
     private makeRequest(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string, payload: string = ""): GoogleAppsScript.URL_Fetch.HTTPResponse {
       const options = {
         "method": method,

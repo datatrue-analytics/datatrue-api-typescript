@@ -51,21 +51,19 @@ namespace DataTrue {
     }
 
     addStep(step: Step, index: number = -1) {
-      this.steps.splice(index, 0, step);
+      super.addChild(step, index, "steps");
     }
 
     addTagValidation(tagValidation: DataTrue.TagValidation, index: number = -1) {
-      this.tagValidations.splice(index, 0, tagValidation);
+      super.addChild(tagValidation, index, "tagValidations");
     }
 
     deleteStep(index) {
-      this.toDelete.push(this.steps[index]);
-      this.steps.splice(index, 1);
+      super.deleteChild(index, "steps");
     }
 
     deleteTagValidation(index) {
-      this.toDelete.push(this.tagValidations[index]);
-      this.tagValidations.splice(index, 1);
+      super.deleteChild(index, "tagValidations");
     }
 
     setOptions(options: DataTrue.TestOptions, override: boolean = false): void {
