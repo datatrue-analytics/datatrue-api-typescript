@@ -158,7 +158,7 @@ namespace DataTrue {
 
       const request = this.makeRequest("post", uri, this.toString());
 
-      this.resourceID = JSON.parse(request.getContentText())[(this.constructor as any).resourceType]["id"];
+      this.setResourceID(JSON.parse(request.getContentText())[(this.constructor as any).resourceType]["id"]);
     }
 
     /**

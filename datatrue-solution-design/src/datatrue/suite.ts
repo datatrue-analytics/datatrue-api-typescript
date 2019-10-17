@@ -38,6 +38,14 @@ namespace DataTrue {
       this.tests.splice(index, 0, test);
     }
 
+    create(): void {
+      super.create();
+      this.tests.forEach(test => {
+        test.setContextID(this.resourceID);
+        test.save();
+      });
+    }
+
     toJSON(): Object {
       let obj = {};
 
