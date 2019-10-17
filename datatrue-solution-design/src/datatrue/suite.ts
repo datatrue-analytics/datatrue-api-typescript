@@ -39,7 +39,7 @@ namespace DataTrue {
     }
 
     deleteTest(index) {
-      this.tests[index].delete();
+      this.toDelete.push(this.tests[index]);
       this.tests.splice(index, 1);
     }
 

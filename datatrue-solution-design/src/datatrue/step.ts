@@ -73,12 +73,12 @@ namespace DataTrue {
     }
 
     deleteTagValidation(index: number) {
-      this.tagValidations[index].delete();
+      this.toDelete.push(this.tagValidations[index]);
       this.tagValidations.splice(index, 1);
     }
 
     deleteDataLayerValidation(index: number) {
-      this.dataLayerValidations[index].delete();
+      this.toDelete.push(this.dataLayerValidations[index]);
       this.dataLayerValidations.splice(index, 1);
     }
 

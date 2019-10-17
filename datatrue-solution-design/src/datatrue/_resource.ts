@@ -48,6 +48,8 @@ namespace DataTrue {
     resourceID?: number;
     options: Object;
 
+    protected toDelete: Resource[] = [];
+
     constructor(public name: string) {
     }
 
@@ -135,20 +137,28 @@ namespace DataTrue {
       return UrlFetchApp.fetch(uri, options).getContentText();
     }
 
-    save(): void {
+    /**
+     * Save a resource to DataTrue
+     *
+     * @memberof Resource
+     */
+    public save(): void {
       if (this.resourceID) {
         this.update();
       } else {
         this.create();
       }
+      this.toDelete.forEach(child => child.delete());
+      this.toDelete = [];
     }
 
     /**
      * Create the resource in DataTrue
      *
+     * @protected
      * @memberof Resource
      */
-    create(): void {
+    protected create(): void {
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
@@ -162,11 +172,12 @@ namespace DataTrue {
     }
 
     /**
-     * Update the resource in DataTrue
+     * Update the resource and all children in DataTrue
      *
+     * @protected
      * @memberof Resource
      */
-    update(): void {
+    protected update(): void {
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
@@ -200,7 +211,7 @@ namespace DataTrue {
      *
      * @memberof Resource
      */
-    delete(): void {
+    public delete(): void {
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
@@ -216,7 +227,7 @@ namespace DataTrue {
      * @param {number[]} [email_users=[]] a list of IDs for who should be emailed regarding the test run
      * @memberof Resource
      */
-    run(email_users: number[] = []): void {
+    public run(email_users: number[] = []): void {
       const uri = [
         DataTrue.apiEndpoint,
         "ci_api",
@@ -240,7 +251,7 @@ namespace DataTrue {
      * @returns {DataTrue.JobStatus} the status of the running test
      * @memberof Resource
      */
-    progress(): DataTrue.JobStatus {
+    public progress(): DataTrue.JobStatus {
       const uri = [
         DataTrue.apiEndpoint,
         "ci_api",

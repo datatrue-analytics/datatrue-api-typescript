@@ -59,12 +59,12 @@ namespace DataTrue {
     }
 
     deleteStep(index) {
-      this.steps[index].delete();
+      this.toDelete.push(this.steps[index]);
       this.steps.splice(index, 1);
     }
 
     deleteTagValidation(index) {
-      this.tagValidations[index].delete();
+      this.toDelete.push(this.tagValidations[index]);
       this.tagValidations.splice(index, 1);
     }
 
