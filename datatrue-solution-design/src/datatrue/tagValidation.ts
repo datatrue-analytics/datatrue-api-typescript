@@ -54,8 +54,8 @@ namespace DataTrue {
       this.setOptions(options);
     }
 
-    addQueryValidation(queryValidation: QueryValidation) {
-      this.queryValidations.push(queryValidation);
+    addQueryValidation(queryValidation: QueryValidation, index: number = -1) {
+      this.queryValidations.splice(index, 0, queryValidation);
     }
 
     setOptions(options: TagValidationOptions, override: boolean = false) {

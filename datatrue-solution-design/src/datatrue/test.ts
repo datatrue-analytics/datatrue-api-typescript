@@ -50,12 +50,12 @@ namespace DataTrue {
       return test;
     }
 
-    addStep(step: Step) {
-      this.steps.push(step);
+    addStep(step: Step, index: number = -1) {
+      this.steps.splice(index, 0, step);
     }
 
-    addTagValidation(tagValidation: DataTrue.TagValidation) {
-      this.tagValidations.push(tagValidation);
+    addTagValidation(tagValidation: DataTrue.TagValidation, index: number = -1) {
+      this.tagValidations.splice(index, 0, tagValidation);
     }
 
     setOptions(options: DataTrue.TestOptions, override: boolean = false): void {

@@ -64,12 +64,12 @@ namespace DataTrue {
       this.setOptions(options);
     }
 
-    addTagValidation(tagValidation: DataTrue.TagValidation) {
-      this.tagValidations.push(tagValidation);
+    addTagValidation(tagValidation: DataTrue.TagValidation, index: number = -1) {
+      this.tagValidations.splice(index, 0, tagValidation);
     }
 
-    addDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation) {
-      this.dataLayerValidations.push(dataLayerValidation);
+    addDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation, index: number = -1) {
+      this.dataLayerValidations.splice(index, 0, dataLayerValidation);
     }
 
     setOptions(options: DataTrue.StepOptions, override: boolean = false): void {

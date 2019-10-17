@@ -34,8 +34,8 @@ namespace DataTrue {
       this.tests.forEach(tests => tests.setContextID(id));
     }
 
-    addTest(test: DataTrue.Test) {
-      this.tests.push(test);
+    addTest(test: DataTrue.Test,  index: number = -1) {
+      this.tests.splice(index, 0, test);
     }
 
     toJSON(): Object {
