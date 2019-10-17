@@ -52,7 +52,7 @@ namespace DataTrue {
   export class Step extends DataTrue.Resource {
     static readonly contextType: string = "test";
     static readonly resourceType: string = "step";
-    static readonly children: string[] = ["tag_validations", "data_layer_validations"];
+    static readonly children: string[] = ["tagValidations", "dataLayerValidations"];
 
     private tagValidations: DataTrue.TagValidation[] = [];
     private dataLayerValidations: DataTrue.DataLayerValidation[] = [];

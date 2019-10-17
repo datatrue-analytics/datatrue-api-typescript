@@ -29,6 +29,14 @@ namespace DataTrue {
     message?: string
   }
 
+  const resourceTypes = {
+    dataLayerValidations: "data_layer_validations",
+    steps: "steps",
+    suites: "suites",
+    tagValidations: "tag_validations",
+    tests: "tests"
+  };
+
   export abstract class Resource {
     static readonly contextType: string;
     static readonly resourceType: string;
@@ -168,14 +176,20 @@ namespace DataTrue {
       const payload = this.toJSON();
 
       const request = this.makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
+
+      for (let childs of (this.constructor as any).children) {
+        this[childs].forEach(child => {
+          child.save();
+        });
+      }
     }
 
     private removeChildren(obj: Object): Object {
       for (let child of (this.constructor as any).children) {
         if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
-          delete obj[(this.constructor as any).resourceType][child];
+          delete obj[(this.constructor as any).resourceType][resourceTypes[child]];
         } else {
-          delete obj[child];
+          delete obj[resourceTypes[child]];
         }
       }
       return obj;
@@ -209,22 +223,7 @@ namespace DataTrue {
         `test_runs?api_key=${DataTrue.ciToken}`
       ].join("/");
 
-      const options = {
-        "method": "post" as GoogleAppsScript.URL_Fetch.HttpMethod,
-        "contentType": "application/json",
-        "payload": JSON.stringify({
-          "test_run": {
-            "test_class": (this.constructor as any).resourceTypeRun,
-            "test_id": this.resourceID,
-            "email_users": email_users
-          }
-        }),
-        "headers": {
-          "content-type": "application/json"
-        }
-      };
-
-      const request = this.makeRequest("post", JSON.stringify({
+      const request = this.makeRequest("post", uri, JSON.stringify({
         "test_run": {
           "test_class": (this.constructor as any).resourceTypeRun,
           "test_id": this.resourceID,

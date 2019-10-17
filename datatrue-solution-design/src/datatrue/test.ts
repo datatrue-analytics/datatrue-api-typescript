@@ -23,7 +23,7 @@ namespace DataTrue {
     static readonly contextType: string = "suite";
     static readonly resourceType: string = "test";
     static readonly resourceTypeRun: string = "TestScenario";
-    static readonly children: string[] = ["steps", "tag_validations"];
+    static readonly children: string[] = ["steps", "tagValidations"];
 
     private steps: DataTrue.Step[] = [];
     private tagValidations: DataTrue.TagValidation[] = [];

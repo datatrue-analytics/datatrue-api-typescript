@@ -34,6 +34,10 @@ namespace DataTrue {
       this.tests.forEach(tests => tests.setContextID(id));
     }
 
+    addTest(test: DataTrue.Test) {
+      this.tests.push(test);
+    }
+
     toJSON(): Object {
       let obj = {};
 
