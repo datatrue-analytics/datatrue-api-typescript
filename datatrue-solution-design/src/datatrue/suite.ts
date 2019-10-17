@@ -14,6 +14,7 @@ namespace DataTrue {
     static readonly contextType: string = "account";
     static readonly resourceType: string = "suite";
     static readonly resourceTypeRun: string = "Suite";
+    static readonly children: string[] = ["tests"];
 
     private tests: Test[] = [];
 
@@ -33,7 +34,7 @@ namespace DataTrue {
       this.tests.forEach(tests => tests.setContextID(id));
     }
 
-    toJSON(): string {
+    toJSON(): Object {
       let obj = {};
 
       obj[Suite.resourceType] = {
@@ -44,7 +45,7 @@ namespace DataTrue {
         obj[Suite.resourceType][option] = this.options[option];
       }
 
-      return JSON.stringify(obj);
+      return obj;
     }
   }
 }

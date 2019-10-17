@@ -65,12 +65,7 @@ function create() {
 
   steps.forEach(step => test.addStep(step));
 
-  if (testID) {
-    test.setResourceID(parseInt(testID));
-    test.update();
-  } else {
-    test.create();
-  }
+  test.save();
 
   sheet.getRange("B7").setValue(test.resourceID);
   sheet.getRange("B8").setValue("y");

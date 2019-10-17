@@ -32,6 +32,7 @@ namespace DataTrue {
   export abstract class Resource {
     static readonly contextType: string;
     static readonly resourceType: string;
+    static readonly children: string[];
     static readonly resourceTypeRun?: string;
 
     jobID?: number;
@@ -43,13 +44,23 @@ namespace DataTrue {
     }
 
     /**
-     * Convert the resource to a JSON string
+     * Convert the resource to an Object
      *
      * @abstract
+     * @returns {Object} object representation of the resource
+     * @memberof Resource
+     */
+    abstract toJSON(): Object;
+
+    /**
+     * Convert the resource to a JSON string
+     *
      * @returns {string} the resource represented as a JSON string
      * @memberof Resource
      */
-    abstract toJSON(): string;
+    toString(): string {
+      return JSON.stringify(this.toJSON());
+    }
 
     /**
      * Create a resource from a given ID
@@ -116,6 +127,14 @@ namespace DataTrue {
       return UrlFetchApp.fetch(uri, options).getContentText();
     }
 
+    save(): void {
+      if (this.resourceID) {
+        this.update();
+      } else {
+        this.create();
+      }
+    }
+
     /**
      * Create the resource in DataTrue
      *
@@ -129,7 +148,7 @@ namespace DataTrue {
         this.contextID,
         (this.constructor as any).resourceType + "s"].join("/");
 
-      const request = this.save("post", uri);
+      const request = this.makeRequest("post", uri, this.toString());
 
       this.resourceID = JSON.parse(request.getContentText())[(this.constructor as any).resourceType]["id"];
     }
@@ -146,7 +165,20 @@ namespace DataTrue {
         (this.constructor as any).resourceType + "s",
         this.resourceID].join("/");
 
-      const request = this.save("put", uri);
+      const payload = this.toJSON();
+
+      const request = this.makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
+    }
+
+    private removeChildren(obj: Object): Object {
+      for (let child of (this.constructor as any).children) {
+        if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
+          delete obj[(this.constructor as any).resourceType][child];
+        } else {
+          delete obj[child];
+        }
+      }
+      return obj;
     }
 
     /**
@@ -161,7 +193,7 @@ namespace DataTrue {
         (this.constructor as any).resourceType + "s",
         this.contextID].join("/");
 
-      const request = this.save("delete", uri);
+      const request = this.makeRequest("delete", uri);
     }
 
     /**
@@ -192,7 +224,13 @@ namespace DataTrue {
         }
       };
 
-      const request = UrlFetchApp.fetch(uri, options);
+      const request = this.makeRequest("post", JSON.stringify({
+        "test_run": {
+          "test_class": (this.constructor as any).resourceTypeRun,
+          "test_id": this.resourceID,
+          "email_users": email_users
+        }
+      }));
 
       this.jobID = JSON.parse(request.getContentText())["job_id"];
     }
@@ -223,11 +261,11 @@ namespace DataTrue {
       return JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
     }
 
-    private save(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string): GoogleAppsScript.URL_Fetch.HTTPResponse {
+    private makeRequest(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string, payload: string = ""): GoogleAppsScript.URL_Fetch.HTTPResponse {
       const options = {
         "method": method,
         "contentType": "application/json",
-        "payload": this.toJSON(),
+        "payload": payload,
         "headers": {
           "content-type": "application/json",
           "authorization": "Token " + DataTrue.managementToken

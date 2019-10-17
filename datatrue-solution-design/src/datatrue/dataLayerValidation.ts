@@ -23,6 +23,7 @@ namespace DataTrue {
   export class DataLayerValidation extends DataTrue.Resource {
     static readonly contextType: string = "step";
     static readonly resourceType: string = "data_layer_validations";
+    static readonly children: string[] = [];
 
     public options: DataTrue.DataLayerValidationOptions = {};
 
@@ -35,7 +36,7 @@ namespace DataTrue {
       super.setOptions(options, override);
     }
 
-    toJSON(): string {
+    toJSON(): Object {
       let obj: Object = {
       };
 
@@ -43,7 +44,7 @@ namespace DataTrue {
         obj[option] = this.options[option];
       }
       
-      return JSON.stringify(obj);
+      return obj;
     }
 
     run(): void {

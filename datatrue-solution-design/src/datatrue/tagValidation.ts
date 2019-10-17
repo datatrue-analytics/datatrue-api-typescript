@@ -35,6 +35,7 @@ namespace DataTrue {
   export class TagValidation extends DataTrue.Resource {
     static readonly contextType: string = "step";
     static readonly resourceType: string = "tag_validations";
+    static readonly children: string[] = [];
 
     private queryValidations: QueryValidation[] = [];
     private tagDefinition: Object;
@@ -61,7 +62,7 @@ namespace DataTrue {
       super.setOptions(options, override);
     }
 
-    toJSON() {
+    toJSON(): Object {
       let obj: Object = {
         name: this.name,
         tag_definition: this.tagDefinition,
@@ -81,7 +82,7 @@ namespace DataTrue {
         }
       }
 
-      return JSON.stringify(obj);
+      return obj;
     }
 
     run(): void {

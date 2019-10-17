@@ -23,6 +23,7 @@ namespace DataTrue {
     static readonly contextType: string = "suite";
     static readonly resourceType: string = "test";
     static readonly resourceTypeRun: string = "TestScenario";
+    static readonly children: string[] = ["steps", "tag_validations"];
 
     private steps: DataTrue.Step[] = [];
     private tagValidations: DataTrue.TagValidation[] = [];
@@ -67,19 +68,19 @@ namespace DataTrue {
       this.tagValidations.forEach(tagValidation => tagValidation.setContextID(id));
     }
 
-    toJSON(): string {
+    toJSON(): Object {
       let obj = {};
 
       obj[Test.resourceType] = {
         name: this.name,
-        steps: this.steps.map(step => JSON.parse(step.toJSON()))
+        steps: this.steps.map(step => JSON.parse(step.toString()))
       };
 
       for (let option in this.options) {
         obj[Test.resourceType][option] = this.options[option];
       }
 
-      return JSON.stringify(obj);
+      return obj;
     }
   }
 }
