@@ -43,12 +43,12 @@ namespace DataTrue {
     public static readonly children: readonly string[];
     public static readonly resourceTypeRun?: string;
 
+    protected toDelete: Resource[] = [];
+
     public jobID?: number;
     public contextID?: number;
     public resourceID?: number;
     public options: object;
-
-    protected toDelete: Resource[] = [];
 
     public constructor(public name: string) { }
 
