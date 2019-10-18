@@ -36,14 +36,20 @@ namespace DataTrue {
     }
 
     public static fromID(id: number): Test {
-      const obj = JSON.parse(super.getResource(id, DataTrue.Test.resourceType));
+      const obj = JSON.parse(super.getResource(id));
+      return DataTrue.Test.fromJSON(obj);
+    }
 
-      const test = new DataTrue.Test(obj["name"]);
-      test.resourceID = obj.id;
+    public static fromJSON(obj: any): Test {
+      const { name, id, steps, ...options } = obj;
 
-      obj.steps.forEach(stepObj => {
-        const step = new DataTrue.Step(stepObj.name, stepObj.action, test.resourceID);
-        step.resourceID = stepObj.id;
+      const test = new DataTrue.Test(name);
+      test.setResourceID(id);
+      test.setOptions(options, true);
+
+      steps.forEach(stepObj => {
+        const step = DataTrue.Step.fromJSON(stepObj);
+        step.setContextID(id);
         test.addStep(step);
       });
 

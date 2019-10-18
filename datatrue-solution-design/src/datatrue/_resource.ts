@@ -44,10 +44,10 @@ namespace DataTrue {
     public static readonly resourceTypeRun?: string;
 
     protected toDelete: Resource[] = [];
+    protected resourceID?: number;
 
     public jobID?: number;
     public contextID?: number;
-    public resourceID?: number;
     public options: object;
 
     public constructor(public name: string) { }
@@ -80,6 +80,12 @@ namespace DataTrue {
      */
     public static fromID(id: number): void { }
 
+    public static fromJSON(obj: any): void { }
+
+    public getResourceID(): number {
+      return this.resourceID;
+    }
+
     public setResourceID(id: number): void {
       this.resourceID = id;
     }
@@ -87,8 +93,6 @@ namespace DataTrue {
     public setContextID(id: number): void {
       this.contextID = id;
     }
-
-    public static fromJSON(): void { }
 
     /**
      * Set options from the passed options object
@@ -113,15 +117,14 @@ namespace DataTrue {
      *
      * @static
      * @param {number} id the id of the resource to fetch
-     * @param {string} resourceType the type of the resource to fetch
      * @returns {string} the resource represented as a JSON string
      * @memberof Resource
      */
-    protected static getResource(id: number, resourceType: string): string {
+    protected static getResource(id: number): string {
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
-        resourceType + "s",
+        (this.constructor as any).resourceType + "s",
         id].join("/");
 
       const options = {

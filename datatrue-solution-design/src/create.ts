@@ -29,7 +29,7 @@ function create(): void {
 
     const suite = new DataTrue.Suite(fileName, parseInt(accountID));
     suite.save();
-    suiteID = suite.resourceID.toString();
+    suiteID = suite.getResourceID().toString();
 
     sheet.getRange("B6").setValue(suiteID);
     SpreadsheetApp.flush();
@@ -67,6 +67,6 @@ function create(): void {
 
   test.save();
 
-  sheet.getRange("B7").setValue(test.resourceID);
+  sheet.getRange("B7").setValue(test.getResourceID());
   sheet.getRange("B8").setValue("y");
 }

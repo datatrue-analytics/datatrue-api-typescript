@@ -54,6 +54,34 @@ namespace DataTrue {
       this.setOptions(options);
     }
 
+    public static fromID(id: number): DataTrue.TagValidation {
+      const obj = super.getResource(id);
+      return this.fromJSON(obj);
+    }
+
+    public static fromJSON(obj: any): DataTrue.TagValidation {
+      const { name, id, tag_definition, query_validation, ...options } = obj;
+
+      if (Object.prototype.hasOwnProperty.call(options, "interception")) {
+        if (Object.prototype.hasOwnProperty.call(options["interception"], "do_validation")) {
+          options["interception"]["do_validation"] = options["interception"]["do_validation"] === "1" ? true : false;
+        }
+        if (Object.prototype.hasOwnProperty.call(options["interception"], "intercept")) {
+          options["interception"]["intercept"] = options["interception"]["intercept"] === "1" ? true : false;
+        }
+      }
+
+      const tagValidation = new DataTrue.TagValidation(name, tag_definition.key);
+      tagValidation.setResourceID(id);
+      tagValidation.setOptions(options, true);
+
+      query_validation.forEach(queryValidationObj => {
+        tagValidation.addQueryValidation(queryValidationObj);
+      });
+
+      return tagValidation;
+    }
+
     public addQueryValidation(queryValidation: DataTrue.QueryValidation, index: number = -1): void {
       super.addChild(queryValidation, index, "queryValidations");
     }

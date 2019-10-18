@@ -64,6 +64,33 @@ namespace DataTrue {
       this.setOptions(options);
     }
 
+    public static fromID(id: number): DataTrue.Step {
+      const obj = super.getResource(id);
+      return DataTrue.Step.fromJSON(obj);
+    }
+
+    public static fromJSON(obj: any): DataTrue.Step {
+      const { name, id, action, tag_validations, data_layer_validations, ...options } = obj;
+
+      const step = new DataTrue.Step(name, action);
+      step.setResourceID(id);
+      step.setOptions(options, true);
+
+      tag_validations.forEach(tagValidationObj => {
+        const tagValidation = DataTrue.TagValidation.fromJSON(tagValidationObj);
+        tagValidation.setContextID(id);
+        step.addTagValidation(tagValidation);
+      });
+
+      data_layer_validations.forEach(dataLayerValidationObj => {
+        const dataLayerValidation = DataTrue.DataLayerValidation.fromJSON(dataLayerValidationObj);
+        dataLayerValidation.setContextID(id);
+        step.addDataLayerValidation(dataLayerValidation);
+      });
+
+      return step;
+    }
+
     public addTagValidation(tagValidation: DataTrue.TagValidation, index: number = -1): void {
       super.addChild(tagValidation, index, "tagValidations");
     }
@@ -101,7 +128,11 @@ namespace DataTrue {
       }
 
       if (this.tagValidations.length) {
-        obj["tag_validations"] = this.tagValidations.map(tag_validation => JSON.parse(tag_validation.toString()));
+        obj["tag_validations"] = this.tagValidations.map(tagValidation => JSON.parse(tagValidation.toString()));
+      }
+
+      if (this.dataLayerValidations.length) {
+        obj["data_layer_validations"] = this.dataLayerValidations.map(dataLayerValidation => JSON.parse(dataLayerValidation.toString()));
       }
 
       return obj;

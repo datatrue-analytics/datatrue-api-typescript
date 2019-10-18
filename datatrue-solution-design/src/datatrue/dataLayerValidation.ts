@@ -35,6 +35,25 @@ namespace DataTrue {
       this.setOptions(options);
     }
 
+    public static fromID(id: number): DataTrue.DataLayerValidation {
+      const obj = super.getResource(id);
+      return DataTrue.DataLayerValidation.fromJSON(obj);
+    }
+
+    public static fromJSON(obj: any): DataTrue.DataLayerValidation {
+      const { name, id, property_validations, ...options } = obj;
+
+      const dataLayerValidation = new DataTrue.DataLayerValidation(name);
+      dataLayerValidation.setResourceID(id);
+      dataLayerValidation.setOptions(options, true);
+
+      property_validations.forEach(propertyValidationObj => {
+        dataLayerValidation.addPropertyValidation(propertyValidationObj);
+      });
+
+      return dataLayerValidation;
+    }
+
     public addPropertyValidation(propertyValidation: DataTrue.PropertyValidation, index: number = -1): void {
       super.addChild(propertyValidation, index, "propertyValidations");
     }

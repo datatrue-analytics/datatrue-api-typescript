@@ -25,6 +25,27 @@ namespace DataTrue {
       this.setOptions(options);
     }
 
+    public static fromID(id: number): DataTrue.Suite {
+      const obj = super.getResource(id);
+      return DataTrue.Suite.fromJSON(obj);
+    }
+
+    public static fromJSON(obj: any): DataTrue.Suite {
+      const { name, id, tests, ...options } = obj;
+
+      const suite = new DataTrue.Suite(name);
+      suite.setResourceID(id);
+      suite.setOptions(options, true);
+
+      tests.forEach(testObj => {
+        const test = DataTrue.Test.fromID(testObj["id"]);
+        test.setContextID(id);
+        suite.addTest(test);
+      });
+
+      return suite;
+    }
+
     public setOptions(options: DataTrue.SuiteOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
