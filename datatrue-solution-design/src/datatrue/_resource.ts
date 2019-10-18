@@ -45,12 +45,30 @@ namespace DataTrue {
 
     protected toDelete: Resource[] = [];
     protected resourceID?: number;
+    protected contextID?: number;
 
     public jobID?: number;
-    public contextID?: number;
     public options: object;
 
     public constructor(public name: string) { }
+
+    /**
+     * Create a resource from a given ID
+     *
+     * @static
+     * @param {number} id the ID of the resource
+     * @memberof Resource
+     */
+    public static fromID(id: number): void { }
+
+    /**
+     * Create a resource from an object
+     *
+     * @static
+     * @param {*} obj object to create resource from
+     * @memberof Resource
+     */
+    public static fromJSON(obj: any): void { }
 
     /**
      * Convert the resource to an Object
@@ -72,24 +90,41 @@ namespace DataTrue {
     }
 
     /**
-     * Create a resource from a given ID
+     * Gets the resourceID of a resource
      *
-     * @static
-     * @param {number} id the ID of the resource
+     * @returns {number} resourceID of the resource
      * @memberof Resource
      */
-    public static fromID(id: number): void { }
-
-    public static fromJSON(obj: any): void { }
-
     public getResourceID(): number {
       return this.resourceID;
     }
 
+    /**
+     * Gets the contextID of a resource
+     *
+     * @returns {number} contextID of the resource
+     * @memberof Resource
+     */
+    public getContextID(): number {
+      return this.contextID;
+    }
+
+    /**
+     * Sets the resourceID of a resource
+     *
+     * @param {number} id the resourceID to set
+     * @memberof Resource
+     */
     public setResourceID(id: number): void {
       this.resourceID = id;
     }
 
+    /**
+     * Sets the contextID of a resource
+     *
+     * @param {number} id the contextID to set
+     * @memberof Resource
+     */
     public setContextID(id: number): void {
       this.contextID = id;
     }
