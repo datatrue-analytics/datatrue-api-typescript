@@ -81,7 +81,7 @@ namespace DataTrue {
 
       obj[Test.resourceType] = {
         name: this.name,
-        steps: this.steps.map(step => JSON.parse(step.toString()))
+        steps: this.steps.map(step => JSON.parse(step.toString())),
       };
 
       for (const option in this.options) {

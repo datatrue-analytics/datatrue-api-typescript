@@ -16,6 +16,10 @@
   ],
   "rules": {
     "no-var": "off",
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
     "@typescript-eslint/array-type": [
       "error",
       {

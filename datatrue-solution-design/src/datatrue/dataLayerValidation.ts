@@ -14,16 +14,19 @@ namespace DataTrue {
     regex?: string,
     variable_name?: string,
     validation_enabled?: boolean,
-    property_validations?: {
-      name: string,
-      value: string,
-    }[],
+  }
+
+  export interface PropertyValidation {
+    name: string,
+    value: string,
   }
 
   export class DataLayerValidation extends DataTrue.Resource {
     public static readonly contextType: string = "step";
     public static readonly resourceType: string = "data_layer_validations";
     public static readonly children: readonly string[] = [];
+
+    private propertyValidations: readonly DataTrue.PropertyValidation[] = [];
 
     public options: DataTrue.DataLayerValidationOptions = {};
 
@@ -32,12 +35,24 @@ namespace DataTrue {
       this.setOptions(options);
     }
 
+    public addPropertyValidation(propertyValidation: DataTrue.PropertyValidation, index: number = -1): void {
+      super.addChild(propertyValidation, index, "propertyValidations");
+    }
+
+    public deletePropertyValidation(index: number): void {
+      const propertyValidations = this["propertyValidations"].slice();
+      propertyValidations.splice(index, 1);
+      this["propertyValidations"] = propertyValidations;
+    }
+
     public setOptions(options: DataTrue.DataLayerValidationOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
 
     public toJSON(): object {
       const obj: object = {
+        name: this.name,
+        property_validations: this.propertyValidations,
       };
 
       for (const option in this.options) {

@@ -34,7 +34,7 @@ namespace DataTrue {
     steps: "steps",
     suites: "suites",
     tagValidations: "tag_validations",
-    tests: "tests"
+    tests: "tests",
   };
 
   export abstract class Resource {
@@ -103,7 +103,7 @@ namespace DataTrue {
       } else {
         this.options = {
           ...this.options,
-          ...options
+          ...options,
         };
       }
     }
@@ -129,8 +129,8 @@ namespace DataTrue {
         "contentType": "application/json",
         "headers": {
           "content-type": "application/json",
-          "authorization": "Token " + DataTrue.managementToken
-        }
+          "authorization": "Token " + DataTrue.managementToken,
+        },
       };
 
       return UrlFetchApp.fetch(uri, options).getContentText();
@@ -268,15 +268,15 @@ namespace DataTrue {
       const uri = [
         DataTrue.apiEndpoint,
         "ci_api",
-        `test_runs?api_key=${DataTrue.ciToken}`
+        `test_runs?api_key=${DataTrue.ciToken}`,
       ].join("/");
 
       const request = this.makeRequest("post", uri, JSON.stringify({
         "test_run": {
           "test_class": (this.constructor as any).resourceTypeRun,
           "test_id": this.resourceID,
-          "email_users": email_users
-        }
+          "email_users": email_users,
+        },
       }));
 
       this.jobID = JSON.parse(request.getContentText())["job_id"];
@@ -294,15 +294,15 @@ namespace DataTrue {
         "ci_api",
         "test_runs",
         "progress",
-        `${this.jobID}?api_key=${DataTrue.ciToken}`
+        `${this.jobID}?api_key=${DataTrue.ciToken}`,
       ].join("/");
 
       const options = {
         "method": "get" as GoogleAppsScript.URL_Fetch.HttpMethod,
         "contentType": "application/json",
         "headers": {
-          "content-type": "application/json"
-        }
+          "content-type": "application/json",
+        },
       };
 
       return JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
@@ -325,8 +325,8 @@ namespace DataTrue {
         "payload": payload,
         "headers": {
           "content-type": "application/json",
-          "authorization": "Token " + DataTrue.managementToken
-        }
+          "authorization": "Token " + DataTrue.managementToken,
+        },
       };
 
       return UrlFetchApp.fetch(uri, options);

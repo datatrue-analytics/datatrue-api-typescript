@@ -37,24 +37,24 @@ namespace DataTrue {
     public static readonly resourceType: string = "tag_validations";
     public static readonly children: string[] = [];
 
-    private queryValidations: readonly QueryValidation[] = [];
+    private queryValidations: readonly DataTrue.QueryValidation[] = [];
     private tagDefinition: DataTrue.TagDefinition;
 
     public options: DataTrue.TagValidationOptions = {
       interception: {
-        do_validation: true
-      }
+        do_validation: true,
+      },
     };
 
     public constructor(name: string, key: string, public contextID?: number, options: DataTrue.TagValidationOptions = {}) {
       super(name);
       this.tagDefinition = {
-        key: key
+        key: key,
       };
       this.setOptions(options);
     }
 
-    public addQueryValidation(queryValidation: QueryValidation, index: number = -1): void {
+    public addQueryValidation(queryValidation: DataTrue.QueryValidation, index: number = -1): void {
       super.addChild(queryValidation, index, "queryValidations");
     }
 
@@ -64,7 +64,7 @@ namespace DataTrue {
       this["queryValidations"] = queryValidations;
     }
 
-    public setOptions(options: TagValidationOptions, override: boolean = false): void {
+    public setOptions(options: DataTrue.TagValidationOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
 
@@ -72,7 +72,7 @@ namespace DataTrue {
       const obj: object = {
         name: this.name,
         tag_definition: this.tagDefinition,
-        query_validation: this.queryValidations
+        query_validation: this.queryValidations,
       };
 
       for (const option in this.options) {

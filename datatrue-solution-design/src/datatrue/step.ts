@@ -93,7 +93,7 @@ namespace DataTrue {
     public toJSON(): object {
       const obj = {
         name: this.name,
-        action: this.action
+        action: this.action,
       };
 
       for (const option in this.options) {

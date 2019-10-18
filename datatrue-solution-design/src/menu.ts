@@ -3,12 +3,12 @@ function onOpen(): void {
   const entries = [
     {
       name: "Create Test",
-      functionName: "create"
+      functionName: "create",
     },
     {
       name: "Run Test",
-      functionName: "run"
-    }
+      functionName: "run",
+    },
   ];
   sheet.addMenu("DataTrue", entries);
 }

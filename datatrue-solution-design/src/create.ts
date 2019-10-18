@@ -56,7 +56,7 @@ function create(): void {
           key: param,
           regex: false,
           value: row[i + 3],
-          use_json_path: false
+          use_json_path: false,
         });
       }
     });
