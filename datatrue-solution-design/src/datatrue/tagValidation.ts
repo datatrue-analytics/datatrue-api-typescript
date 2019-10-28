@@ -55,7 +55,7 @@ namespace DataTrue {
     }
 
     public static fromID(id: number): DataTrue.TagValidation {
-      const obj = super.getResource(id, TagValidation.resourceType);
+      const obj = JSON.parse(super.getResource(id, TagValidation.resourceType));
       return this.fromJSON(obj);
     }
 

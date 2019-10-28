@@ -65,7 +65,7 @@ namespace DataTrue {
     }
 
     public static fromID(id: number): DataTrue.Step {
-      const obj = super.getResource(id, Step.resourceType);
+      const obj = JSON.parse(super.getResource(id, Step.resourceType));
       return DataTrue.Step.fromJSON(obj);
     }
 

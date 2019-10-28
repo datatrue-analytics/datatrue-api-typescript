@@ -36,7 +36,7 @@ namespace DataTrue {
     }
 
     public static fromID(id: number): DataTrue.DataLayerValidation {
-      const obj = super.getResource(id, DataLayerValidation.resourceType);
+      const obj = JSON.parse(super.getResource(id, DataLayerValidation.resourceType));
       return DataTrue.DataLayerValidation.fromJSON(obj);
     }
 

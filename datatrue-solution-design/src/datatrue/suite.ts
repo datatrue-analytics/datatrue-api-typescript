@@ -26,7 +26,7 @@ namespace DataTrue {
     }
 
     public static fromID(id: number): DataTrue.Suite {
-      const obj = super.getResource(id, Suite.resourceType);
+      const obj = JSON.parse(super.getResource(id, Suite.resourceType));
       return DataTrue.Suite.fromJSON(obj);
     }
 
