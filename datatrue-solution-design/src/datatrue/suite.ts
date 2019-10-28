@@ -30,7 +30,7 @@ namespace DataTrue {
       return DataTrue.Suite.fromJSON(obj);
     }
 
-    public static fromJSON(obj: any): DataTrue.Suite {
+    public static fromJSON(obj: Record<string, any>): DataTrue.Suite {
       const { name, id, tests, ...options } = obj;
 
       const suite = new DataTrue.Suite(name);

@@ -40,7 +40,7 @@ namespace DataTrue {
       return DataTrue.Test.fromJSON(obj);
     }
 
-    public static fromJSON(obj: any): Test {
+    public static fromJSON(obj: Record<string, any>): Test {
       const { name, id, steps, tag_validations, ...options } = obj;
 
       const test = new DataTrue.Test(name);

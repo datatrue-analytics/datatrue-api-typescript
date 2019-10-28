@@ -40,7 +40,7 @@ namespace DataTrue {
       return DataTrue.DataLayerValidation.fromJSON(obj);
     }
 
-    public static fromJSON(obj: any): DataTrue.DataLayerValidation {
+    public static fromJSON(obj: Record<string, any>): DataTrue.DataLayerValidation {
       const { name, id, property_validations, ...options } = obj;
 
       const dataLayerValidation = new DataTrue.DataLayerValidation(name);

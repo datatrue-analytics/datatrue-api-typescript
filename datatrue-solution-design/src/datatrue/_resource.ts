@@ -68,7 +68,7 @@ namespace DataTrue {
      * @param {*} obj object to create resource from
      * @memberof Resource
      */
-    public static fromJSON(obj: any): void { }
+    public static fromJSON(obj: Record<string, any>): void { }
 
     /**
      * Convert the resource to an Object

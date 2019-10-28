@@ -69,7 +69,7 @@ namespace DataTrue {
       return DataTrue.Step.fromJSON(obj);
     }
 
-    public static fromJSON(obj: any): DataTrue.Step {
+    public static fromJSON(obj: Record<string, any>): DataTrue.Step {
       const { name, id, action, tag_validations, data_layer_validations, ...options } = obj;
 
       const step = new DataTrue.Step(name, action);
