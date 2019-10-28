@@ -24,9 +24,9 @@ namespace DataTrue {
   export class DataLayerValidation extends DataTrue.Resource {
     public static readonly contextType: string = "step";
     public static readonly resourceType: string = "data_layer_validations";
-    public static readonly children: readonly string[] = [];
+    public static readonly children: string[] = [];
 
-    private propertyValidations: readonly DataTrue.PropertyValidation[] = [];
+    private propertyValidations: DataTrue.PropertyValidation[] = [];
 
     public options: DataTrue.DataLayerValidationOptions = {};
 
@@ -59,9 +59,11 @@ namespace DataTrue {
     }
 
     public deletePropertyValidation(index: number): void {
-      const propertyValidations = this["propertyValidations"].slice();
-      propertyValidations.splice(index, 1);
-      this["propertyValidations"] = propertyValidations;
+      this.propertyValidations.splice(index, 1);
+    }
+
+    public getPropertyValidations(): readonly DataTrue.PropertyValidation[] {
+      return this.propertyValidations.slice();
     }
 
     public setOptions(options: DataTrue.DataLayerValidationOptions, override: boolean = false): void {

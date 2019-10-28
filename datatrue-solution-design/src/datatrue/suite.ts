@@ -16,7 +16,7 @@ namespace DataTrue {
     public static readonly resourceTypeRun: string = "Suite";
     public static readonly children: readonly string[] = ["tests"];
 
-    private tests: readonly Test[] = [];
+    private tests: Test[] = [];
 
     public options: DataTrue.SuiteOptions = {};
 
@@ -61,6 +61,10 @@ namespace DataTrue {
 
     public deleteTest(index): void {
       super.deleteChild(index, "tests");
+    }
+
+    public getTests(): readonly DataTrue.Test[] {
+      return this.tests.slice();
     }
 
     protected create(): void {

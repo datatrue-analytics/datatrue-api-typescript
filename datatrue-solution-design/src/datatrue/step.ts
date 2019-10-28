@@ -54,8 +54,8 @@ namespace DataTrue {
     public static readonly resourceType: string = "step";
     public static readonly children: readonly string[] = ["tagValidations", "dataLayerValidations"];
 
-    private tagValidations: readonly DataTrue.TagValidation[] = [];
-    private dataLayerValidations: readonly DataTrue.DataLayerValidation[] = [];
+    private tagValidations: DataTrue.TagValidation[] = [];
+    private dataLayerValidations: DataTrue.DataLayerValidation[] = [];
 
     public options: DataTrue.StepOptions = {};
 
@@ -105,6 +105,14 @@ namespace DataTrue {
 
     public deleteDataLayerValidation(index: number): void {
       super.deleteChild(index, "dataLayerValidations");
+    }
+
+    public getTagValidations(): readonly DataTrue.TagValidation[] {
+      return this.tagValidations.slice();
+    }
+
+    public getDataLayerValidations(): readonly DataTrue.DataLayerValidation[] {
+      return this.dataLayerValidations.slice();
     }
 
     public setOptions(options: DataTrue.StepOptions, override: boolean = false): void {

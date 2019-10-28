@@ -72,6 +72,14 @@ namespace DataTrue {
       super.deleteChild(index, "tagValidations");
     }
 
+    public getSteps(): readonly DataTrue.Step[] {
+      return this.steps.slice();
+    }
+
+    public getTagValidations(): readonly DataTrue.TagValidation[] {
+      return this.tagValidations.slice();
+    }
+
     public setOptions(options: DataTrue.TestOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }

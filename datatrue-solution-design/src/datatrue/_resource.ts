@@ -242,9 +242,7 @@ namespace DataTrue {
      * @memberof Resource
      */
     protected addChild(child: object, index: number = -1, childType: string): void {
-      const children = this[childType].slice();
-      children.splice(index, 0, child);
-      this[childType] = children;
+      this[childType].splice(index, 0, child);
     }
 
     /**
@@ -257,9 +255,7 @@ namespace DataTrue {
      */
     protected deleteChild(index: number, childType: string): void {
       this.toDelete.push(this[childType][index]);
-      const children = this[childType].slice();
-      children.splice(index, 1);
-      this[childType] = children;
+      this[childType].splice(index, 1);
     }
 
     /**
