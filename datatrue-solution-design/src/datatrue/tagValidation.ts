@@ -55,7 +55,7 @@ namespace DataTrue {
     }
 
     public static fromID(id: number): DataTrue.TagValidation {
-      const obj = super.getResource(id);
+      const obj = super.getResource(id, TagValidation.resourceType);
       return this.fromJSON(obj);
     }
 
@@ -75,9 +75,11 @@ namespace DataTrue {
       tagValidation.setResourceID(id);
       tagValidation.setOptions(options, true);
 
-      query_validation.forEach(queryValidationObj => {
-        tagValidation.addQueryValidation(queryValidationObj);
-      });
+      if (query_validation !== undefined) {
+        query_validation.forEach(queryValidationObj => {
+          tagValidation.addQueryValidation(queryValidationObj);
+        });
+      }
 
       return tagValidation;
     }

@@ -36,7 +36,7 @@ namespace DataTrue {
     }
 
     public static fromID(id: number): DataTrue.DataLayerValidation {
-      const obj = super.getResource(id);
+      const obj = super.getResource(id, DataLayerValidation.resourceType);
       return DataTrue.DataLayerValidation.fromJSON(obj);
     }
 
@@ -47,9 +47,11 @@ namespace DataTrue {
       dataLayerValidation.setResourceID(id);
       dataLayerValidation.setOptions(options, true);
 
-      property_validations.forEach(propertyValidationObj => {
-        dataLayerValidation.addPropertyValidation(propertyValidationObj);
-      });
+      if (property_validations !== undefined) {
+        property_validations.forEach(propertyValidationObj => {
+          dataLayerValidation.addPropertyValidation(propertyValidationObj);
+        });
+      }
 
       return dataLayerValidation;
     }

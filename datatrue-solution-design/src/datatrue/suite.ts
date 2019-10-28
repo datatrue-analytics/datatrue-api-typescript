@@ -26,7 +26,7 @@ namespace DataTrue {
     }
 
     public static fromID(id: number): DataTrue.Suite {
-      const obj = super.getResource(id);
+      const obj = super.getResource(id, Suite.resourceType);
       return DataTrue.Suite.fromJSON(obj);
     }
 
@@ -37,11 +37,13 @@ namespace DataTrue {
       suite.setResourceID(id);
       suite.setOptions(options, true);
 
-      tests.forEach(testObj => {
-        const test = DataTrue.Test.fromID(testObj["id"]);
-        test.setContextID(id);
-        suite.addTest(test);
-      });
+      if (tests !== undefined) {
+        tests.forEach(testObj => {
+          const test = DataTrue.Test.fromID(testObj["id"]);
+          test.setContextID(id);
+          suite.addTest(test);
+        });
+      }
 
       return suite;
     }

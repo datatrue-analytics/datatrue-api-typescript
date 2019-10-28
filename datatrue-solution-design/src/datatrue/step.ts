@@ -65,7 +65,7 @@ namespace DataTrue {
     }
 
     public static fromID(id: number): DataTrue.Step {
-      const obj = super.getResource(id);
+      const obj = super.getResource(id, Step.resourceType);
       return DataTrue.Step.fromJSON(obj);
     }
 
@@ -76,17 +76,21 @@ namespace DataTrue {
       step.setResourceID(id);
       step.setOptions(options, true);
 
-      tag_validations.forEach(tagValidationObj => {
-        const tagValidation = DataTrue.TagValidation.fromJSON(tagValidationObj);
-        tagValidation.setContextID(id);
-        step.addTagValidation(tagValidation);
-      });
+      if (tag_validations !== undefined) {
+        tag_validations.forEach(tagValidationObj => {
+          const tagValidation = DataTrue.TagValidation.fromJSON(tagValidationObj);
+          tagValidation.setContextID(id);
+          step.addTagValidation(tagValidation);
+        });
+      }
 
-      data_layer_validations.forEach(dataLayerValidationObj => {
-        const dataLayerValidation = DataTrue.DataLayerValidation.fromJSON(dataLayerValidationObj);
-        dataLayerValidation.setContextID(id);
-        step.addDataLayerValidation(dataLayerValidation);
-      });
+      if (data_layer_validations !== undefined) {
+        data_layer_validations.forEach(dataLayerValidationObj => {
+          const dataLayerValidation = DataTrue.DataLayerValidation.fromJSON(dataLayerValidationObj);
+          dataLayerValidation.setContextID(id);
+          step.addDataLayerValidation(dataLayerValidation);
+        });
+      }
 
       return step;
     }

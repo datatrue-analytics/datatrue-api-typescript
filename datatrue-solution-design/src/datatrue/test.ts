@@ -36,22 +36,32 @@ namespace DataTrue {
     }
 
     public static fromID(id: number): Test {
-      const obj = JSON.parse(super.getResource(id));
+      const obj = JSON.parse(super.getResource(id, Test.resourceType));
       return DataTrue.Test.fromJSON(obj);
     }
 
     public static fromJSON(obj: any): Test {
-      const { name, id, steps, ...options } = obj;
+      const { name, id, steps, tag_validations, ...options } = obj;
 
       const test = new DataTrue.Test(name);
       test.setResourceID(id);
       test.setOptions(options, true);
 
-      steps.forEach(stepObj => {
-        const step = DataTrue.Step.fromJSON(stepObj);
-        step.setContextID(id);
-        test.addStep(step);
-      });
+      if (steps !== undefined) {
+        steps.forEach(stepObj => {
+          const step = DataTrue.Step.fromJSON(stepObj);
+          step.setContextID(id);
+          test.addStep(step);
+        });
+      }
+
+      if (tag_validations !== undefined) {
+        tag_validations.forEach(TagValidationObj => {
+          const tagValidation = DataTrue.TagValidation.fromJSON(TagValidationObj);
+          tagValidation.setContextID(id);
+          test.addTagValidation(tagValidation);
+        });
+      }
 
       return test;
     }
@@ -96,6 +106,7 @@ namespace DataTrue {
       obj[Test.resourceType] = {
         name: this.name,
         steps: this.steps.map(step => JSON.parse(step.toString())),
+        tag_validations: this.tagValidations.map(tagValidation => JSON.parse(tagValidation.toString())),
       };
 
       for (const option in this.options) {

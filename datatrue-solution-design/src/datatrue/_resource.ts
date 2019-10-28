@@ -155,11 +155,11 @@ namespace DataTrue {
      * @returns {string} the resource represented as a JSON string
      * @memberof Resource
      */
-    protected static getResource(id: number): string {
+    protected static getResource(id: number, resourceType: string): string {
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
-        (this.constructor as any).resourceType + "s",
+        resourceType + "s",
         id].join("/");
 
       const options = {
