@@ -55,7 +55,7 @@ namespace DataTrue {
       this.tests.forEach(tests => tests.setContextID(id));
     }
 
-    public addTest(test: DataTrue.Test, index: number = -1): void {
+    public addTest(test: DataTrue.Test, index: number = this.tests.length): void {
       super.addChild(test, index, "tests");
     }
 

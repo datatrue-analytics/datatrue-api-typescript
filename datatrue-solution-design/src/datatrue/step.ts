@@ -91,11 +91,11 @@ namespace DataTrue {
       return step;
     }
 
-    public addTagValidation(tagValidation: DataTrue.TagValidation, index: number = -1): void {
+    public addTagValidation(tagValidation: DataTrue.TagValidation, index: number = this.tagValidations.length): void {
       super.addChild(tagValidation, index, "tagValidations");
     }
 
-    public addDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation, index: number = -1): void {
+    public addDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation, index: number = this.dataLayerValidations.length): void {
       super.addChild(dataLayerValidation, index, "dataLayerValidations");
     }
 

@@ -82,7 +82,7 @@ namespace DataTrue {
       return tagValidation;
     }
 
-    public addQueryValidation(queryValidation: DataTrue.QueryValidation, index: number = -1): void {
+    public addQueryValidation(queryValidation: DataTrue.QueryValidation, index: number = this.queryValidations.length): void {
       super.addChild(queryValidation, index, "queryValidations");
     }
 

@@ -54,7 +54,7 @@ namespace DataTrue {
       return dataLayerValidation;
     }
 
-    public addPropertyValidation(propertyValidation: DataTrue.PropertyValidation, index: number = -1): void {
+    public addPropertyValidation(propertyValidation: DataTrue.PropertyValidation, index: number = this.propertyValidations.length): void {
       super.addChild(propertyValidation, index, "propertyValidations");
     }
 

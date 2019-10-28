@@ -56,11 +56,11 @@ namespace DataTrue {
       return test;
     }
 
-    public addStep(step: Step, index: number = -1): void {
+    public addStep(step: Step, index: number = this.steps.length): void {
       super.addChild(step, index, "steps");
     }
 
-    public addTagValidation(tagValidation: DataTrue.TagValidation, index: number = -1): void {
+    public addTagValidation(tagValidation: DataTrue.TagValidation, index: number = this.tagValidations.length): void {
       super.addChild(tagValidation, index, "tagValidations");
     }
 

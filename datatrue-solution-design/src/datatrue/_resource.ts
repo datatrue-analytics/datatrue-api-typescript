@@ -241,7 +241,7 @@ namespace DataTrue {
      * @param {string} childType type of the child
      * @memberof Resource
      */
-    protected addChild(child: object, index: number = -1, childType: string): void {
+    protected addChild(child: object, index: number = 0, childType: string): void {
       this[childType].splice(index, 0, child);
     }
 
