@@ -5,7 +5,7 @@ namespace DataTrue {
     regex: boolean,
     json_path?: string,
     use_json_path: boolean,
-    decode_result_as?: string
+    decode_result_as?: string,
   }
 
   export interface TagValidationOptions {
@@ -25,55 +25,87 @@ namespace DataTrue {
       intercept_status?: string,
       intercept_headers?: string,
       intercept_body?: string,
-    }
+    },
   }
 
   export interface TagDefinition {
-
+    key: string,
   }
 
   export class TagValidation extends DataTrue.Resource {
-    static readonly contextType: string = "step";
-    static readonly resourceType: string = "tag_validations";
-    static readonly children: string[] = [];
+    public static readonly contextType: string = "step";
+    public static readonly resourceType: string = "tag_validations";
+    public static readonly children: string[] = [];
 
-    private queryValidations: QueryValidation[] = [];
-    private tagDefinition: Object;
+    private queryValidations: DataTrue.QueryValidation[] = [];
+    private tagDefinition: DataTrue.TagDefinition;
 
     public options: DataTrue.TagValidationOptions = {
       interception: {
-        do_validation: true
-      }
+        do_validation: true,
+      },
     };
 
-    constructor(name: string, key: string, public contextID?: number, options: DataTrue.TagValidationOptions = {}) {
+    public constructor(name: string, key: string, public contextID?: number, options: DataTrue.TagValidationOptions = {}) {
       super(name);
       this.tagDefinition = {
-        key: key
+        key: key,
       };
       this.setOptions(options);
     }
 
-    addQueryValidation(queryValidation: QueryValidation, index: number = -1) {
-      this.queryValidations.splice(index, 0, queryValidation);
+    public static fromID(id: number): DataTrue.TagValidation {
+      const obj = super.getResource(id);
+      return this.fromJSON(obj);
     }
 
-    deleteQueryValidation(index: number) {
+    public static fromJSON(obj: any): DataTrue.TagValidation {
+      const { name, id, tag_definition, query_validation, ...options } = obj;
+
+      if (Object.prototype.hasOwnProperty.call(options, "interception")) {
+        if (Object.prototype.hasOwnProperty.call(options["interception"], "do_validation")) {
+          options["interception"]["do_validation"] = options["interception"]["do_validation"] === "1" ? true : false;
+        }
+        if (Object.prototype.hasOwnProperty.call(options["interception"], "intercept")) {
+          options["interception"]["intercept"] = options["interception"]["intercept"] === "1" ? true : false;
+        }
+      }
+
+      const tagValidation = new DataTrue.TagValidation(name, tag_definition.key);
+      tagValidation.setResourceID(id);
+      tagValidation.setOptions(options, true);
+
+      query_validation.forEach(queryValidationObj => {
+        tagValidation.addQueryValidation(queryValidationObj);
+      });
+
+      return tagValidation;
+    }
+
+    public addQueryValidation(queryValidation: DataTrue.QueryValidation, index: number = this.queryValidations.length): void {
+      super.addChild(queryValidation, index, "queryValidations");
+    }
+
+    public deleteQueryValidation(index: number): void {
       this.queryValidations.splice(index, 1);
     }
 
-    setOptions(options: TagValidationOptions, override: boolean = false) {
+    public getQueryValidations(): readonly DataTrue.QueryValidation[] {
+      return this.queryValidations.slice();
+    }
+
+    public setOptions(options: DataTrue.TagValidationOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
 
-    toJSON(): Object {
-      let obj: Object = {
+    public toJSON(): object {
+      const obj: object = {
         name: this.name,
         tag_definition: this.tagDefinition,
-        query_validation: this.queryValidations
+        query_validation: this.queryValidations,
       };
 
-      for (let option in this.options) {
+      for (const option in this.options) {
         obj[option] = this.options[option];
       }
 
@@ -89,11 +121,11 @@ namespace DataTrue {
       return obj;
     }
 
-    run(): void {
+    public run(): void {
       throw new Error("Unable to run TagValidation");
     }
 
-    progress(): DataTrue.JobStatus {
+    public progress(): DataTrue.JobStatus {
       throw new Error("Unable to retrieve progress for TagValidation");
     }
   }

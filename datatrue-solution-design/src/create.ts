@@ -1,4 +1,4 @@
-function create() {
+function create(): void {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
 
@@ -28,8 +28,8 @@ function create() {
     const fileName = sheetFile.getName();
 
     const suite = new DataTrue.Suite(fileName, parseInt(accountID));
-    suite.create();
-    suiteID = suite.resourceID.toString();
+    suite.save();
+    suiteID = suite.getResourceID().toString();
 
     sheet.getRange("B6").setValue(suiteID);
     SpreadsheetApp.flush();
@@ -49,14 +49,14 @@ function create() {
       return;
     }
     steps.push(new DataTrue.Step(row[0], DataTrue.StepActions.RUN_SCRIPT, undefined, { description: row[1], js_code: row[2] }));
-    let tagValidation = new DataTrue.TagValidation(row[0], tagType);
+    const tagValidation = new DataTrue.TagValidation(row[0], tagType);
     queryParams.forEach((param, i) => {
       if (row[i + 3] !== "") {
         tagValidation.addQueryValidation({
           key: param,
           regex: false,
           value: row[i + 3],
-          use_json_path: false
+          use_json_path: false,
         });
       }
     });
@@ -67,6 +67,6 @@ function create() {
 
   test.save();
 
-  sheet.getRange("B7").setValue(test.resourceID);
+  sheet.getRange("B7").setValue(test.getResourceID());
   sheet.getRange("B8").setValue("y");
 }

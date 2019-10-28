@@ -2,7 +2,7 @@ namespace DataTrue {
   export interface SuiteOptions {
     description?: string,
     variables?: DataTrue.Variables,
-    suite_type?: DataTrue.SuiteTypes
+    suite_type?: DataTrue.SuiteTypes,
   }
 
   export enum SuiteTypes {
@@ -11,39 +11,63 @@ namespace DataTrue {
   }
 
   export class Suite extends DataTrue.Resource {
-    static readonly contextType: string = "account";
-    static readonly resourceType: string = "suite";
-    static readonly resourceTypeRun: string = "Suite";
-    static readonly children: string[] = ["tests"];
+    public static readonly contextType: string = "account";
+    public static readonly resourceType: string = "suite";
+    public static readonly resourceTypeRun: string = "Suite";
+    public static readonly children: readonly string[] = ["tests"];
 
     private tests: Test[] = [];
 
     public options: DataTrue.SuiteOptions = {};
 
-    constructor(name: string, public contextID?: number, options: DataTrue.SuiteOptions = {}) {
+    public constructor(name: string, public contextID?: number, options: DataTrue.SuiteOptions = {}) {
       super(name);
       this.setOptions(options);
     }
 
-    setOptions(options: DataTrue.SuiteOptions, override: boolean = false): void {
+    public static fromID(id: number): DataTrue.Suite {
+      const obj = super.getResource(id);
+      return DataTrue.Suite.fromJSON(obj);
+    }
+
+    public static fromJSON(obj: any): DataTrue.Suite {
+      const { name, id, tests, ...options } = obj;
+
+      const suite = new DataTrue.Suite(name);
+      suite.setResourceID(id);
+      suite.setOptions(options, true);
+
+      tests.forEach(testObj => {
+        const test = DataTrue.Test.fromID(testObj["id"]);
+        test.setContextID(id);
+        suite.addTest(test);
+      });
+
+      return suite;
+    }
+
+    public setOptions(options: DataTrue.SuiteOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
 
-    setResourceID(id: number) {
+    public setResourceID(id: number): void {
       super.setResourceID(id);
       this.tests.forEach(tests => tests.setContextID(id));
     }
 
-    addTest(test: DataTrue.Test,  index: number = -1) {
-      this.tests.splice(index, 0, test);
+    public addTest(test: DataTrue.Test, index: number = this.tests.length): void {
+      super.addChild(test, index, "tests");
     }
 
-    deleteTest(index) {
-      this.toDelete.push(this.tests[index]);
-      this.tests.splice(index, 1);
+    public deleteTest(index): void {
+      super.deleteChild(index, "tests");
     }
 
-    create(): void {
+    public getTests(): readonly DataTrue.Test[] {
+      return this.tests.slice();
+    }
+
+    protected create(): void {
       super.create();
       this.tests.forEach(test => {
         test.setContextID(this.resourceID);
@@ -51,14 +75,14 @@ namespace DataTrue {
       });
     }
 
-    toJSON(): Object {
-      let obj = {};
+    public toJSON(): object {
+      const obj = {};
 
       obj[Suite.resourceType] = {
         name: this.name,
       };
 
-      for (let option in this.options) {
+      for (const option in this.options) {
         obj[Suite.resourceType][option] = this.options[option];
       }
 

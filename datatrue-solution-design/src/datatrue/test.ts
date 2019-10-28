@@ -2,7 +2,7 @@ namespace DataTrue {
   export interface TestOptions {
     description?: string,
     variables?: DataTrue.Variables,
-    test_type?: DataTrue.TestTypes
+    test_type?: DataTrue.TestTypes,
   }
 
   export enum TestTypes {
@@ -15,78 +15,90 @@ namespace DataTrue {
   export interface Variables {
     [s: string]: {
       type: string,
-      value: string
-    }
+      value: string,
+    },
   }
 
   export class Test extends DataTrue.Resource {
-    static readonly contextType: string = "suite";
-    static readonly resourceType: string = "test";
-    static readonly resourceTypeRun: string = "TestScenario";
-    static readonly children: string[] = ["steps", "tagValidations"];
+    public static readonly contextType: string = "suite";
+    public static readonly resourceType: string = "test";
+    public static readonly resourceTypeRun: string = "TestScenario";
+    public static readonly children: string[] = ["steps", "tagValidations"];
 
     private steps: DataTrue.Step[] = [];
     private tagValidations: DataTrue.TagValidation[] = [];
 
     public options: DataTrue.TestOptions = {};
 
-    constructor(name: string, public contextID?: number, options: DataTrue.TestOptions = {}) {
+    public constructor(name: string, public contextID?: number, options: DataTrue.TestOptions = {}) {
       super(name);
       this.setOptions(options);
     }
 
-    static fromID(id: number): Test {
-      const obj = JSON.parse(super.getResource(id, DataTrue.Test.resourceType));
+    public static fromID(id: number): Test {
+      const obj = JSON.parse(super.getResource(id));
+      return DataTrue.Test.fromJSON(obj);
+    }
 
-      const test = new DataTrue.Test(obj["name"]);
-      test.resourceID = obj.id;
+    public static fromJSON(obj: any): Test {
+      const { name, id, steps, ...options } = obj;
 
-      obj.steps.forEach(stepObj => {
-        let step = new DataTrue.Step(stepObj.name, stepObj.action, test.resourceID);
-        step.resourceID = stepObj.id;
+      const test = new DataTrue.Test(name);
+      test.setResourceID(id);
+      test.setOptions(options, true);
+
+      steps.forEach(stepObj => {
+        const step = DataTrue.Step.fromJSON(stepObj);
+        step.setContextID(id);
         test.addStep(step);
       });
 
       return test;
     }
 
-    addStep(step: Step, index: number = -1) {
-      this.steps.splice(index, 0, step);
+    public addStep(step: Step, index: number = this.steps.length): void {
+      super.addChild(step, index, "steps");
     }
 
-    addTagValidation(tagValidation: DataTrue.TagValidation, index: number = -1) {
-      this.tagValidations.splice(index, 0, tagValidation);
+    public addTagValidation(tagValidation: DataTrue.TagValidation, index: number = this.tagValidations.length): void {
+      super.addChild(tagValidation, index, "tagValidations");
     }
 
-    deleteStep(index) {
-      this.toDelete.push(this.steps[index]);
-      this.steps.splice(index, 1);
+    public deleteStep(index): void {
+      super.deleteChild(index, "steps");
     }
 
-    deleteTagValidation(index) {
-      this.toDelete.push(this.tagValidations[index]);
-      this.tagValidations.splice(index, 1);
+    public deleteTagValidation(index): void {
+      super.deleteChild(index, "tagValidations");
     }
 
-    setOptions(options: DataTrue.TestOptions, override: boolean = false): void {
+    public getSteps(): readonly DataTrue.Step[] {
+      return this.steps.slice();
+    }
+
+    public getTagValidations(): readonly DataTrue.TagValidation[] {
+      return this.tagValidations.slice();
+    }
+
+    public setOptions(options: DataTrue.TestOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
 
-    setResourceID(id: number) {
+    public setResourceID(id: number): void {
       super.setResourceID(id);
       this.steps.forEach(step => step.setContextID(id));
       this.tagValidations.forEach(tagValidation => tagValidation.setContextID(id));
     }
 
-    toJSON(): Object {
-      let obj = {};
+    public toJSON(): object {
+      const obj: object = {};
 
       obj[Test.resourceType] = {
         name: this.name,
-        steps: this.steps.map(step => JSON.parse(step.toString()))
+        steps: this.steps.map(step => JSON.parse(step.toString())),
       };
 
-      for (let option in this.options) {
+      for (const option in this.options) {
         obj[Test.resourceType][option] = this.options[option];
       }
 

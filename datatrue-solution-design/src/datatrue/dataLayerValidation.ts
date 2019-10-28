@@ -14,44 +14,80 @@ namespace DataTrue {
     regex?: string,
     variable_name?: string,
     validation_enabled?: boolean,
-    property_validations?: {
-      name: string,
-      value: string
-    }[]
+  }
+
+  export interface PropertyValidation {
+    name: string,
+    value: string,
   }
 
   export class DataLayerValidation extends DataTrue.Resource {
-    static readonly contextType: string = "step";
-    static readonly resourceType: string = "data_layer_validations";
-    static readonly children: string[] = [];
+    public static readonly contextType: string = "step";
+    public static readonly resourceType: string = "data_layer_validations";
+    public static readonly children: string[] = [];
+
+    private propertyValidations: DataTrue.PropertyValidation[] = [];
 
     public options: DataTrue.DataLayerValidationOptions = {};
 
-    constructor(name: string, public contextID?: number, options: DataTrue.DataLayerValidationOptions = {}) {
+    public constructor(name: string, public contextID?: number, options: DataTrue.DataLayerValidationOptions = {}) {
       super(name);
       this.setOptions(options);
     }
 
-    setOptions(options: DataTrue.DataLayerValidationOptions, override: boolean = false) {
+    public static fromID(id: number): DataTrue.DataLayerValidation {
+      const obj = super.getResource(id);
+      return DataTrue.DataLayerValidation.fromJSON(obj);
+    }
+
+    public static fromJSON(obj: any): DataTrue.DataLayerValidation {
+      const { name, id, property_validations, ...options } = obj;
+
+      const dataLayerValidation = new DataTrue.DataLayerValidation(name);
+      dataLayerValidation.setResourceID(id);
+      dataLayerValidation.setOptions(options, true);
+
+      property_validations.forEach(propertyValidationObj => {
+        dataLayerValidation.addPropertyValidation(propertyValidationObj);
+      });
+
+      return dataLayerValidation;
+    }
+
+    public addPropertyValidation(propertyValidation: DataTrue.PropertyValidation, index: number = this.propertyValidations.length): void {
+      super.addChild(propertyValidation, index, "propertyValidations");
+    }
+
+    public deletePropertyValidation(index: number): void {
+      this.propertyValidations.splice(index, 1);
+    }
+
+    public getPropertyValidations(): readonly DataTrue.PropertyValidation[] {
+      return this.propertyValidations.slice();
+    }
+
+    public setOptions(options: DataTrue.DataLayerValidationOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
 
-    toJSON(): Object {
-      let obj: Object = {
+    public toJSON(): object {
+      const obj: object = {
+        name: this.name,
+        property_validations: this.propertyValidations,
       };
 
-      for (let option in this.options) {
+      for (const option in this.options) {
         obj[option] = this.options[option];
       }
-      
+
       return obj;
     }
 
-    run(): void {
+    public run(): void {
       throw new Error("Unable to run DataLayerValidation");
     }
 
-    progress(): DataTrue.JobStatus {
+    public progress(): DataTrue.JobStatus {
       throw new Error("Unable to retrieve progress for DataLayerValidation");
     }
   }

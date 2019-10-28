@@ -6,7 +6,7 @@ namespace DataTrue {
   export interface JobStatus {
     status: string,
     options: {
-      test_run_id: number
+      test_run_id: number,
     },
     num?: number,
     total?: number,
@@ -22,11 +22,11 @@ namespace DataTrue {
         pii: {
           num_pii_exposure: number,
           num_pii_data_types: number,
-          num_pii_data_processors: number
-        }
-      }[]
+          num_pii_data_processors: number,
+        },
+      }[],
     },
-    message?: string
+    message?: string,
   }
 
   const resourceTypes = {
@@ -34,43 +34,23 @@ namespace DataTrue {
     steps: "steps",
     suites: "suites",
     tagValidations: "tag_validations",
-    tests: "tests"
+    tests: "tests",
   };
 
   export abstract class Resource {
-    static readonly contextType: string;
-    static readonly resourceType: string;
-    static readonly children: string[];
-    static readonly resourceTypeRun?: string;
-
-    jobID?: number;
-    contextID?: number;
-    resourceID?: number;
-    options: Object;
+    public static readonly contextType: string;
+    public static readonly resourceType: string;
+    public static readonly children: readonly string[];
+    public static readonly resourceTypeRun?: string;
 
     protected toDelete: Resource[] = [];
+    protected resourceID?: number;
+    protected contextID?: number;
 
-    constructor(public name: string) {
-    }
+    public jobID?: number;
+    public options: object;
 
-    /**
-     * Convert the resource to an Object
-     *
-     * @abstract
-     * @returns {Object} object representation of the resource
-     * @memberof Resource
-     */
-    abstract toJSON(): Object;
-
-    /**
-     * Convert the resource to a JSON string
-     *
-     * @returns {string} the resource represented as a JSON string
-     * @memberof Resource
-     */
-    toString(): string {
-      return JSON.stringify(this.toJSON());
-    }
+    public constructor(public name: string) { }
 
     /**
      * Create a resource from a given ID
@@ -79,32 +59,90 @@ namespace DataTrue {
      * @param {number} id the ID of the resource
      * @memberof Resource
      */
-    static fromID(id: number): void { }
+    public static fromID(id: number): void { }
 
-    setResourceID(id: number): void {
+    /**
+     * Create a resource from an object
+     *
+     * @static
+     * @param {*} obj object to create resource from
+     * @memberof Resource
+     */
+    public static fromJSON(obj: any): void { }
+
+    /**
+     * Convert the resource to an Object
+     *
+     * @abstract
+     * @returns {object} object representation of the resource
+     * @memberof Resource
+     */
+    abstract toJSON(): object;
+
+    /**
+     * Convert the resource to a JSON string
+     *
+     * @returns {string} the resource represented as a JSON string
+     * @memberof Resource
+     */
+    public toString(): string {
+      return JSON.stringify(this.toJSON());
+    }
+
+    /**
+     * Gets the resourceID of a resource
+     *
+     * @returns {number} resourceID of the resource
+     * @memberof Resource
+     */
+    public getResourceID(): number {
+      return this.resourceID;
+    }
+
+    /**
+     * Gets the contextID of a resource
+     *
+     * @returns {number} contextID of the resource
+     * @memberof Resource
+     */
+    public getContextID(): number {
+      return this.contextID;
+    }
+
+    /**
+     * Sets the resourceID of a resource
+     *
+     * @param {number} id the resourceID to set
+     * @memberof Resource
+     */
+    public setResourceID(id: number): void {
       this.resourceID = id;
     }
 
-    setContextID(id: number): void {
+    /**
+     * Sets the contextID of a resource
+     *
+     * @param {number} id the contextID to set
+     * @memberof Resource
+     */
+    public setContextID(id: number): void {
       this.contextID = id;
     }
-
-    static fromJSON(): void { }
 
     /**
      * Set options from the passed options object
      *
-     * @param {Object} options the object to set options from
+     * @param {object} options the object to set options from
      * @param {boolean} [override] whether to override the options object
      * @memberof Resource
      */
-    setOptions(options: Object, override?: boolean): void {
+    public setOptions(options: object, override?: boolean): void {
       if (override) {
         this.options = options;
       } else {
         this.options = {
           ...this.options,
-          ...options
+          ...options,
         };
       }
     }
@@ -114,15 +152,14 @@ namespace DataTrue {
      *
      * @static
      * @param {number} id the id of the resource to fetch
-     * @param {string} resourceType the type of the resource to fetch
      * @returns {string} the resource represented as a JSON string
      * @memberof Resource
      */
-    static getResource(id: number, resourceType: string): string {
+    protected static getResource(id: number): string {
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
-        resourceType + "s",
+        (this.constructor as any).resourceType + "s",
         id].join("/");
 
       const options = {
@@ -130,8 +167,8 @@ namespace DataTrue {
         "contentType": "application/json",
         "headers": {
           "content-type": "application/json",
-          "authorization": "Token " + DataTrue.managementToken
-        }
+          "authorization": "Token " + DataTrue.managementToken,
+        },
       };
 
       return UrlFetchApp.fetch(uri, options).getContentText();
@@ -188,15 +225,49 @@ namespace DataTrue {
 
       const request = this.makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
 
-      for (let childs of (this.constructor as any).children) {
+      for (const childs of (this.constructor as any).children) {
         this[childs].forEach(child => {
           child.save();
         });
       }
     }
 
-    private removeChildren(obj: Object): Object {
-      for (let child of (this.constructor as any).children) {
+    /**
+     * Add a child to a resource
+     *
+     * @protected
+     * @param {object} child child to add to the Resource
+     * @param {number} [index=-1] index to add the child at
+     * @param {string} childType type of the child
+     * @memberof Resource
+     */
+    protected addChild(child: object, index: number = 0, childType: string): void {
+      this[childType].splice(index, 0, child);
+    }
+
+    /**
+     * Delete a child from a resource
+     *
+     * @protected
+     * @param {number} index index to delete the child from
+     * @param {string} childType type of the child
+     * @memberof Resource
+     */
+    protected deleteChild(index: number, childType: string): void {
+      this.toDelete.push(this[childType][index]);
+      this[childType].splice(index, 1);
+    }
+
+    /**
+     * Removes children from obj so that the Resource can be updated
+     *
+     * @private
+     * @param {object} obj object to remove children from
+     * @returns {object} obj without children
+     * @memberof Resource
+     */
+    private removeChildren(obj: object): object {
+      for (const child of (this.constructor as any).children) {
         if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
           delete obj[(this.constructor as any).resourceType][resourceTypes[child]];
         } else {
@@ -231,15 +302,15 @@ namespace DataTrue {
       const uri = [
         DataTrue.apiEndpoint,
         "ci_api",
-        `test_runs?api_key=${DataTrue.ciToken}`
+        `test_runs?api_key=${DataTrue.ciToken}`,
       ].join("/");
 
       const request = this.makeRequest("post", uri, JSON.stringify({
         "test_run": {
           "test_class": (this.constructor as any).resourceTypeRun,
           "test_id": this.resourceID,
-          "email_users": email_users
-        }
+          "email_users": email_users,
+        },
       }));
 
       this.jobID = JSON.parse(request.getContentText())["job_id"];
@@ -257,20 +328,30 @@ namespace DataTrue {
         "ci_api",
         "test_runs",
         "progress",
-        `${this.jobID}?api_key=${DataTrue.ciToken}`
+        `${this.jobID}?api_key=${DataTrue.ciToken}`,
       ].join("/");
 
       const options = {
         "method": "get" as GoogleAppsScript.URL_Fetch.HttpMethod,
         "contentType": "application/json",
         "headers": {
-          "content-type": "application/json"
-        }
+          "content-type": "application/json",
+        },
       };
 
       return JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
     }
 
+    /**
+     * Make a HTTP request to DataTrue
+     *
+     * @private
+     * @param {GoogleAppsScript.URL_Fetch.HttpMethod} method HTTP method
+     * @param {string} uri uri to make request to
+     * @param {string} [payload=""] payload to include in request
+     * @returns {GoogleAppsScript.URL_Fetch.HTTPResponse} HTTP response
+     * @memberof Resource
+     */
     private makeRequest(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string, payload: string = ""): GoogleAppsScript.URL_Fetch.HTTPResponse {
       const options = {
         "method": method,
@@ -278,8 +359,8 @@ namespace DataTrue {
         "payload": payload,
         "headers": {
           "content-type": "application/json",
-          "authorization": "Token " + DataTrue.managementToken
-        }
+          "authorization": "Token " + DataTrue.managementToken,
+        },
       };
 
       return UrlFetchApp.fetch(uri, options);

@@ -34,7 +34,7 @@ namespace DataTrue {
     iframe_selector_type?: string,
     iframe_selector?: string,
     pause?: number,
-    wait_while_present?: string
+    wait_while_present?: string,
   }
 
   export enum StepStrategies {
@@ -43,77 +43,114 @@ namespace DataTrue {
   }
 
   export interface StepSettings {
-    strategy?: DataTrue.StepStrategies
+    strategy?: DataTrue.StepStrategies,
     obey_robots?: boolean,
     template_detection?: boolean,
-    use_common_tag_validations?: boolean
+    use_common_tag_validations?: boolean,
   }
 
   export class Step extends DataTrue.Resource {
-    static readonly contextType: string = "test";
-    static readonly resourceType: string = "step";
-    static readonly children: string[] = ["tagValidations", "dataLayerValidations"];
+    public static readonly contextType: string = "test";
+    public static readonly resourceType: string = "step";
+    public static readonly children: readonly string[] = ["tagValidations", "dataLayerValidations"];
 
     private tagValidations: DataTrue.TagValidation[] = [];
     private dataLayerValidations: DataTrue.DataLayerValidation[] = [];
 
     public options: DataTrue.StepOptions = {};
 
-    constructor(name: string, private action: DataTrue.StepActions, public contextID?: number, options: DataTrue.StepOptions = {}) {
+    public constructor(name: string, private action: DataTrue.StepActions, public contextID?: number, options: DataTrue.StepOptions = {}) {
       super(name);
       this.setOptions(options);
     }
 
-    addTagValidation(tagValidation: DataTrue.TagValidation, index: number = -1) {
-      this.tagValidations.splice(index, 0, tagValidation);
+    public static fromID(id: number): DataTrue.Step {
+      const obj = super.getResource(id);
+      return DataTrue.Step.fromJSON(obj);
     }
 
-    addDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation, index: number = -1) {
-      this.dataLayerValidations.splice(index, 0, dataLayerValidation);
+    public static fromJSON(obj: any): DataTrue.Step {
+      const { name, id, action, tag_validations, data_layer_validations, ...options } = obj;
+
+      const step = new DataTrue.Step(name, action);
+      step.setResourceID(id);
+      step.setOptions(options, true);
+
+      tag_validations.forEach(tagValidationObj => {
+        const tagValidation = DataTrue.TagValidation.fromJSON(tagValidationObj);
+        tagValidation.setContextID(id);
+        step.addTagValidation(tagValidation);
+      });
+
+      data_layer_validations.forEach(dataLayerValidationObj => {
+        const dataLayerValidation = DataTrue.DataLayerValidation.fromJSON(dataLayerValidationObj);
+        dataLayerValidation.setContextID(id);
+        step.addDataLayerValidation(dataLayerValidation);
+      });
+
+      return step;
     }
 
-    deleteTagValidation(index: number) {
-      this.toDelete.push(this.tagValidations[index]);
-      this.tagValidations.splice(index, 1);
+    public addTagValidation(tagValidation: DataTrue.TagValidation, index: number = this.tagValidations.length): void {
+      super.addChild(tagValidation, index, "tagValidations");
     }
 
-    deleteDataLayerValidation(index: number) {
-      this.toDelete.push(this.dataLayerValidations[index]);
-      this.dataLayerValidations.splice(index, 1);
+    public addDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation, index: number = this.dataLayerValidations.length): void {
+      super.addChild(dataLayerValidation, index, "dataLayerValidations");
     }
 
-    setOptions(options: DataTrue.StepOptions, override: boolean = false): void {
+    public deleteTagValidation(index: number): void {
+      super.deleteChild(index, "tagValidations");
+    }
+
+    public deleteDataLayerValidation(index: number): void {
+      super.deleteChild(index, "dataLayerValidations");
+    }
+
+    public getTagValidations(): readonly DataTrue.TagValidation[] {
+      return this.tagValidations.slice();
+    }
+
+    public getDataLayerValidations(): readonly DataTrue.DataLayerValidation[] {
+      return this.dataLayerValidations.slice();
+    }
+
+    public setOptions(options: DataTrue.StepOptions, override: boolean = false): void {
       super.setOptions(options, override);
     }
 
-    setResourceID(id: number) {
+    public setResourceID(id: number): void {
       super.setResourceID(id);
       this.tagValidations.forEach(tagValidation => tagValidation.setContextID(id));
       this.dataLayerValidations.forEach(dataLayerValidation => dataLayerValidation.setContextID(id));
     }
 
-    toJSON(): Object {
-      let obj = {
+    public toJSON(): object {
+      const obj = {
         name: this.name,
-        action: this.action
+        action: this.action,
       };
 
-      for (let option in this.options) {
+      for (const option in this.options) {
         obj[option] = this.options[option];
       }
 
       if (this.tagValidations.length) {
-        obj["tag_validations"] = this.tagValidations.map(tag_validation => JSON.parse(tag_validation.toString()));
+        obj["tag_validations"] = this.tagValidations.map(tagValidation => JSON.parse(tagValidation.toString()));
+      }
+
+      if (this.dataLayerValidations.length) {
+        obj["data_layer_validations"] = this.dataLayerValidations.map(dataLayerValidation => JSON.parse(dataLayerValidation.toString()));
       }
 
       return obj;
     }
 
-    run(): void {
+    public run(): void {
       throw new Error("Unable to run Step");
     }
 
-    progress(): DataTrue.JobStatus {
+    public progress(): DataTrue.JobStatus {
       throw new Error("Unable to retrieve progress for Step");
     }
   }
