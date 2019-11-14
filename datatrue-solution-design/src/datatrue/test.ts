@@ -106,8 +106,11 @@ namespace DataTrue {
       obj[Test.resourceType] = {
         name: this.name,
         steps: this.steps.map(step => JSON.parse(step.toString())),
-        tag_validations: this.tagValidations.map(tagValidation => JSON.parse(tagValidation.toString())),
       };
+
+      if (this.tagValidations.length) {
+        obj["tag_validations"] = this.tagValidations.map(tagValidation => JSON.parse(tagValidation.toString()));
+      }
 
       for (const option in this.options) {
         obj[Test.resourceType][option] = this.options[option];
