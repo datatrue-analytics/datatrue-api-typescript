@@ -22,6 +22,12 @@ function create(): void {
   const testID: string = sheet.getRange("B7").getValue();
   const tagType: string = sheet.getRange("B11").getValue();
   const url: string = sheet.getRange("B10").getValue();
+  const useMockPage: boolean = sheet.getRange("B13").getValue();
+  const tagManagerUrl: string = sheet.getRange("B14").getValue();
+
+  const hostname = url.match(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/)[1];
+  let path = url.match(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/)[2];
+  path = (path === "") ? ".*" : path;
 
   if (!suiteID) {
     const sheetFile = DriveApp.getFileById(ss.getId());
@@ -38,7 +44,38 @@ function create(): void {
   const test: DataTrue.Test = new DataTrue.Test(testName, parseInt(suiteID), { description: testDescription });
   const steps: DataTrue.Step[] = [];
 
-  steps.push(new DataTrue.Step(`Go To ${url}`, DataTrue.StepActions.GOTO_URL, undefined, { target: url }));
+  const initialStep = new DataTrue.Step(`Go To ${url}`, DataTrue.StepActions.GOTO_URL, undefined, { target: url });
+
+  if (useMockPage) {
+    const intercept = new DataTrue.TagValidation("Mock Page", "Custom Tag", undefined, {
+      hostname_validation: hostname,
+      pathname_validation: path,
+      hostname_detection: hostname,
+      pathname_detection: path,
+      interception: {
+        do_validation: true,
+        intercept: true,
+        intercept_status: "200",
+        intercept_body: `<html>
+                           <head>
+                             <script src=${tagManagerUrl} async></script>
+                           </head>
+                           <body>
+                             <h1>
+                               ${testName}
+                             </h1>
+                             <h2>
+                               DataLayer test for ${url}<br />
+                               Using Tag Manager from ${tagManagerUrl}
+                             </h2>
+                           </body>
+                         </html>`,
+      },
+    });
+    initialStep.addTagValidation(intercept);
+  }
+
+  steps.push(initialStep);
 
   const queryParams: string[] = sheet.getRange("D21:Z21").getValues()[0];
   queryParams.filter(param => param !== "");
@@ -52,12 +89,17 @@ function create(): void {
     const tagValidation = new DataTrue.TagValidation(row[0], tagType);
     queryParams.forEach((param, i) => {
       if (row[i + 3] !== "") {
-        tagValidation.addQueryValidation({
+        const queryValidation: DataTrue.QueryValidation = {
           key: param,
           regex: false,
           value: row[i + 3],
           use_json_path: false,
-        });
+        };
+        if (queryValidation.value.indexOf("regex://") === 0) {
+          queryValidation.value = queryValidation.value.replace("regex://", "");
+          queryValidation.regex = true;
+        }
+        tagValidation.addQueryValidation(queryValidation);
       }
     });
     steps[steps.length - 1].addTagValidation(tagValidation);
