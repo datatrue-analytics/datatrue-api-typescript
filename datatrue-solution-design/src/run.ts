@@ -2,6 +2,8 @@ function run(): void {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
 
+  const userProperties = PropertiesService.getUserProperties();
+
   const lookups = {};
 
   ss.getSheetByName("Instructions").getRange("A9:B").getValues().some(row => {
@@ -11,8 +13,18 @@ function run(): void {
     lookups[row[0]] = row[1];
   });
 
-  DataTrue.managementToken = lookups["User - Management API KEY"];
-  DataTrue.ciToken = lookups["Account - API Key"];
+  let managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
+  let ciToken = userProperties.getProperty("DATATRUE_CI_TOKEN");
+
+  if (managementToken === null || ciToken === null) {
+    setTokens();
+
+    managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
+    ciToken = userProperties.getProperty("DATATRUE_CI_TOKEN");
+  }
+
+  DataTrue.managementToken = managementToken;
+  DataTrue.ciToken = ciToken;
   DataTrue.apiEndpoint = lookups["DataTrue Endpoint"] || DataTrue.apiEndpoint;
 
   const testID: number = parseInt(sheet.getRange("B7").getValue());

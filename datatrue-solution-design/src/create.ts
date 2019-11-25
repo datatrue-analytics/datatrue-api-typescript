@@ -2,6 +2,8 @@ function create(): void {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
 
+  const userProperties = PropertiesService.getUserProperties();
+
   const lookups = {};
 
   ss.getSheetByName("Instructions").getRange("A9:B").getValues().some(row => {
@@ -11,8 +13,15 @@ function create(): void {
     lookups[row[0]] = row[1];
   });
 
-  DataTrue.managementToken = lookups["User - Management API KEY"];
-  DataTrue.ciToken = lookups["Account - API Key"];
+  let managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
+
+  if (managementToken === null) {
+    setTokens();
+
+    managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
+  }
+
+  DataTrue.managementToken = managementToken;
   DataTrue.apiEndpoint = lookups["DataTrue Endpoint"] || DataTrue.apiEndpoint;
 
   const testName: string = sheet.getRange("A4").getValue();
