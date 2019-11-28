@@ -25,13 +25,27 @@ namespace DataTrue {
     PRESS_BACK = 22
   }
 
+  export enum SelectorTypes {
+    TEXT = "text",
+    ELEMENT_ID = "id",
+    CSS = "css",
+    XPATH = "xpath",
+    ACCESSIBILITY_ID = "accessibility_id",
+    ACTIVE_ELEMENT = "active_element",
+  }
+
+  export enum IframeSelectorTypes {
+    ELEMENT_ID = "id",
+    XPATH = "xpath",
+  }
+
   export interface StepOptions {
     description?: string,
     js_code?: string,
     target?: string,
-    selector_type?: string,
+    selector_type?: SelectorTypes,
     selector?: string,
-    iframe_selector_type?: string,
+    iframe_selector_type?: IframeSelectorTypes,
     iframe_selector?: string,
     pause?: number,
     wait_while_present?: string,
