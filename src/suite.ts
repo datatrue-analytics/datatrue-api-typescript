@@ -18,7 +18,7 @@ namespace DataTrue {
 
     private tests: Test[] = [];
 
-    public options: DataTrue.SuiteOptions = {};
+    public options: DataTrue.SuiteOptions = { variables: {} };
 
     public constructor(name: string, public contextID?: number, options: DataTrue.SuiteOptions = {}) {
       super(name);
@@ -30,22 +30,37 @@ namespace DataTrue {
       return DataTrue.Suite.fromJSON(obj);
     }
 
-    public static fromJSON(obj: Record<string, any>): DataTrue.Suite {
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.Suite {
       const { name, id, tests, ...options } = obj;
 
       const suite = new DataTrue.Suite(name);
-      suite.setResourceID(id);
+      if (!copy) {
+        suite.setResourceID(id);
+      }
       suite.setOptions(options, true);
 
       if (tests !== undefined) {
         tests.forEach(testObj => {
           const test = DataTrue.Test.fromID(testObj["id"]);
           test.setContextID(id);
+          if (copy) {
+            test.setResourceID(undefined);
+          }
           suite.addTest(test);
         });
       }
 
       return suite;
+    }
+
+    public setVariable(name: string, type: DataTrue.VariableTypes, value: string): void {
+      if (!Object.prototype.hasOwnProperty.call(this.options, "variables")) {
+        this.options.variables = {};
+      }
+      this.options.variables[name] = {
+        type: type,
+        value: value,
+      };
     }
 
     public setOptions(options: DataTrue.SuiteOptions, override: boolean = false): void {
@@ -86,6 +101,17 @@ namespace DataTrue {
 
       for (const option in this.options) {
         obj[Suite.resourceType][option] = this.options[option];
+      }
+
+      if (this.tests.length) {
+        obj[Suite.resourceType]["tests"] = this.tests.map(test => {
+          return {
+            id: test.getResourceID(),
+            name: test.name,
+            description: test.options.description,
+            test_type: test.options.test_type,
+          };
+        });
       }
 
       return obj;

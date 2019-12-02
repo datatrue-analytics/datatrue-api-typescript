@@ -40,11 +40,13 @@ namespace DataTrue {
       return DataTrue.DataLayerValidation.fromJSON(obj);
     }
 
-    public static fromJSON(obj: Record<string, any>): DataTrue.DataLayerValidation {
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.DataLayerValidation {
       const { name, id, property_validations, ...options } = obj;
 
       const dataLayerValidation = new DataTrue.DataLayerValidation(name);
-      dataLayerValidation.setResourceID(id);
+      if (!copy) {
+        dataLayerValidation.setResourceID(id);
+      }
       dataLayerValidation.setOptions(options, true);
 
       if (property_validations !== undefined) {

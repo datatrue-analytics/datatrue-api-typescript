@@ -9,12 +9,18 @@ namespace DataTrue {
     SIMULATION = 0,
     COVERAGE = 1,
     EMAIL = 2,
-    MOBILE = 3
+    MOBILE = 3,
+  }
+
+  export enum VariableTypes {
+    PRESET = "preset",
+    RUNTIME = "runtime",
+    COUNTER = "counter",
   }
 
   export interface Variables {
     [s: string]: {
-      type: string,
+      type: VariableTypes,
       value: string,
     },
   }
@@ -28,7 +34,7 @@ namespace DataTrue {
     private steps: DataTrue.Step[] = [];
     private tagValidations: DataTrue.TagValidation[] = [];
 
-    public options: DataTrue.TestOptions = {};
+    public options: DataTrue.TestOptions = { variables: {} };
 
     public constructor(name: string, public contextID?: number, options: DataTrue.TestOptions = {}) {
       super(name);
@@ -40,17 +46,22 @@ namespace DataTrue {
       return DataTrue.Test.fromJSON(obj);
     }
 
-    public static fromJSON(obj: Record<string, any>): Test {
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): Test {
       const { name, id, steps, tag_validations, ...options } = obj;
 
       const test = new DataTrue.Test(name);
-      test.setResourceID(id);
+      if (!copy) {
+        test.setResourceID(id);
+      }
       test.setOptions(options, true);
 
       if (steps !== undefined) {
         steps.forEach(stepObj => {
           const step = DataTrue.Step.fromJSON(stepObj);
           step.setContextID(id);
+          if (copy) {
+            step.setResourceID(undefined);
+          }
           test.addStep(step);
         });
       }
@@ -59,6 +70,9 @@ namespace DataTrue {
         tag_validations.forEach(TagValidationObj => {
           const tagValidation = DataTrue.TagValidation.fromJSON(TagValidationObj);
           tagValidation.setContextID(id);
+          if (copy) {
+            tagValidation.setResourceID(undefined);
+          }
           test.addTagValidation(tagValidation);
         });
       }
@@ -88,6 +102,16 @@ namespace DataTrue {
 
     public getTagValidations(): readonly DataTrue.TagValidation[] {
       return this.tagValidations.slice();
+    }
+
+    public setVariable(name: string, type: DataTrue.VariableTypes, value: string): void {
+      if (!Object.prototype.hasOwnProperty.call(this.options, "variables")) {
+        this.options.variables = {};
+      }
+      this.options.variables[name] = {
+        type: type,
+        value: value,
+      };
     }
 
     public setOptions(options: DataTrue.TestOptions, override: boolean = false): void {

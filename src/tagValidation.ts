@@ -59,7 +59,7 @@ namespace DataTrue {
       return this.fromJSON(obj);
     }
 
-    public static fromJSON(obj: Record<string, any>): DataTrue.TagValidation {
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.TagValidation {
       const { name, id, tag_definition, query_validation, ...options } = obj;
 
       if (Object.prototype.hasOwnProperty.call(options, "interception")) {
@@ -72,7 +72,9 @@ namespace DataTrue {
       }
 
       const tagValidation = new DataTrue.TagValidation(name, tag_definition.key);
-      tagValidation.setResourceID(id);
+      if (!copy) {
+        tagValidation.setResourceID(id);
+      }
       tagValidation.setOptions(options, true);
 
       if (query_validation !== undefined) {

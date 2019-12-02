@@ -83,17 +83,22 @@ namespace DataTrue {
       return DataTrue.Step.fromJSON(obj);
     }
 
-    public static fromJSON(obj: Record<string, any>): DataTrue.Step {
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.Step {
       const { name, id, action, tag_validations, data_layer_validations, ...options } = obj;
 
       const step = new DataTrue.Step(name, action);
-      step.setResourceID(id);
+      if (!copy) {
+        step.setResourceID(id);
+      }
       step.setOptions(options, true);
 
       if (tag_validations !== undefined) {
         tag_validations.forEach(tagValidationObj => {
           const tagValidation = DataTrue.TagValidation.fromJSON(tagValidationObj);
           tagValidation.setContextID(id);
+          if (copy) {
+            tagValidation.setResourceID(undefined);
+          }
           step.addTagValidation(tagValidation);
         });
       }
@@ -102,6 +107,9 @@ namespace DataTrue {
         data_layer_validations.forEach(dataLayerValidationObj => {
           const dataLayerValidation = DataTrue.DataLayerValidation.fromJSON(dataLayerValidationObj);
           dataLayerValidation.setContextID(id);
+          if (copy) {
+            dataLayerValidation.setContextID(undefined);
+          }
           step.addDataLayerValidation(dataLayerValidation);
         });
       }

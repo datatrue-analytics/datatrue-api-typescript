@@ -65,10 +65,11 @@ namespace DataTrue {
      * Create a resource from an object
      *
      * @static
-     * @param {*} obj object to create resource from
+     * @param {Record<string, any>} obj object to create resource from
+     * @param {boolean} [copy=false]
      * @memberof Resource
      */
-    public static fromJSON(obj: Record<string, any>): void { }
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { }
 
     /**
      * Convert the resource to an Object
@@ -77,7 +78,7 @@ namespace DataTrue {
      * @returns {object} object representation of the resource
      * @memberof Resource
      */
-    abstract toJSON(): object;
+    public abstract toJSON(): object;
 
     /**
      * Convert the resource to a JSON string
@@ -203,7 +204,9 @@ namespace DataTrue {
         this.contextID,
         (this.constructor as any).resourceType + "s"].join("/");
 
-      const request = this.makeRequest("post", uri, this.toString());
+      const payload = this.toJSON();
+
+      const request = this.makeRequest("post", uri, JSON.stringify(payload));
 
       this.setResourceID(JSON.parse(request.getContentText())[(this.constructor as any).resourceType]["id"]);
     }
