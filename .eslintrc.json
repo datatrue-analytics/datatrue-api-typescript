@@ -67,6 +67,9 @@
     "@typescript-eslint/no-namespace": [
       "off"
     ],
+    "@typescript-eslint/triple-slash-reference": [
+      "off"
+    ],
     "semi": "off",
     "@typescript-eslint/semi": "error",
     "no-multiple-empty-lines": [

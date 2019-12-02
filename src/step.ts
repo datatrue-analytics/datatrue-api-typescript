@@ -1,3 +1,4 @@
+/// <reference path="_resource.ts" />
 namespace DataTrue {
   export enum StepActions {
     GOTO_URL = 0,
@@ -178,14 +179,6 @@ namespace DataTrue {
       }
 
       return obj;
-    }
-
-    public run(): void {
-      throw new Error("Unable to run Step");
-    }
-
-    public progress(): DataTrue.JobStatus {
-      throw new Error("Unable to retrieve progress for Step");
     }
   }
 }

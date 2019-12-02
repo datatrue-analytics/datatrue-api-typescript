@@ -1,3 +1,5 @@
+/// <reference path="_resource.ts" />
+/// <reference path="runnable.ts" />
 namespace DataTrue {
   export interface TestOptions {
     description?: string,
@@ -25,7 +27,7 @@ namespace DataTrue {
     },
   }
 
-  export class Test extends DataTrue.Resource {
+  export class Test extends DataTrue.Resource implements Runnable {
     public static readonly contextType: string = "suite";
     public static readonly resourceType: string = "test";
     public static readonly resourceTypeRun: string = "TestScenario";
@@ -34,6 +36,7 @@ namespace DataTrue {
     private steps: DataTrue.Step[] = [];
     private tagValidations: DataTrue.TagValidation[] = [];
 
+    public jobID: number;
     public options: DataTrue.TestOptions = { variables: {} };
 
     public constructor(name: string, public contextID?: number, options: DataTrue.TestOptions = {}) {
@@ -149,6 +152,14 @@ namespace DataTrue {
       }
 
       return obj;
+    }
+
+    public run(email_users: number[] = []): void {
+      this.jobID = DataTrue._run(email_users, DataTrue.Suite.resourceTypeRun, this.getResourceID());
+    }
+
+    public progress(): JobStatus {
+      return DataTrue._progress(this.jobID);
     }
   }
 }

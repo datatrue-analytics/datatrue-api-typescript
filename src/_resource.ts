@@ -3,38 +3,36 @@ namespace DataTrue {
   export var managementToken: string = "";
   export var ciToken: string = "";
 
-  export interface JobStatus {
-    status: string,
-    options: {
-      test_run_id: number,
-    },
-    num?: number,
-    total?: number,
-    progress?: {
-      percentage: number,
-      tests: {
-        test_result_id: number,
-        id: number,
-        name: string,
-        state: string,
-        running: boolean,
-        steps_completed: number,
-        pii: {
-          num_pii_exposure: number,
-          num_pii_data_types: number,
-          num_pii_data_processors: number,
-        },
-      }[],
-    },
-    message?: string,
-  }
-
   const resourceTypes = {
     dataLayerValidations: "data_layer_validations",
     steps: "steps",
     suites: "suites",
     tagValidations: "tag_validations",
     tests: "tests",
+  };
+
+  /**
+   * Make a HTTP request to DataTrue
+   *
+   * @private
+   * @param {GoogleAppsScript.URL_Fetch.HttpMethod} method HTTP method
+   * @param {string} uri uri to make request to
+   * @param {string} [payload=""] payload to include in request
+   * @returns {GoogleAppsScript.URL_Fetch.HTTPResponse} HTTP response
+   * @memberof Resource
+   */
+  export const _makeRequest = function _makeRequest(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string, payload: string = ""): GoogleAppsScript.URL_Fetch.HTTPResponse {
+    const options = {
+      "method": method,
+      "contentType": "application/json",
+      "payload": payload,
+      "headers": {
+        "content-type": "application/json",
+        "authorization": "Token " + DataTrue.managementToken,
+      },
+    };
+
+    return UrlFetchApp.fetch(uri, options);
   };
 
   export abstract class Resource {
@@ -47,7 +45,6 @@ namespace DataTrue {
     protected resourceID?: number;
     protected contextID?: number;
 
-    public jobID?: number;
     public options: object;
 
     public constructor(public name: string) { }
@@ -205,7 +202,7 @@ namespace DataTrue {
         this.contextID,
         (this.constructor as any).resourceType + "s"].join("/");
 
-      const request = this.makeRequest("post", uri, this.toString());
+      const request = DataTrue._makeRequest("post", uri, this.toString());
 
       this.setResourceID(JSON.parse(request.getContentText())[(this.constructor as any).resourceType]["id"]);
     }
@@ -225,7 +222,7 @@ namespace DataTrue {
 
       const payload = this.toJSON();
 
-      const request = this.makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
+      const request = DataTrue._makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
 
       for (const childs of (this.constructor as any).children) {
         this[childs].forEach(child => {
@@ -234,6 +231,15 @@ namespace DataTrue {
       }
     }
 
+    /**
+     * Sets a child at a specific index, overriding the child that was already there
+     *
+     * @protected
+     * @param {DataTrue.Resource} child Child to set
+     * @param {number} index Index to set child at
+     * @param {string} childType type of the child
+     * @memberof Resource
+     */
     protected setChild(child: DataTrue.Resource, index: number, childType: string): void {
       if (this[childType][index].getResourceID() !== child.getResourceID() && child.getResourceID() !== undefined) {
         this.toDelete.push(this[childType][index]);
@@ -301,81 +307,7 @@ namespace DataTrue {
         (this.constructor as any).resourceType + "s",
         this.contextID].join("/");
 
-      const request = this.makeRequest("delete", uri);
-    }
-
-    /**
-     * Run the resource in DataTrue
-     *
-     * @param {number[]} [email_users=[]] a list of IDs for who should be emailed regarding the test run
-     * @memberof Resource
-     */
-    public run(email_users: number[] = []): void {
-      const uri = [
-        DataTrue.apiEndpoint,
-        "ci_api",
-        `test_runs?api_key=${DataTrue.ciToken}`,
-      ].join("/");
-
-      const request = this.makeRequest("post", uri, JSON.stringify({
-        "test_run": {
-          "test_class": (this.constructor as any).resourceTypeRun,
-          "test_id": this.resourceID,
-          "email_users": email_users,
-        },
-      }));
-
-      this.jobID = JSON.parse(request.getContentText())["job_id"];
-    }
-
-    /**
-     * Retrieve the progress of a running test
-     *
-     * @returns {DataTrue.JobStatus} the status of the running test
-     * @memberof Resource
-     */
-    public progress(): DataTrue.JobStatus {
-      const uri = [
-        DataTrue.apiEndpoint,
-        "ci_api",
-        "test_runs",
-        "progress",
-        `${this.jobID}?api_key=${DataTrue.ciToken}`,
-      ].join("/");
-
-      const options = {
-        "method": "get" as GoogleAppsScript.URL_Fetch.HttpMethod,
-        "contentType": "application/json",
-        "headers": {
-          "content-type": "application/json",
-        },
-      };
-
-      return JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
-    }
-
-    /**
-     * Make a HTTP request to DataTrue
-     *
-     * @private
-     * @param {GoogleAppsScript.URL_Fetch.HttpMethod} method HTTP method
-     * @param {string} uri uri to make request to
-     * @param {string} [payload=""] payload to include in request
-     * @returns {GoogleAppsScript.URL_Fetch.HTTPResponse} HTTP response
-     * @memberof Resource
-     */
-    private makeRequest(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string, payload: string = ""): GoogleAppsScript.URL_Fetch.HTTPResponse {
-      const options = {
-        "method": method,
-        "contentType": "application/json",
-        "payload": payload,
-        "headers": {
-          "content-type": "application/json",
-          "authorization": "Token " + DataTrue.managementToken,
-        },
-      };
-
-      return UrlFetchApp.fetch(uri, options);
+      const request = DataTrue._makeRequest("delete", uri);
     }
   }
 }

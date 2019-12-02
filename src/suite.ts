@@ -1,3 +1,5 @@
+/// <reference path="_resource.ts" />
+/// <reference path="runnable.ts" />
 namespace DataTrue {
   export interface SuiteOptions {
     description?: string,
@@ -10,7 +12,7 @@ namespace DataTrue {
     MOBILE_APP = 1
   }
 
-  export class Suite extends DataTrue.Resource {
+  export class Suite extends DataTrue.Resource implements DataTrue.Runnable {
     public static readonly contextType: string = "account";
     public static readonly resourceType: string = "suite";
     public static readonly resourceTypeRun: string = "Suite";
@@ -18,6 +20,7 @@ namespace DataTrue {
 
     private tests: Test[] = [];
 
+    public jobID: number;
     public options: DataTrue.SuiteOptions = { variables: {} };
 
     public constructor(name: string, public contextID?: number, options: DataTrue.SuiteOptions = {}) {
@@ -119,6 +122,14 @@ namespace DataTrue {
       }
 
       return obj;
+    }
+
+    public run(email_users: number[] = []): void {
+      this.jobID = DataTrue._run(email_users, DataTrue.Suite.resourceTypeRun, this.getResourceID());
+    }
+
+    public progress(): JobStatus {
+      return DataTrue._progress(this.jobID);
     }
   }
 }

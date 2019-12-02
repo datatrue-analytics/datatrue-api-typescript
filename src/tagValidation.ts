@@ -1,3 +1,4 @@
+/// <reference path="_resource.ts" />
 namespace DataTrue {
   export interface QueryValidation {
     key: string,
@@ -127,14 +128,6 @@ namespace DataTrue {
       }
 
       return obj;
-    }
-
-    public run(): void {
-      throw new Error("Unable to run TagValidation");
-    }
-
-    public progress(): DataTrue.JobStatus {
-      throw new Error("Unable to retrieve progress for TagValidation");
     }
   }
 }

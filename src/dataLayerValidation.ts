@@ -1,3 +1,4 @@
+/// <reference path="_resource.ts" />
 namespace DataTrue {
   export interface DataLayerValidationOptions {
     description?: string,
@@ -89,14 +90,6 @@ namespace DataTrue {
       }
 
       return obj;
-    }
-
-    public run(): void {
-      throw new Error("Unable to run DataLayerValidation");
-    }
-
-    public progress(): DataTrue.JobStatus {
-      throw new Error("Unable to retrieve progress for DataLayerValidation");
     }
   }
 }
