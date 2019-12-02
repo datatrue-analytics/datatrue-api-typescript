@@ -269,5 +269,3 @@ $RECYCLE.BIN/
 *.lnk
 
 .clasp.json
-
-out/

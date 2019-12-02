@@ -3,8 +3,10 @@
         "lib": [
             "esnext"
         ],
+        "declaration": true,
         "experimentalDecorators": true,
-        "outDir": "out",
+        "outDir": "dist",
+        "outFile": "dist/index.js",
         "sourceMap": true
     },
     "include": [
