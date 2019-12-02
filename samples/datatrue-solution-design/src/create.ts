@@ -81,7 +81,7 @@ function create(): void {
                          </html>`,
       },
     });
-    initialStep.addTagValidation(intercept);
+    initialStep.insertTagValidation(intercept);
   }
 
   steps.push(initialStep);
@@ -108,13 +108,13 @@ function create(): void {
           queryValidation.value = queryValidation.value.replace("regex://", "");
           queryValidation.regex = true;
         }
-        tagValidation.addQueryValidation(queryValidation);
+        tagValidation.insertQueryValidation(queryValidation);
       }
     });
-    steps[steps.length - 1].addTagValidation(tagValidation);
+    steps[steps.length - 1].insertTagValidation(tagValidation);
   });
 
-  steps.forEach(step => test.addStep(step));
+  steps.forEach(step => test.insertStep(step));
 
   test.save();
 

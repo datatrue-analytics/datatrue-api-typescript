@@ -66,7 +66,7 @@ namespace DataTrue {
      *
      * @static
      * @param {Record<string, any>} obj object to create resource from
-     * @param {boolean} [copy=false]
+     * @param {boolean} [copy=false] whether to create a copy of the resource or not (removes resource IDs)
      * @memberof Resource
      */
     public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { }
@@ -153,6 +153,7 @@ namespace DataTrue {
      *
      * @static
      * @param {number} id the id of the resource to fetch
+     * @param {string} resourceType the type of the resource to fetch
      * @returns {string} the resource represented as a JSON string
      * @memberof Resource
      */
@@ -204,9 +205,7 @@ namespace DataTrue {
         this.contextID,
         (this.constructor as any).resourceType + "s"].join("/");
 
-      const payload = this.toJSON();
-
-      const request = this.makeRequest("post", uri, JSON.stringify(payload));
+      const request = this.makeRequest("post", uri, this.toString());
 
       this.setResourceID(JSON.parse(request.getContentText())[(this.constructor as any).resourceType]["id"]);
     }
@@ -235,16 +234,26 @@ namespace DataTrue {
       }
     }
 
+    protected setChild(child: DataTrue.Resource, index: number, childType: string): void {
+      if (this[childType][index].getResourceID() !== child.getResourceID() && child.getResourceID() !== undefined) {
+        this.toDelete.push(this[childType][index]);
+      }
+      if (this.getResourceID()) {
+        child.setContextID(this.getResourceID());
+      }
+      this[childType][index] = child;
+    }
+
     /**
      * Add a child to a resource
      *
      * @protected
      * @param {object} child child to add to the Resource
-     * @param {number} [index=-1] index to add the child at
+     * @param {number} [index=0] index to add the child at
      * @param {string} childType type of the child
      * @memberof Resource
      */
-    protected addChild(child: object, index: number = 0, childType: string): void {
+    protected insertChild(child: object, index: number = 0, childType: string): void {
       this[childType].splice(index, 0, child);
     }
 

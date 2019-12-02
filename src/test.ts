@@ -62,7 +62,7 @@ namespace DataTrue {
           if (copy) {
             step.setResourceID(undefined);
           }
-          test.addStep(step);
+          test.insertStep(step);
         });
       }
 
@@ -73,19 +73,27 @@ namespace DataTrue {
           if (copy) {
             tagValidation.setResourceID(undefined);
           }
-          test.addTagValidation(tagValidation);
+          test.insertTagValidation(tagValidation);
         });
       }
 
       return test;
     }
 
-    public addStep(step: Step, index: number = this.steps.length): void {
-      super.addChild(step, index, "steps");
+    public setStep(step: DataTrue.Step, index: number): void {
+      super.setChild(step, index, "steps");
     }
 
-    public addTagValidation(tagValidation: DataTrue.TagValidation, index: number = this.tagValidations.length): void {
-      super.addChild(tagValidation, index, "tagValidations");
+    public setTagValidation(tagValidation: DataTrue.TagValidation, index: number): void {
+      super.setChild(tagValidation, index, "tagValidations");
+    }
+
+    public insertStep(step: DataTrue.Step, index: number = this.steps.length): void {
+      super.insertChild(step, index, "steps");
+    }
+
+    public insertTagValidation(tagValidation: DataTrue.TagValidation, index: number = this.tagValidations.length): void {
+      super.insertChild(tagValidation, index, "tagValidations");
     }
 
     public deleteStep(index): void {

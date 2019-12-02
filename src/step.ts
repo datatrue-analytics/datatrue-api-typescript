@@ -99,7 +99,7 @@ namespace DataTrue {
           if (copy) {
             tagValidation.setResourceID(undefined);
           }
-          step.addTagValidation(tagValidation);
+          step.insertTagValidation(tagValidation);
         });
       }
 
@@ -110,19 +110,27 @@ namespace DataTrue {
           if (copy) {
             dataLayerValidation.setContextID(undefined);
           }
-          step.addDataLayerValidation(dataLayerValidation);
+          step.insertDataLayerValidation(dataLayerValidation);
         });
       }
 
       return step;
     }
 
-    public addTagValidation(tagValidation: DataTrue.TagValidation, index: number = this.tagValidations.length): void {
-      super.addChild(tagValidation, index, "tagValidations");
+    public setTagValidation(tagValidation: DataTrue.TagValidation, index: number): void {
+      super.setChild(tagValidation, index, "tagValidations");
     }
 
-    public addDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation, index: number = this.dataLayerValidations.length): void {
-      super.addChild(dataLayerValidation, index, "dataLayerValidations");
+    public setDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation, index: number): void {
+      super.setChild(dataLayerValidation, index, "dataLayerValidations");
+    }
+
+    public insertTagValidation(tagValidation: DataTrue.TagValidation, index: number = this.tagValidations.length): void {
+      super.insertChild(tagValidation, index, "tagValidations");
+    }
+
+    public insertDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation, index: number = this.dataLayerValidations.length): void {
+      super.insertChild(dataLayerValidation, index, "dataLayerValidations");
     }
 
     public deleteTagValidation(index: number): void {

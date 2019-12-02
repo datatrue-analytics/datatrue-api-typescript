@@ -79,15 +79,19 @@ namespace DataTrue {
 
       if (query_validation !== undefined) {
         query_validation.forEach(queryValidationObj => {
-          tagValidation.addQueryValidation(queryValidationObj);
+          tagValidation.insertQueryValidation(queryValidationObj);
         });
       }
 
       return tagValidation;
     }
 
-    public addQueryValidation(queryValidation: DataTrue.QueryValidation, index: number = this.queryValidations.length): void {
-      super.addChild(queryValidation, index, "queryValidations");
+    public setQueryValidation(queryValidation: DataTrue.QueryValidation, index: number): void {
+      this.queryValidations[index] = queryValidation;
+    }
+
+    public insertQueryValidation(queryValidation: DataTrue.QueryValidation, index: number = this.queryValidations.length): void {
+      super.insertChild(queryValidation, index, "queryValidations");
     }
 
     public deleteQueryValidation(index: number): void {

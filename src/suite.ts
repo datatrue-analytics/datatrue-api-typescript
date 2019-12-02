@@ -46,7 +46,7 @@ namespace DataTrue {
           if (copy) {
             test.setResourceID(undefined);
           }
-          suite.addTest(test);
+          suite.insertTest(test);
         });
       }
 
@@ -72,11 +72,15 @@ namespace DataTrue {
       this.tests.forEach(tests => tests.setContextID(id));
     }
 
-    public addTest(test: DataTrue.Test, index: number = this.tests.length): void {
-      super.addChild(test, index, "tests");
+    public setTest(test: DataTrue.Test, index: number): void {
+      super.setChild(test, index, "tests");
     }
 
-    public deleteTest(index): void {
+    public insertTest(test: DataTrue.Test, index: number = this.tests.length): void {
+      super.insertChild(test, index, "tests");
+    }
+
+    public deleteTest(index: number): void {
       super.deleteChild(index, "tests");
     }
 

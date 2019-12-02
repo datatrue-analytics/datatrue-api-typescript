@@ -51,15 +51,19 @@ namespace DataTrue {
 
       if (property_validations !== undefined) {
         property_validations.forEach(propertyValidationObj => {
-          dataLayerValidation.addPropertyValidation(propertyValidationObj);
+          dataLayerValidation.insertPropertyValidation(propertyValidationObj);
         });
       }
 
       return dataLayerValidation;
     }
 
-    public addPropertyValidation(propertyValidation: DataTrue.PropertyValidation, index: number = this.propertyValidations.length): void {
-      super.addChild(propertyValidation, index, "propertyValidations");
+    public setPropertyValidation(propertyValidation: DataTrue.PropertyValidation, index: number): void {
+      this.propertyValidations[index] = propertyValidation;
+    }
+
+    public insertPropertyValidation(propertyValidation: DataTrue.PropertyValidation, index: number = this.propertyValidations.length): void {
+      super.insertChild(propertyValidation, index, "propertyValidations");
     }
 
     public deletePropertyValidation(index: number): void {
