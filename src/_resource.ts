@@ -232,25 +232,6 @@ namespace DataTrue {
     }
 
     /**
-     * Sets a child at a specific index, overriding the child that was already there
-     *
-     * @protected
-     * @param {DataTrue.Resource} child Child to set
-     * @param {number} index Index to set child at
-     * @param {string} childType type of the child
-     * @memberof Resource
-     */
-    protected setChild(child: DataTrue.Resource, index: number, childType: string): void {
-      if (this[childType][index].getResourceID() !== child.getResourceID() && child.getResourceID() !== undefined) {
-        this.toDelete.push(this[childType][index]);
-      }
-      if (this.getResourceID()) {
-        child.setContextID(this.getResourceID());
-      }
-      this[childType][index] = child;
-    }
-
-    /**
      * Add a child to a resource
      *
      * @protected

@@ -75,10 +75,6 @@ namespace DataTrue {
       this.tests.forEach(tests => tests.setContextID(id));
     }
 
-    public setTest(test: DataTrue.Test, index: number): void {
-      super.setChild(test, index, "tests");
-    }
-
     public insertTest(test: DataTrue.Test, index: number = this.tests.length): void {
       super.insertChild(test, index, "tests");
     }

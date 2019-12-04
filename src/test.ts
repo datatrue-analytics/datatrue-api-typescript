@@ -83,14 +83,6 @@ namespace DataTrue {
       return test;
     }
 
-    public setStep(step: DataTrue.Step, index: number): void {
-      super.setChild(step, index, "steps");
-    }
-
-    public setTagValidation(tagValidation: DataTrue.TagValidation, index: number): void {
-      super.setChild(tagValidation, index, "tagValidations");
-    }
-
     public insertStep(step: DataTrue.Step, index: number = this.steps.length): void {
       super.insertChild(step, index, "steps");
     }

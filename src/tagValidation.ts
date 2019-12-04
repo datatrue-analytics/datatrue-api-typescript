@@ -87,10 +87,6 @@ namespace DataTrue {
       return tagValidation;
     }
 
-    public setQueryValidation(queryValidation: DataTrue.QueryValidation, index: number): void {
-      this.queryValidations[index] = queryValidation;
-    }
-
     public insertQueryValidation(queryValidation: DataTrue.QueryValidation, index: number = this.queryValidations.length): void {
       super.insertChild(queryValidation, index, "queryValidations");
     }

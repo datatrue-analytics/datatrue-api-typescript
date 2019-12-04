@@ -118,14 +118,6 @@ namespace DataTrue {
       return step;
     }
 
-    public setTagValidation(tagValidation: DataTrue.TagValidation, index: number): void {
-      super.setChild(tagValidation, index, "tagValidations");
-    }
-
-    public setDataLayerValidation(dataLayerValidation: DataTrue.DataLayerValidation, index: number): void {
-      super.setChild(dataLayerValidation, index, "dataLayerValidations");
-    }
-
     public insertTagValidation(tagValidation: DataTrue.TagValidation, index: number = this.tagValidations.length): void {
       super.insertChild(tagValidation, index, "tagValidations");
     }
