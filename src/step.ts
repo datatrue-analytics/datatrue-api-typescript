@@ -146,12 +146,6 @@ namespace DataTrue {
       super.setOptions(options, override);
     }
 
-    public setResourceID(id: number): void {
-      super.setResourceID(id);
-      this.tagValidations.forEach(tagValidation => tagValidation.setContextID(id));
-      this.dataLayerValidations.forEach(dataLayerValidation => dataLayerValidation.setContextID(id));
-    }
-
     public toJSON(): object {
       const obj = {
         name: this.name,

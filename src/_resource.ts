@@ -115,6 +115,9 @@ namespace DataTrue {
      */
     public setResourceID(id: number): void {
       this.resourceID = id;
+      (this.constructor as any).children.forEach((childs: string) => {
+        this[childs].setContextID(id);
+      });
     }
 
     /**
@@ -195,16 +198,24 @@ namespace DataTrue {
      * @memberof Resource
      */
     protected create(): void {
+      const resourceType: string = (this.constructor as any).resourceType;
+
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
         (this.constructor as any).contextType + "s",
         this.contextID,
-        (this.constructor as any).resourceType + "s"].join("/");
+        resourceType + "s"].join("/");
 
       const request = DataTrue._makeRequest("post", uri, this.toString());
+      const response = JSON.parse(request.getContentText());
 
-      this.setResourceID(JSON.parse(request.getContentText())[(this.constructor as any).resourceType]["id"]);
+      this.setResourceID(response[resourceType]["id"]);
+      (this.constructor as any).children.forEach((childs: string) => {
+        response[resourceType][resourceTypes[childs]].forEach((childObj, index) => {
+          this[childs][index].setResourceID(childObj["id"]);
+        });
+      });
     }
 
     /**
@@ -266,11 +277,11 @@ namespace DataTrue {
      * @memberof Resource
      */
     private removeChildren(obj: object): object {
-      for (const child of (this.constructor as any).children) {
+      for (const childs of (this.constructor as any).children) {
         if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
-          delete obj[(this.constructor as any).resourceType][resourceTypes[child]];
+          delete obj[(this.constructor as any).resourceType][resourceTypes[childs]];
         } else {
-          delete obj[resourceTypes[child]];
+          delete obj[resourceTypes[childs]];
         }
       }
       return obj;

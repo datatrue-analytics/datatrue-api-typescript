@@ -121,12 +121,6 @@ namespace DataTrue {
       super.setOptions(options, override);
     }
 
-    public setResourceID(id: number): void {
-      super.setResourceID(id);
-      this.steps.forEach(step => step.setContextID(id));
-      this.tagValidations.forEach(tagValidation => tagValidation.setContextID(id));
-    }
-
     public toJSON(): object {
       const obj: object = {};
 

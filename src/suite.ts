@@ -70,11 +70,6 @@ namespace DataTrue {
       super.setOptions(options, override);
     }
 
-    public setResourceID(id: number): void {
-      super.setResourceID(id);
-      this.tests.forEach(tests => tests.setContextID(id));
-    }
-
     public insertTest(test: DataTrue.Test, index: number = this.tests.length): void {
       super.insertChild(test, index, "tests");
     }
@@ -90,7 +85,6 @@ namespace DataTrue {
     protected create(): void {
       super.create();
       this.tests.forEach(test => {
-        test.setContextID(this.resourceID);
         test.save();
       });
     }
