@@ -42,6 +42,7 @@ namespace DataTrue {
 
   export interface StepOptions {
     description?: string,
+    position?: number,
     js_code?: string,
     target?: string,
     selector_type?: SelectorTypes,
@@ -50,11 +51,12 @@ namespace DataTrue {
     iframe_selector?: string,
     pause?: number,
     wait_while_present?: string,
+    settings?: StepSettings,
   }
 
   export enum StepStrategies {
     BREADTH_FIRST = "breadth_first",
-    DEPTH_FIRST = "depth_first"
+    DEPTH_FIRST = "depth_first",
   }
 
   export interface StepSettings {

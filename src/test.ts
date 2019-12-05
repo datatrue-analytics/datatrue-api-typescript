@@ -3,6 +3,7 @@
 namespace DataTrue {
   export interface TestOptions {
     description?: string,
+    position?: number,
     variables?: DataTrue.Variables,
     test_type?: DataTrue.TestTypes,
   }
@@ -141,7 +142,7 @@ namespace DataTrue {
     }
 
     public run(email_users: number[] = []): void {
-      this.jobID = DataTrue._run(email_users, DataTrue.Suite.resourceTypeRun, this.getResourceID());
+      this.jobID = DataTrue._run(email_users, DataTrue.Test.resourceTypeRun, this.getResourceID());
     }
 
     public progress(): JobStatus {

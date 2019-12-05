@@ -2,6 +2,7 @@
 namespace DataTrue {
   export interface DataLayerValidationOptions {
     description?: string,
+    position?: number,
     enabled?: boolean,
     source?: string,
     selector?: string,

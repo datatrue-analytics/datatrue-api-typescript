@@ -11,6 +11,7 @@ namespace DataTrue {
 
   export interface TagValidationOptions {
     description?: string,
+    position?: number,
     enabled?: boolean,
     do_validation?: boolean,
     validate_absence?: boolean,
@@ -35,12 +36,12 @@ namespace DataTrue {
 
   export class TagValidation extends DataTrue.Resource {
     public static readonly contextType: string = "step";
-    public static readonly resourceType: string = "tag_validations";
+    public static readonly resourceType: string = "tag_validation";
     public static readonly children: string[] = [];
 
     private queryValidations: DataTrue.QueryValidation[] = [];
-    private tagDefinition: DataTrue.TagDefinition;
 
+    public tagDefinition: DataTrue.TagDefinition;
     public options: DataTrue.TagValidationOptions = {
       interception: {
         do_validation: true,

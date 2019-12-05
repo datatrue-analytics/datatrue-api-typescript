@@ -3,6 +3,7 @@
 namespace DataTrue {
   export interface SuiteOptions {
     description?: string,
+    position?: number,
     variables?: DataTrue.Variables,
     suite_type?: DataTrue.SuiteTypes,
   }

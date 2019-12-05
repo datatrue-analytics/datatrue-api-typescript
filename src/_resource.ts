@@ -116,7 +116,9 @@ namespace DataTrue {
     public setResourceID(id: number): void {
       this.resourceID = id;
       (this.constructor as any).children.forEach((childs: string) => {
-        this[childs].setContextID(id);
+        this[childs].forEach((child: DataTrue.Resource) => {
+          child.setContextID(id);
+        });
       });
     }
 
@@ -211,10 +213,13 @@ namespace DataTrue {
       const response = JSON.parse(request.getContentText());
 
       this.setResourceID(response[resourceType]["id"]);
+
       (this.constructor as any).children.forEach((childs: string) => {
-        response[resourceType][resourceTypes[childs]].forEach((childObj, index) => {
-          this[childs][index].setResourceID(childObj["id"]);
-        });
+        if (response[resourceType][resourceTypes[childs]] !== undefined) {
+          response[resourceType][resourceTypes[childs]].forEach((childObj, index) => {
+            this[childs][index].setResourceID(childObj["id"]);
+          });
+        }
       });
     }
 
