@@ -168,9 +168,9 @@ function create(): void {
     }
 
     if (currentSteps.length === 0) {
-      stepRows.getCell(i, 1).setNote(steps[i].getResourceID().toString());
+      // stepRows.getCell(i, 1).setNote(steps[i].getResourceID().toString());
     } else {
-      stepRows.getCell(i, 1).setNote(steps[i - 1].getResourceID().toString());
+      // stepRows.getCell(i, 1).setNote(steps[i - 1].getResourceID().toString());
     }
   }
 
