@@ -2,27 +2,7 @@ function create(): void {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
 
-  const userProperties = PropertiesService.getUserProperties();
-
-  const lookups = {};
-
-  ss.getSheetByName("Instructions").getRange("A9:B").getDisplayValues().some(row => {
-    if (row[0] === "") {
-      return;
-    }
-    lookups[row[0]] = row[1];
-  });
-
-  let managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
-
-  if (managementToken === null) {
-    setTokens();
-
-    managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
-  }
-
-  DataTrue.managementToken = managementToken;
-  DataTrue.apiEndpoint = lookups["DataTrue Endpoint"] || DataTrue.apiEndpoint;
+  getTokens();
 
   const testName: string = sheet.getRange("B16").getDisplayValue();
   const testDescription: string = sheet.getRange("B17").getDisplayValue();
@@ -48,10 +28,10 @@ function create(): void {
     const suite = new DataTrue.Suite(fileName, parseInt(accountID));
     suite.save();
     suiteID = suite.getResourceID().toString();
-
-    sheet.getRange("B6").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
-    SpreadsheetApp.flush();
   }
+
+  sheet.getRange("B6").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
+  SpreadsheetApp.flush();
 
   let test: DataTrue.Test;
 

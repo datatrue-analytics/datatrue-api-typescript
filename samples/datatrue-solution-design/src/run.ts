@@ -2,33 +2,9 @@ function run(): void {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
 
+  getTokens();
+  
   const runStatus = sheet.getRange("B8");
-
-  const userProperties = PropertiesService.getUserProperties();
-
-  const lookups = {};
-
-  ss.getSheetByName("Instructions").getRange("A9:B").getDisplayValues().some(row => {
-    if (row[0] === "") {
-      return;
-    }
-    lookups[row[0]] = row[1];
-  });
-
-  let managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
-  let ciToken = userProperties.getProperty("DATATRUE_CI_TOKEN");
-
-  if (managementToken === null || ciToken === null) {
-    setTokens();
-
-    managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
-    ciToken = userProperties.getProperty("DATATRUE_CI_TOKEN");
-  }
-
-  DataTrue.managementToken = managementToken;
-  DataTrue.ciToken = ciToken;
-  DataTrue.apiEndpoint = lookups["DataTrue Endpoint"] || DataTrue.apiEndpoint;
-
   const testID: number = parseInt(sheet.getRange("B7").getDisplayValue());
   const test = DataTrue.Test.fromID(testID);
 
