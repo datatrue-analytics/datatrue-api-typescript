@@ -6,7 +6,7 @@ function create(): void {
 
   const lookups = {};
 
-  ss.getSheetByName("Instructions").getRange("A9:B").getValues().some(row => {
+  ss.getSheetByName("Instructions").getRange("A9:B").getDisplayValues().some(row => {
     if (row[0] === "") {
       return;
     }
@@ -24,19 +24,22 @@ function create(): void {
   DataTrue.managementToken = managementToken;
   DataTrue.apiEndpoint = lookups["DataTrue Endpoint"] || DataTrue.apiEndpoint;
 
-  const testName: string = sheet.getRange("B16").getValue();
-  const testDescription: string = sheet.getRange("B17").getValue();
-  const accountID: string = sheet.getRange("B5").getValue();
+  const testName: string = sheet.getRange("B16").getDisplayValue();
+  const testDescription: string = sheet.getRange("B17").getDisplayValue();
+  const accountID: string = sheet.getRange("B5").getDisplayValue();
   let suiteID: string = sheet.getRange("B6").getDisplayValue();
   const testID: string = sheet.getRange("B7").getDisplayValue();
-  const url: string = sheet.getRange("B9").getValue();
-  const tagType: string = sheet.getRange("B10").getValue();
+  const url: string = sheet.getRange("B9").getDisplayValue();
+  const tagType: string = sheet.getRange("B10").getDisplayValue();
   const useMockPage: boolean = sheet.getRange("B11").getValue();
-  const tagManagerUrl: string = sheet.getRange("B12").getValue();
+  const tagManagerUrl: string = sheet.getRange("B12").getDisplayValue();
 
   const hostname = url.match(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/)[1];
   let path = url.match(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/)[2];
   path = (path === "") ? ".*" : path;
+
+  sheet.getRange("B5").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/accounts/${accountID}/suites", "${accountID}")`);
+  SpreadsheetApp.flush();
 
   if (!suiteID) {
     const sheetFile = DriveApp.getFileById(ss.getId());
@@ -96,10 +99,10 @@ function create(): void {
     steps.push(initialStep);
   }
 
-  let queryParams: string[] = sheet.getRange("D21:Z21").getValues()[0];
+  let queryParams: string[] = sheet.getRange("D20:Z20").getDisplayValues()[0];
   queryParams = queryParams.filter(param => param !== "");
   const stepRows = sheet.getRange("A21:Z");
-  const stepRowValues: string[][] = stepRows.getValues();
+  const stepRowValues: string[][] = stepRows.getDisplayValues();
 
   stepRowValues.some((row, index) => {
     if (row[0] === "") {
@@ -163,7 +166,7 @@ function create(): void {
   test.save();
 
   for (let i = 1; i < stepRows.getNumRows(); i++) {
-    if (stepRows.getCell(i, 1).getValue() === "") {
+    if (stepRows.getCell(i, 1).getDisplayValue() === "") {
       break;
     }
 

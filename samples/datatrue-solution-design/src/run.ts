@@ -8,7 +8,7 @@ function run(): void {
 
   const lookups = {};
 
-  ss.getSheetByName("Instructions").getRange("A9:B").getValues().some(row => {
+  ss.getSheetByName("Instructions").getRange("A9:B").getDisplayValues().some(row => {
     if (row[0] === "") {
       return;
     }
@@ -29,7 +29,7 @@ function run(): void {
   DataTrue.ciToken = ciToken;
   DataTrue.apiEndpoint = lookups["DataTrue Endpoint"] || DataTrue.apiEndpoint;
 
-  const testID: number = parseInt(sheet.getRange("B7").getValue());
+  const testID: number = parseInt(sheet.getRange("B7").getDisplayValue());
   const test = DataTrue.Test.fromID(testID);
 
   test.run();
