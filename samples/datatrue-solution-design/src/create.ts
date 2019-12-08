@@ -27,8 +27,8 @@ function create(): void {
   const testName: string = sheet.getRange("B16").getValue();
   const testDescription: string = sheet.getRange("B17").getValue();
   const accountID: string = sheet.getRange("B5").getValue();
-  let suiteID: string = sheet.getRange("B6").getValue();
-  const testID: string = sheet.getRange("B7").getValue();
+  let suiteID: string = sheet.getRange("B6").getDisplayValue();
+  const testID: string = sheet.getRange("B7").getDisplayValue();
   const url: string = sheet.getRange("B9").getValue();
   const tagType: string = sheet.getRange("B10").getValue();
   const useMockPage: boolean = sheet.getRange("B11").getValue();
@@ -46,7 +46,7 @@ function create(): void {
     suite.save();
     suiteID = suite.getResourceID().toString();
 
-    sheet.getRange("B6").setValue(suiteID);
+    sheet.getRange("B6").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
     SpreadsheetApp.flush();
   }
 
@@ -174,5 +174,5 @@ function create(): void {
     }
   }
 
-  sheet.getRange("B7").setValue(test.getResourceID());
+  sheet.getRange("B7").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/tests/${test.getResourceID()}", "${test.getResourceID()}")`);
 }
