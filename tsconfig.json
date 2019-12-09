@@ -6,7 +6,6 @@
         "declaration": true,
         "experimentalDecorators": true,
         "outDir": "dist",
-        "outFile": "dist/index.js",
         "sourceMap": true
     },
     "include": [

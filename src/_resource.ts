@@ -1,325 +1,322 @@
-namespace DataTrue {
-  export var apiEndpoint: string = "datatrue.com";
-  export var managementToken: string = "";
-  export var ciToken: string = "";
+import { config } from "./index";
+import HTTPClient from "./httpClient/node";
 
-  const resourceTypes = {
-    dataLayerValidations: "data_layer_validations",
-    steps: "steps",
-    suites: "suites",
-    tagValidations: "tag_validations",
-    tests: "tests",
+const resourceTypes = {
+  dataLayerValidations: "data_layer_validations",
+  steps: "steps",
+  suites: "suites",
+  tagValidations: "tag_validations",
+  tests: "tests",
+};
+
+export interface ResourceOptions {
+  description?: string,
+  position?: number,
+}
+
+/**
+ * Make a HTTP request to DataTrue
+ *
+ * @private
+ * @param {GoogleAppsScript.URL_Fetch.HttpMethod} method HTTP method
+ * @param {string} uri uri to make request to
+ * @param {string} [payload=""] payload to include in request
+ * @returns {GoogleAppsScript.URL_Fetch.HTTPResponse} HTTP response
+ * @memberof Resource
+ */
+export const _makeRequest = function _makeRequest(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string, payload: string = ""): GoogleAppsScript.URL_Fetch.HTTPResponse {
+  const options = {
+    "method": method,
+    "contentType": "application/json",
+    "payload": payload,
+    "headers": {
+      "content-type": "application/json",
+      "authorization": "Token " + config.managementToken,
+    },
   };
 
-  export interface ResourceOptions {
-    description?: string,
-    position?: number,
+  return UrlFetchApp.fetch(uri, options);
+};
+
+export default abstract class Resource {
+  public static readonly contextType: string;
+  public static readonly resourceType: string;
+  public static readonly childTypes: readonly string[];
+  public static readonly resourceTypeRun?: string;
+
+  protected toDelete: Resource[] = [];
+  protected resourceID?: number;
+  protected contextID?: number;
+
+  public options: object;
+
+  public constructor(public name: string) { }
+
+  /**
+   * Create a resource from a given ID
+   *
+   * @static
+   * @param {number} id the ID of the resource
+   * @memberof Resource
+   */
+  public static fromID(id: number): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
+
+  /**
+   * Create a resource from an object
+   *
+   * @static
+   * @param {Record<string, any>} obj object to create resource from
+   * @param {boolean} [copy=false] whether to create a copy of the resource or not (removes resource IDs)
+   * @memberof Resource
+   */
+  public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { } // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+
+  /**
+   * Convert the resource to an Object
+   *
+   * @abstract
+   * @returns {object} object representation of the resource
+   * @memberof Resource
+   */
+  public abstract toJSON(): object;
+
+  /**
+   * Convert the resource to a JSON string
+   *
+   * @returns {string} the resource represented as a JSON string
+   * @memberof Resource
+   */
+  public toString(): string {
+    return JSON.stringify(this.toJSON());
   }
 
   /**
-   * Make a HTTP request to DataTrue
+   * Gets the resourceID of a resource
    *
-   * @private
-   * @param {GoogleAppsScript.URL_Fetch.HttpMethod} method HTTP method
-   * @param {string} uri uri to make request to
-   * @param {string} [payload=""] payload to include in request
-   * @returns {GoogleAppsScript.URL_Fetch.HTTPResponse} HTTP response
+   * @returns {number} resourceID of the resource
    * @memberof Resource
    */
-  export const _makeRequest = function _makeRequest(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string, payload: string = ""): GoogleAppsScript.URL_Fetch.HTTPResponse {
+  public getResourceID(): number {
+    return this.resourceID;
+  }
+
+  /**
+   * Gets the contextID of a resource
+   *
+   * @returns {number} contextID of the resource
+   * @memberof Resource
+   */
+  public getContextID(): number {
+    return this.contextID;
+  }
+
+  /**
+   * Sets the resourceID of a resource
+   *
+   * @param {number} id the resourceID to set
+   * @memberof Resource
+   */
+  public setResourceID(id: number): void {
+    this.resourceID = id;
+    (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+      this[childType].forEach((child: Resource) => {
+        child.setContextID(id);
+      });
+    });
+  }
+
+  /**
+   * Sets the contextID of a resource
+   *
+   * @param {number} id the contextID to set
+   * @memberof Resource
+   */
+  public setContextID(id: number): void {
+    this.contextID = id;
+  }
+
+  /**
+   * Set options from the passed options object
+   *
+   * @param {ResourceOptions} options the object to set options from
+   * @param {boolean} [override] whether to override the options object
+   * @memberof Resource
+   */
+  public setOptions(options: ResourceOptions, override?: boolean): void {
+    if (override) {
+      this.options = options;
+    } else {
+      this.options = {
+        ...this.options,
+        ...options,
+      };
+    }
+  }
+
+  /**
+   * Fetch a resource from DataTrue
+   *
+   * @static
+   * @param {number} id the id of the resource to fetch
+   * @param {string} resourceType the type of the resource to fetch
+   * @returns {string} the resource represented as a JSON string
+   * @memberof Resource
+   */
+  protected static getResource(id: number, resourceType: string): string {
+    const uri = [
+      config.apiEndpoint,
+      "management_api/v1",
+      resourceType + "s",
+      id].join("/");
+
     const options = {
-      "method": method,
+      "method": "get" as GoogleAppsScript.URL_Fetch.HttpMethod,
       "contentType": "application/json",
-      "payload": payload,
       "headers": {
         "content-type": "application/json",
-        "authorization": "Token " + DataTrue.managementToken,
+        "authorization": "Token " + config.managementToken,
       },
     };
 
-    return UrlFetchApp.fetch(uri, options);
-  };
+    return UrlFetchApp.fetch(uri, options).getContentText();
+  }
 
-  export abstract class Resource {
-    public static readonly contextType: string;
-    public static readonly resourceType: string;
-    public static readonly childTypes: readonly string[];
-    public static readonly resourceTypeRun?: string;
-
-    protected toDelete: Resource[] = [];
-    protected resourceID?: number;
-    protected contextID?: number;
-
-    public options: object;
-
-    public constructor(public name: string) { }
-
-    /**
-     * Create a resource from a given ID
-     *
-     * @static
-     * @param {number} id the ID of the resource
-     * @memberof Resource
-     */
-    public static fromID(id: number): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
-
-    /**
-     * Create a resource from an object
-     *
-     * @static
-     * @param {Record<string, any>} obj object to create resource from
-     * @param {boolean} [copy=false] whether to create a copy of the resource or not (removes resource IDs)
-     * @memberof Resource
-     */
-    public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { } // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-
-    /**
-     * Convert the resource to an Object
-     *
-     * @abstract
-     * @returns {object} object representation of the resource
-     * @memberof Resource
-     */
-    public abstract toJSON(): object;
-
-    /**
-     * Convert the resource to a JSON string
-     *
-     * @returns {string} the resource represented as a JSON string
-     * @memberof Resource
-     */
-    public toString(): string {
-      return JSON.stringify(this.toJSON());
+  /**
+   * Save a resource to DataTrue
+   *
+   * @memberof Resource
+   */
+  public save(): void {
+    if (this.resourceID) {
+      this.update();
+    } else {
+      this.create();
     }
+    this.toDelete.forEach(child => child.delete());
+    this.toDelete = [];
+  }
 
-    /**
-     * Gets the resourceID of a resource
-     *
-     * @returns {number} resourceID of the resource
-     * @memberof Resource
-     */
-    public getResourceID(): number {
-      return this.resourceID;
-    }
+  /**
+   * Create the resource in DataTrue
+   *
+   * @protected
+   * @memberof Resource
+   */
+  protected create(): void {
+    const resourceType: string = (this.constructor as any).resourceType; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-    /**
-     * Gets the contextID of a resource
-     *
-     * @returns {number} contextID of the resource
-     * @memberof Resource
-     */
-    public getContextID(): number {
-      return this.contextID;
-    }
+    const uri = [
+      config.apiEndpoint,
+      "management_api/v1",
+      (this.constructor as any).contextType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
+      this.contextID,
+      resourceType + "s"].join("/");
 
-    /**
-     * Sets the resourceID of a resource
-     *
-     * @param {number} id the resourceID to set
-     * @memberof Resource
-     */
-    public setResourceID(id: number): void {
-      this.resourceID = id;
-      (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-        this[childType].forEach((child: DataTrue.Resource) => {
-          child.setContextID(id);
-        });
-      });
-    }
+    const request = _makeRequest("post", uri, this.toString());
+    const response = JSON.parse(request.getContentText());
 
-    /**
-     * Sets the contextID of a resource
-     *
-     * @param {number} id the contextID to set
-     * @memberof Resource
-     */
-    public setContextID(id: number): void {
-      this.contextID = id;
-    }
+    this.setResourceID(response[resourceType]["id"]);
 
-    /**
-     * Set options from the passed options object
-     *
-     * @param {DataTrue.ResourceOptions} options the object to set options from
-     * @param {boolean} [override] whether to override the options object
-     * @memberof Resource
-     */
-    public setOptions(options: DataTrue.ResourceOptions, override?: boolean): void {
-      if (override) {
-        this.options = options;
-      } else {
-        this.options = {
-          ...this.options,
-          ...options,
-        };
-      }
-    }
-
-    /**
-     * Fetch a resource from DataTrue
-     *
-     * @static
-     * @param {number} id the id of the resource to fetch
-     * @param {string} resourceType the type of the resource to fetch
-     * @returns {string} the resource represented as a JSON string
-     * @memberof Resource
-     */
-    protected static getResource(id: number, resourceType: string): string {
-      const uri = [
-        DataTrue.apiEndpoint,
-        "management_api/v1",
-        resourceType + "s",
-        id].join("/");
-
-      const options = {
-        "method": "get" as GoogleAppsScript.URL_Fetch.HttpMethod,
-        "contentType": "application/json",
-        "headers": {
-          "content-type": "application/json",
-          "authorization": "Token " + DataTrue.managementToken,
-        },
-      };
-
-      return UrlFetchApp.fetch(uri, options).getContentText();
-    }
-
-    /**
-     * Save a resource to DataTrue
-     *
-     * @memberof Resource
-     */
-    public save(): void {
-      if (this.resourceID) {
-        this.update();
-      } else {
-        this.create();
-      }
-      this.toDelete.forEach(child => child.delete());
-      this.toDelete = [];
-    }
-
-    /**
-     * Create the resource in DataTrue
-     *
-     * @protected
-     * @memberof Resource
-     */
-    protected create(): void {
-      const resourceType: string = (this.constructor as any).resourceType; // eslint-disable-line @typescript-eslint/no-explicit-any
-
-      const uri = [
-        DataTrue.apiEndpoint,
-        "management_api/v1",
-        (this.constructor as any).contextType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
-        this.contextID,
-        resourceType + "s"].join("/");
-
-      const request = DataTrue._makeRequest("post", uri, this.toString());
-      const response = JSON.parse(request.getContentText());
-
-      this.setResourceID(response[resourceType]["id"]);
-
-      (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-        if (response[resourceType][resourceTypes[childType]] !== undefined) {
-          response[resourceType][resourceTypes[childType]].forEach((childObj, index) => {
-            this[childType][index].setResourceID(childObj["id"]);
-          });
-        }
-      });
-    }
-
-    /**
-     * Update the resource and all children in DataTrue
-     *
-     * @protected
-     * @memberof Resource
-     */
-    protected update(): void {
-      const uri = [
-        DataTrue.apiEndpoint,
-        "management_api/v1",
-        (this.constructor as any).resourceType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
-        this.resourceID].join("/");
-
-      const payload = this.toJSON();
-
-      const request = DataTrue._makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
-
-      for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
-        this[childType].forEach((child: DataTrue.Resource) => {
-          child.save();
+    (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+      if (response[resourceType][resourceTypes[childType]] !== undefined) {
+        response[resourceType][resourceTypes[childType]].forEach((childObj, index) => {
+          this[childType][index].setResourceID(childObj["id"]);
         });
       }
-    }
+    });
+  }
 
-    /**
-     * Add a child to a resource
-     *
-     * @protected
-     * @param {object} child child to add to the Resource
-     * @param {number} [index=0] index to add the child at
-     * @param {string} resourceType type of the child
-     * @memberof Resource
-     */
-    protected insertChild(child: object, index: number = 0, resourceType: string): void {
-      this[resourceType].splice(index, 0, child);
-      for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
-        if (childType === resourceType) {
-          this[resourceType].forEach((child: DataTrue.Resource, index: number) => {
-            child.setOptions({ position: index + 1 });
-          });
-          break;
-        }
+  /**
+   * Update the resource and all children in DataTrue
+   *
+   * @protected
+   * @memberof Resource
+   */
+  protected update(): void {
+    const uri = [
+      config.apiEndpoint,
+      "management_api/v1",
+      (this.constructor as any).resourceType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
+      this.resourceID].join("/");
+
+    const payload = this.toJSON();
+
+    const request = _makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
+
+    for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
+      this[childType].forEach((child: Resource) => {
+        child.save();
+      });
+    }
+  }
+
+  /**
+   * Add a child to a resource
+   *
+   * @protected
+   * @param {object} child child to add to the Resource
+   * @param {number} [index=0] index to add the child at
+   * @param {string} resourceType type of the child
+   * @memberof Resource
+   */
+  protected insertChild(child: object, index: number = 0, resourceType: string): void {
+    this[resourceType].splice(index, 0, child);
+    for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
+      if (childType === resourceType) {
+        this[resourceType].forEach((child: Resource, index: number) => {
+          child.setOptions({ position: index + 1 });
+        });
+        break;
       }
     }
+  }
 
-    /**
-     * Delete a child from a resource
-     *
-     * @protected
-     * @param {number} index index to delete the child from
-     * @param {string} childType type of the child
-     * @memberof Resource
-     */
-    protected deleteChild(index: number, childType: string): void {
-      this.toDelete.push(this[childType][index]);
-      this[childType].splice(index, 1);
-    }
+  /**
+   * Delete a child from a resource
+   *
+   * @protected
+   * @param {number} index index to delete the child from
+   * @param {string} childType type of the child
+   * @memberof Resource
+   */
+  protected deleteChild(index: number, childType: string): void {
+    this.toDelete.push(this[childType][index]);
+    this[childType].splice(index, 1);
+  }
 
-    /**
-     * Removes children from obj so that the Resource can be updated
-     *
-     * @private
-     * @param {object} obj object to remove children from
-     * @returns {object} obj without children
-     * @memberof Resource
-     */
-    private removeChildren(obj: object): object {
-      /* eslint-disable @typescript-eslint/no-explicit-any */
-      for (const childType of (this.constructor as any).childTypes) {
-        if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
-          delete obj[(this.constructor as any).resourceType][resourceTypes[childType]];
-          /* eslint-enable @typescript-eslint/no-explicit-any */
-        } else {
-          delete obj[resourceTypes[childType]];
-        }
+  /**
+   * Removes children from obj so that the Resource can be updated
+   *
+   * @private
+   * @param {object} obj object to remove children from
+   * @returns {object} obj without children
+   * @memberof Resource
+   */
+  private removeChildren(obj: object): object {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    for (const childType of (this.constructor as any).childTypes) {
+      if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
+        delete obj[(this.constructor as any).resourceType][resourceTypes[childType]];
+        /* eslint-enable @typescript-eslint/no-explicit-any */
+      } else {
+        delete obj[resourceTypes[childType]];
       }
-      return obj;
     }
+    return obj;
+  }
 
-    /**
-     * Delete the resource in DataTrue
-     *
-     * @memberof Resource
-     */
-    public delete(): void {
-      const uri = [
-        DataTrue.apiEndpoint,
-        "management_api/v1",
-        (this.constructor as any).resourceType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
-        this.contextID].join("/");
+  /**
+   * Delete the resource in DataTrue
+   *
+   * @memberof Resource
+   */
+  public delete(): void {
+    const uri = [
+      config.apiEndpoint,
+      "management_api/v1",
+      (this.constructor as any).resourceType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
+      this.contextID].join("/");
 
-      const request = DataTrue._makeRequest("delete", uri);
-    }
+    const request = _makeRequest("delete", uri);
   }
 }
