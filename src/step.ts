@@ -67,7 +67,7 @@ namespace DataTrue {
   export class Step extends DataTrue.Resource {
     public static readonly contextType: string = "test";
     public static readonly resourceType: string = "step";
-    public static readonly children: readonly string[] = ["tagValidations", "dataLayerValidations"];
+    public static readonly childTypes: readonly string[] = ["tagValidations", "dataLayerValidations"];
 
     private tagValidations: DataTrue.TagValidation[] = [];
     private dataLayerValidations: DataTrue.DataLayerValidation[] = [];
@@ -84,7 +84,7 @@ namespace DataTrue {
       return DataTrue.Step.fromJSON(obj);
     }
 
-    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.Step {
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.Step { // eslint-disable-line @typescript-eslint/no-explicit-any
       const { name, id, action, tag_validations, data_layer_validations, ...options } = obj;
 
       const step = new DataTrue.Step(name, action);

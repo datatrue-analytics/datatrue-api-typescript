@@ -30,7 +30,7 @@ namespace DataTrue {
     public static readonly contextType: string = "suite";
     public static readonly resourceType: string = "test";
     public static readonly resourceTypeRun: string = "TestScenario";
-    public static readonly children: string[] = ["steps", "tagValidations"];
+    public static readonly childTypes: string[] = ["steps", "tagValidations"];
 
     private steps: DataTrue.Step[] = [];
     private tagValidations: DataTrue.TagValidation[] = [];
@@ -48,7 +48,7 @@ namespace DataTrue {
       return DataTrue.Test.fromJSON(obj);
     }
 
-    public static fromJSON(obj: Record<string, any>, copy: boolean = false): Test {
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): Test { // eslint-disable-line @typescript-eslint/no-explicit-any
       const { name, id, steps, tag_validations, ...options } = obj;
 
       const test = new DataTrue.Test(name);
@@ -90,11 +90,11 @@ namespace DataTrue {
       super.insertChild(tagValidation, index, "tagValidations");
     }
 
-    public deleteStep(index): void {
+    public deleteStep(index: number): void {
       super.deleteChild(index, "steps");
     }
 
-    public deleteTagValidation(index): void {
+    public deleteTagValidation(index: number): void {
       super.deleteChild(index, "tagValidations");
     }
 

@@ -15,7 +15,7 @@ namespace DataTrue {
     public static readonly contextType: string = "account";
     public static readonly resourceType: string = "suite";
     public static readonly resourceTypeRun: string = "Suite";
-    public static readonly children: readonly string[] = ["tests"];
+    public static readonly childTypes: readonly string[] = ["tests"];
 
     private tests: Test[] = [];
 
@@ -32,7 +32,7 @@ namespace DataTrue {
       return DataTrue.Suite.fromJSON(obj);
     }
 
-    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.Suite {
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.Suite { // eslint-disable-line @typescript-eslint/no-explicit-any
       const { name, id, tests, ...options } = obj;
 
       const suite = new DataTrue.Suite(name);

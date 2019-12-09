@@ -24,7 +24,7 @@ namespace DataTrue {
   export class DataLayerValidation extends DataTrue.Resource {
     public static readonly contextType: string = "step";
     public static readonly resourceType: string = "data_layer_validations";
-    public static readonly children: string[] = [];
+    public static readonly childTypes: string[] = [];
 
     private propertyValidations: DataTrue.PropertyValidation[] = [];
 
@@ -40,7 +40,7 @@ namespace DataTrue {
       return DataTrue.DataLayerValidation.fromJSON(obj);
     }
 
-    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.DataLayerValidation {
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.DataLayerValidation { // eslint-disable-line @typescript-eslint/no-explicit-any
       const { name, id, property_validations, ...options } = obj;
 
       const dataLayerValidation = new DataTrue.DataLayerValidation(name);

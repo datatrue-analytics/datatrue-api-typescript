@@ -43,7 +43,7 @@ namespace DataTrue {
   export abstract class Resource {
     public static readonly contextType: string;
     public static readonly resourceType: string;
-    public static readonly children: readonly string[];
+    public static readonly childTypes: readonly string[];
     public static readonly resourceTypeRun?: string;
 
     protected toDelete: Resource[] = [];
@@ -61,7 +61,7 @@ namespace DataTrue {
      * @param {number} id the ID of the resource
      * @memberof Resource
      */
-    public static fromID(id: number): void { }
+    public static fromID(id: number): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
 
     /**
      * Create a resource from an object
@@ -71,7 +71,7 @@ namespace DataTrue {
      * @param {boolean} [copy=false] whether to create a copy of the resource or not (removes resource IDs)
      * @memberof Resource
      */
-    public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { }
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { } // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 
     /**
      * Convert the resource to an Object
@@ -120,8 +120,8 @@ namespace DataTrue {
      */
     public setResourceID(id: number): void {
       this.resourceID = id;
-      (this.constructor as any).children.forEach((childs: string) => {
-        this[childs].forEach((child: DataTrue.Resource) => {
+      (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+        this[childType].forEach((child: DataTrue.Resource) => {
           child.setContextID(id);
         });
       });
@@ -205,12 +205,12 @@ namespace DataTrue {
      * @memberof Resource
      */
     protected create(): void {
-      const resourceType: string = (this.constructor as any).resourceType;
+      const resourceType: string = (this.constructor as any).resourceType; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
-        (this.constructor as any).contextType + "s",
+        (this.constructor as any).contextType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
         this.contextID,
         resourceType + "s"].join("/");
 
@@ -219,10 +219,10 @@ namespace DataTrue {
 
       this.setResourceID(response[resourceType]["id"]);
 
-      (this.constructor as any).children.forEach((childs: string) => {
-        if (response[resourceType][resourceTypes[childs]] !== undefined) {
-          response[resourceType][resourceTypes[childs]].forEach((childObj, index) => {
-            this[childs][index].setResourceID(childObj["id"]);
+      (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+        if (response[resourceType][resourceTypes[childType]] !== undefined) {
+          response[resourceType][resourceTypes[childType]].forEach((childObj, index) => {
+            this[childType][index].setResourceID(childObj["id"]);
           });
         }
       });
@@ -238,15 +238,15 @@ namespace DataTrue {
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
-        (this.constructor as any).resourceType + "s",
+        (this.constructor as any).resourceType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
         this.resourceID].join("/");
 
       const payload = this.toJSON();
 
       const request = DataTrue._makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
 
-      for (const childs of (this.constructor as any).children) {
-        this[childs].forEach((child: DataTrue.Resource, index: number) => {
+      for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
+        this[childType].forEach((child: DataTrue.Resource) => {
           child.save();
         });
       }
@@ -258,14 +258,14 @@ namespace DataTrue {
      * @protected
      * @param {object} child child to add to the Resource
      * @param {number} [index=0] index to add the child at
-     * @param {string} childType type of the child
+     * @param {string} resourceType type of the child
      * @memberof Resource
      */
-    protected insertChild(child: object, index: number = 0, childType: string): void {
-      this[childType].splice(index, 0, child);
-      for (const childs of (this.constructor as any).children) {
-        if (childs === childType) {
-          this[childType].forEach((child: DataTrue.Resource, index: number) => {
+    protected insertChild(child: object, index: number = 0, resourceType: string): void {
+      this[resourceType].splice(index, 0, child);
+      for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
+        if (childType === resourceType) {
+          this[resourceType].forEach((child: DataTrue.Resource, index: number) => {
             child.setOptions({ position: index + 1 });
           });
           break;
@@ -295,11 +295,13 @@ namespace DataTrue {
      * @memberof Resource
      */
     private removeChildren(obj: object): object {
-      for (const childs of (this.constructor as any).children) {
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      for (const childType of (this.constructor as any).childTypes) {
         if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
-          delete obj[(this.constructor as any).resourceType][resourceTypes[childs]];
+          delete obj[(this.constructor as any).resourceType][resourceTypes[childType]];
+          /* eslint-enable @typescript-eslint/no-explicit-any */
         } else {
-          delete obj[resourceTypes[childs]];
+          delete obj[resourceTypes[childType]];
         }
       }
       return obj;
@@ -314,7 +316,7 @@ namespace DataTrue {
       const uri = [
         DataTrue.apiEndpoint,
         "management_api/v1",
-        (this.constructor as any).resourceType + "s",
+        (this.constructor as any).resourceType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
         this.contextID].join("/");
 
       const request = DataTrue._makeRequest("delete", uri);

@@ -35,7 +35,7 @@ namespace DataTrue {
   export class TagValidation extends DataTrue.Resource {
     public static readonly contextType: string = "step";
     public static readonly resourceType: string = "tag_validation";
-    public static readonly children: string[] = [];
+    public static readonly childTypes: string[] = [];
 
     private queryValidations: DataTrue.QueryValidation[] = [];
 
@@ -59,7 +59,7 @@ namespace DataTrue {
       return this.fromJSON(obj);
     }
 
-    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.TagValidation {
+    public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataTrue.TagValidation { // eslint-disable-line @typescript-eslint/no-explicit-any
       const { name, id, tag_definition, query_validation, ...options } = obj;
 
       if (Object.prototype.hasOwnProperty.call(options, "interception")) {
