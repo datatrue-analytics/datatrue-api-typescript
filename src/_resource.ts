@@ -11,6 +11,11 @@ namespace DataTrue {
     tests: "tests",
   };
 
+  export interface ResourceOptions {
+    description?: string,
+    position?: number,
+  }
+
   /**
    * Make a HTTP request to DataTrue
    *
@@ -135,11 +140,11 @@ namespace DataTrue {
     /**
      * Set options from the passed options object
      *
-     * @param {object} options the object to set options from
+     * @param {DataTrue.ResourceOptions} options the object to set options from
      * @param {boolean} [override] whether to override the options object
      * @memberof Resource
      */
-    public setOptions(options: object, override?: boolean): void {
+    public setOptions(options: DataTrue.ResourceOptions, override?: boolean): void {
       if (override) {
         this.options = options;
       } else {
@@ -241,7 +246,7 @@ namespace DataTrue {
       const request = DataTrue._makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
 
       for (const childs of (this.constructor as any).children) {
-        this[childs].forEach(child => {
+        this[childs].forEach((child: DataTrue.Resource, index: number) => {
           child.save();
         });
       }
@@ -258,6 +263,11 @@ namespace DataTrue {
      */
     protected insertChild(child: object, index: number = 0, childType: string): void {
       this[childType].splice(index, 0, child);
+      if ((this.constructor as any).children.includes(childType)) {
+        (this.constructor as any).children[childType].forEach((child: DataTrue.Resource, index: number) => {
+          child.setOptions({ position: index + 1 });
+        });
+      }
     }
 
     /**

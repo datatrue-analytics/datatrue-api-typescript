@@ -1,9 +1,7 @@
 /// <reference path="_resource.ts" />
 /// <reference path="runnable.ts" />
 namespace DataTrue {
-  export interface SuiteOptions {
-    description?: string,
-    position?: number,
+  export interface SuiteOptions extends DataTrue.ResourceOptions {
     variables?: DataTrue.Variables,
     suite_type?: DataTrue.SuiteTypes,
   }

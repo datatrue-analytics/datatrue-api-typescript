@@ -1,9 +1,7 @@
 /// <reference path="_resource.ts" />
 /// <reference path="runnable.ts" />
 namespace DataTrue {
-  export interface TestOptions {
-    description?: string,
-    position?: number,
+  export interface TestOptions extends DataTrue.ResourceOptions {
     variables?: DataTrue.Variables,
     test_type?: DataTrue.TestTypes,
   }

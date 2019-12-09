@@ -40,9 +40,7 @@ namespace DataTrue {
     XPATH = "xpath",
   }
 
-  export interface StepOptions {
-    description?: string,
-    position?: number,
+  export interface StepOptions extends DataTrue.ResourceOptions {
     js_code?: string,
     target?: string,
     selector_type?: SelectorTypes,

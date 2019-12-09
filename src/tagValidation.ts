@@ -9,9 +9,7 @@ namespace DataTrue {
     decode_result_as?: string,
   }
 
-  export interface TagValidationOptions {
-    description?: string,
-    position?: number,
+  export interface TagValidationOptions extends DataTrue.ResourceOptions {
     enabled?: boolean,
     do_validation?: boolean,
     validate_absence?: boolean,

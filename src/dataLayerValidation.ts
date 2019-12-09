@@ -1,8 +1,6 @@
 /// <reference path="_resource.ts" />
 namespace DataTrue {
-  export interface DataLayerValidationOptions {
-    description?: string,
-    position?: number,
+  export interface DataLayerValidationOptions extends DataTrue.ResourceOptions {
     enabled?: boolean,
     source?: string,
     selector?: string,
