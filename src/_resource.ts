@@ -263,10 +263,13 @@ namespace DataTrue {
      */
     protected insertChild(child: object, index: number = 0, childType: string): void {
       this[childType].splice(index, 0, child);
-      if ((this.constructor as any).children.includes(childType)) {
-        (this.constructor as any).children[childType].forEach((child: DataTrue.Resource, index: number) => {
-          child.setOptions({ position: index + 1 });
-        });
+      for (const childs of (this.constructor as any).children) {
+        if (childs === childType) {
+          this[childType].forEach((child: DataTrue.Resource, index: number) => {
+            child.setOptions({ position: index + 1 });
+          });
+          break;
+        }
       }
     }
 
