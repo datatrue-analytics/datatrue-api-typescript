@@ -1,13 +1,17 @@
 {
     "compilerOptions": {
         "lib": [
-            "esnext"
+            "esnext",
+            "DOM"
         ],
         "declaration": true,
         "experimentalDecorators": true,
         "outDir": "dist",
-        "sourceMap": true
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "module": "commonjs"
     },
+    "files": ["webpack.config.ts"],
     "include": [
         "src/**/*"
     ],

@@ -1,5 +1,4 @@
-import { config } from "./index";
-import HTTPClient from "./httpClient/node";
+import HTTPClient from "./httpClient/httpClient";
 
 const resourceTypes = {
   dataLayerValidations: "data_layer_validations",
@@ -14,30 +13,6 @@ export interface ResourceOptions {
   position?: number,
 }
 
-/**
- * Make a HTTP request to DataTrue
- *
- * @private
- * @param {GoogleAppsScript.URL_Fetch.HttpMethod} method HTTP method
- * @param {string} uri uri to make request to
- * @param {string} [payload=""] payload to include in request
- * @returns {GoogleAppsScript.URL_Fetch.HTTPResponse} HTTP response
- * @memberof Resource
- */
-export const _makeRequest = function _makeRequest(method: GoogleAppsScript.URL_Fetch.HttpMethod, uri: string, payload: string = ""): GoogleAppsScript.URL_Fetch.HTTPResponse {
-  const options = {
-    "method": method,
-    "contentType": "application/json",
-    "payload": payload,
-    "headers": {
-      "content-type": "application/json",
-      "authorization": "Token " + config.managementToken,
-    },
-  };
-
-  return UrlFetchApp.fetch(uri, options);
-};
-
 export default abstract class Resource {
   public static readonly contextType: string;
   public static readonly resourceType: string;
@@ -47,6 +22,9 @@ export default abstract class Resource {
   protected toDelete: Resource[] = [];
   protected resourceID?: number;
   protected contextID?: number;
+
+  protected static client: HTTPClient;
+  protected static config: { apiEndpoint: string, managementToken: string, ciToken: string };
 
   public options: object;
 
@@ -164,21 +142,20 @@ export default abstract class Resource {
    */
   protected static getResource(id: number, resourceType: string): string {
     const uri = [
-      config.apiEndpoint,
+      Resource.config.apiEndpoint,
       "management_api/v1",
       resourceType + "s",
       id].join("/");
 
-    const options = {
-      "method": "get" as GoogleAppsScript.URL_Fetch.HttpMethod,
-      "contentType": "application/json",
+    const response = Resource.client.makeRequest(uri, "get", {
+      body: this.toString(),
       "headers": {
         "content-type": "application/json",
-        "authorization": "Token " + config.managementToken,
+        "authorization": "Token " + Resource.config.managementToken,
       },
-    };
+    });
 
-    return UrlFetchApp.fetch(uri, options).getContentText();
+    return response.text;
   }
 
   /**
@@ -206,20 +183,27 @@ export default abstract class Resource {
     const resourceType: string = (this.constructor as any).resourceType; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const uri = [
-      config.apiEndpoint,
+      Resource.config.apiEndpoint,
       "management_api/v1",
       (this.constructor as any).contextType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
       this.contextID,
       resourceType + "s"].join("/");
 
-    const request = _makeRequest("post", uri, this.toString());
-    const response = JSON.parse(request.getContentText());
+    const response = Resource.client.makeRequest(uri, "post", {
+      body: this.toString(),
+      headers: {
+        "content-type": "application/json",
+        "authorization": "Token " + Resource.config.managementToken,
+      },
+    });
 
-    this.setResourceID(response[resourceType]["id"]);
+    const responseObj = JSON.parse(response.text);
+
+    this.setResourceID(responseObj[resourceType]["id"]);
 
     (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-      if (response[resourceType][resourceTypes[childType]] !== undefined) {
-        response[resourceType][resourceTypes[childType]].forEach((childObj, index) => {
+      if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
+        responseObj[resourceType][resourceTypes[childType]].forEach((childObj, index) => {
           this[childType][index].setResourceID(childObj["id"]);
         });
       }
@@ -234,14 +218,20 @@ export default abstract class Resource {
    */
   protected update(): void {
     const uri = [
-      config.apiEndpoint,
+      Resource.config.apiEndpoint,
       "management_api/v1",
       (this.constructor as any).resourceType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
       this.resourceID].join("/");
 
     const payload = this.toJSON();
 
-    const request = _makeRequest("put", uri, JSON.stringify(this.removeChildren(payload)));
+    Resource.client.makeRequest(uri, "put", {
+      body: JSON.stringify(this.removeChildren(payload)),
+      headers: {
+        "content-type": "application/json",
+        "authorization": "Token " + Resource.config.managementToken,
+      },
+    });
 
     for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
       this[childType].forEach((child: Resource) => {
@@ -312,11 +302,16 @@ export default abstract class Resource {
    */
   public delete(): void {
     const uri = [
-      config.apiEndpoint,
+      Resource.config.apiEndpoint,
       "management_api/v1",
       (this.constructor as any).resourceType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
       this.contextID].join("/");
 
-    const request = _makeRequest("delete", uri);
+    Resource.client.makeRequest(uri, "delete", {
+      headers: {
+        "content-type": "application/json",
+        "authorization": "Token " + Resource.config.managementToken,
+      },
+    });
   }
 }

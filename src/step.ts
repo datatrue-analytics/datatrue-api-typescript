@@ -1,4 +1,4 @@
-import Resource, { ResourceOptions } from "./_resource";
+import Resource, { ResourceOptions } from "./resource";
 import DataLayerValidation from "./dataLayerValidation";
 import TagValidation from "./tagValidation";
 

@@ -1,5 +1,4 @@
-import { config } from "./index";
-import { _makeRequest } from "./_resource";
+import HTTPClient from "./httpClient/httpClient";
 
 export interface JobStatus {
   status: string,
@@ -42,22 +41,27 @@ export default interface Runnable {
  * @param {number} resourceID the ID of the resource to run
  * @returns {number} the ID of the job that was created
  */
-export const _run = function _run(email_users: number[] = [], resourceTypeRun: string, resourceID: number): number {
+export const _run = function _run(email_users: number[] = [], resourceTypeRun: string, resourceID: number, client: HTTPClient, apiEndpoint: string, ciToken: string): number {
   const uri = [
-    config.apiEndpoint,
+    apiEndpoint,
     "ci_api",
-    `test_runs?api_key=${config.ciToken}`,
+    `test_runs?api_key=${ciToken}`,
   ].join("/");
 
-  const request = _makeRequest("post", uri, JSON.stringify({
-    "test_run": {
-      "test_class": resourceTypeRun,
-      "test_id": resourceID,
-      "email_users": email_users,
+  const response = client.makeRequest(uri, "post", {
+    body: JSON.stringify({
+      "test_run": {
+        "test_class": resourceTypeRun,
+        "test_id": resourceID,
+        "email_users": email_users,
+      },
+    }),
+    headers: {
+      "content-type": "application/json",
     },
-  }));
+  });
 
-  return JSON.parse(request.getContentText())["job_id"];
+  return JSON.parse(response.text)["job_id"];
 };
 
 /**
@@ -66,22 +70,20 @@ export const _run = function _run(email_users: number[] = [], resourceTypeRun: s
  * @param {number} jobID ID of the job to fetch progress for
  * @returns {JobStatus} the status of the running test
  */
-export const _progress = function _progress(jobID: number): JobStatus {
+export const _progress = function _progress(jobID: number, client: HTTPClient, apiEndpoint: string, ciToken: string): JobStatus {
   const uri = [
-    config.apiEndpoint,
+    apiEndpoint,
     "ci_api",
     "test_runs",
     "progress",
-    `${jobID}?api_key=${config.ciToken}`,
+    `${jobID}?api_key=${ciToken}`,
   ].join("/");
 
-  const options = {
-    "method": "get" as GoogleAppsScript.URL_Fetch.HttpMethod,
-    "contentType": "application/json",
-    "headers": {
+  const response = client.makeRequest(uri, "get", {
+    headers: {
       "content-type": "application/json",
     },
-  };
+  });
 
-  return JSON.parse(UrlFetchApp.fetch(uri, options).getContentText());
+  return JSON.parse(response.text);
 };

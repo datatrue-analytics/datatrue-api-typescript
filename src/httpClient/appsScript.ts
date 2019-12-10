@@ -1,7 +1,7 @@
 import HTTPClient, { HTTPOptions, Response, Method } from "./httpClient";
 
-export default class AppsScriptClient {
-  public static makeRequest(url: string, method: Method, options: HTTPOptions): Response {
+export default class AppsScriptClient implements HTTPClient {
+  public makeRequest(url: string, method: Method, options: HTTPOptions): Response {
     options["method"] = method;
     options["contentType"] = "application/json";
 

@@ -1,4 +1,4 @@
-import Resource, { ResourceOptions } from "./_resource";
+import Resource, { ResourceOptions } from "./resource";
 import Runnable, { _run, _progress, JobStatus } from "./runnable";
 import Step from "./step";
 import TagValidation from "./tagValidation";
@@ -142,10 +142,10 @@ export default class Test extends Resource implements Runnable {
   }
 
   public run(email_users: number[] = []): void {
-    this.jobID = _run(email_users, Test.resourceTypeRun, this.getResourceID());
+    this.jobID = _run(email_users, Test.resourceTypeRun, this.getResourceID(), Resource.client, Resource.config.apiEndpoint, Resource.config.ciToken);
   }
 
   public progress(): JobStatus {
-    return _progress(this.jobID);
+    return _progress(this.jobID, Resource.client, Resource.config.apiEndpoint, Resource.config.ciToken);
   }
 }

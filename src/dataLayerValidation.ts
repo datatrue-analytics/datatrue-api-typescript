@@ -1,4 +1,4 @@
-import Resource, { ResourceOptions } from "./_resource";
+import Resource, { ResourceOptions } from "./resource";
 
 export interface DataLayerValidationOptions extends ResourceOptions {
   enabled?: boolean,
