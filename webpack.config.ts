@@ -11,7 +11,7 @@ const config: webpack.Configuration = {
   mode: isProduction ? "production" : "none",
   entry: `${src}/indexGAS.ts`,
   output: {
-    filename: "code.js",
+    filename: "index.js",
     path: destination,
   },
   resolve: {
@@ -28,7 +28,12 @@ const config: webpack.Configuration = {
               babelrc: true,
             },
           },
-          { loader: "ts-loader" },
+          {
+            loader: "ts-loader",
+            options: {
+              configFile: "tsconfig.gas.json",
+            },
+          },
         ],
       },
     ],

@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.gas.json",
+  "files": [
+    "webpack.config.ts"
+  ]
+}
