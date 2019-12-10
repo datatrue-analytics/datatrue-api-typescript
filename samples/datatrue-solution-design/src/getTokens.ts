@@ -4,14 +4,14 @@ function getTokens(): void {
 
   const userProperties = PropertiesService.getUserProperties();
 
-  let managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
-  let ciToken = userProperties.getProperty("DATATRUE_CI_TOKEN");
+  let managementToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
+  let ciToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
 
   if (managementToken === null || ciToken === null) {
     setTokens();
 
-    managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
-    ciToken = userProperties.getProperty("DATATRUE_CI_TOKEN");
+    managementToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
+    ciToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
   }
 
   DataTrue.managementToken = managementToken;

@@ -9,7 +9,7 @@ function setTokens(): void {
   const ciToken = ciTokenPrompt.getResponseText();
 
   userProperties.setProperties({
-    "DATATRUE_MANAGEMENT_TOKEN": managementToken,
-    "DATATRUE_CI_TOKEN": ciToken,
+    "DATATRUE_USER_TOKEN": managementToken,
+    "DATATRUE_ACCOUNT_TOKEN": ciToken,
   });
 }
