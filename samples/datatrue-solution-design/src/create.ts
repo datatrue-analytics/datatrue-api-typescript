@@ -36,7 +36,8 @@ function create(): void {
   let test: DataTrue.Test;
 
   if (testID) {
-    test = DataTrue.Test.fromID(parseInt(testID));
+    // test = DataTrue.Test.fromID(parseInt(testID));
+    test = new DataTrue.Test(testName, parseInt(suiteID), { description: testDescription });
   } else {
     test = new DataTrue.Test(testName, parseInt(suiteID), { description: testDescription });
   }
