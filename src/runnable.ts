@@ -28,7 +28,7 @@ export interface JobStatus {
 }
 
 export default interface Runnable {
-  jobID: number,
+  jobID?: number,
 
   run(email_users: number[]): void,
   progress(callback: (jobStatus: JobStatus) => void, thisArg: any): void, // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -79,7 +79,7 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
  * @param {(jobStatus: JobStatus) => void} callback callback to execute once the progress has been retrieved
  * @param {*} thisArg context to execute the callback in
  */
-export function _progress(jobID: number, client: HTTPClient, config: Config, callback: (jobStatus: JobStatus) => void, thisArg: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+export function _progress(jobID: number, client: HTTPClient, config: Config, callback?: (jobStatus: JobStatus) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
   const uri = [
     config.apiEndpoint,
     "ci_api",

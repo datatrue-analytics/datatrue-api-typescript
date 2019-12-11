@@ -81,7 +81,7 @@ export default class TagValidation extends Resource {
     tagValidation.setOptions(options, true);
 
     if (query_validation !== undefined) {
-      query_validation.forEach(queryValidationObj => {
+      query_validation.forEach((queryValidationObj: QueryValidation) => {
         tagValidation.insertQueryValidation(queryValidationObj);
       });
     }
@@ -105,15 +105,15 @@ export default class TagValidation extends Resource {
     super.setOptions(options, override);
   }
 
-  public toJSON(): object {
-    const obj: object = {
+  public toJSON(): Record<string, any> {
+    const obj: Record<string, any> = {
       name: this.name,
       tag_definition: this.tagDefinition,
       query_validation: this.queryValidations,
     };
 
     for (const option in this.options) {
-      obj[option] = this.options[option];
+      obj[option] = (this.options as Record<string, any>)[option];
     }
 
     if (Object.prototype.hasOwnProperty.call(obj, "interception")) {

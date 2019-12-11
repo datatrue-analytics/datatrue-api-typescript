@@ -37,7 +37,7 @@ export default class Test extends Resource implements Runnable {
   private steps: Step[] = [];
   private tagValidations: TagValidation[] = [];
 
-  public jobID: number;
+  public jobID?: number;
   public options: TestOptions = { variables: {} };
 
   public constructor(name: string, public contextID?: number, options: TestOptions = {}) {
@@ -63,7 +63,7 @@ export default class Test extends Resource implements Runnable {
     test.setOptions(options, true);
 
     if (steps !== undefined) {
-      steps.forEach(stepObj => {
+      steps.forEach((stepObj: Record<string, any>) => {
         const step = Step.fromJSON(stepObj);
         step.setContextID(id);
         if (copy) {
@@ -74,7 +74,7 @@ export default class Test extends Resource implements Runnable {
     }
 
     if (tag_validations !== undefined) {
-      tag_validations.forEach(TagValidationObj => {
+      tag_validations.forEach((TagValidationObj: Record<string, any>) => {
         const tagValidation = TagValidation.fromJSON(TagValidationObj);
         tagValidation.setContextID(id);
         if (copy) {
@@ -112,7 +112,7 @@ export default class Test extends Resource implements Runnable {
   }
 
   public setVariable(name: string, type: VariableTypes, value: string): void {
-    if (!Object.prototype.hasOwnProperty.call(this.options, "variables")) {
+    if (this.options.variables === undefined) {
       this.options.variables = {};
     }
     this.options.variables[name] = {
@@ -125,8 +125,8 @@ export default class Test extends Resource implements Runnable {
     super.setOptions(options, override);
   }
 
-  public toJSON(): object {
-    const obj: object = {};
+  public toJSON(): Record<string, any> {
+    const obj: Record<string, any> = {};
 
     obj[Test.resourceType] = {
       name: this.name,
@@ -138,19 +138,27 @@ export default class Test extends Resource implements Runnable {
     }
 
     for (const option in this.options) {
-      obj[Test.resourceType][option] = this.options[option];
+      obj[Test.resourceType][option] = (this.options as Record<string, any>)[option];
     }
 
     return obj;
   }
 
   public run(email_users: number[] = []): void {
-    _run(email_users, Test.resourceTypeRun, this.getResourceID(), Resource.client, Resource.config, (jobID: number) => {
-      this.jobID = jobID;
-    }, this);
+    const resourceID = this.getResourceID();
+    if (resourceID === undefined) {
+      throw new Error("Tests can only be run once they have been saved.");
+    } else {
+      _run(email_users, Test.resourceTypeRun, resourceID, Resource.client, Resource.config, (jobID: number) => {
+        this.jobID = jobID;
+      }, this);
+    }
   }
 
   public progress(callback?: (jobStatus: JobStatus) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+    if (this.jobID === undefined) {
+      throw new Error("You must run the test before fetching progress.");
+    }
     _progress(this.jobID, Resource.client, Resource.config, callback, thisArg);
   }
 }

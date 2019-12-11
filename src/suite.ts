@@ -20,7 +20,7 @@ export default class Suite extends Resource implements Runnable {
 
   private tests: Test[] = [];
 
-  public jobID: number;
+  public jobID?: number;
   public options: SuiteOptions = { variables: {} };
 
   public constructor(name: string, public contextID?: number, options: SuiteOptions = {}) {
@@ -35,14 +35,16 @@ export default class Suite extends Resource implements Runnable {
       if (suiteObj.tests !== undefined) {
         const tests: Test[] = new Array(suiteObj.tests.length);
 
-        suiteObj.tests.forEach((testObj: object, index: number) => {
+        suiteObj.tests.forEach((testObj: Record<string, any>, index: number) => {
           Test.fromID(testObj["id"], (test: Test) => {
             test.setContextID(id);
             tests[index] = test;
             if (tests.filter(fullTest => fullTest !== undefined).length === tests.length) {
               suiteObj.tests = tests.map(fullTest => fullTest.toJSON()[Test.resourceType]);
 
-              callback.call(thisArg, Suite.fromJSON(suiteObj));
+              if (typeof callback === "function") {
+                callback.call(thisArg, Suite.fromJSON(suiteObj));
+              }
             }
           });
         });
@@ -60,7 +62,7 @@ export default class Suite extends Resource implements Runnable {
     suite.setOptions(options, true);
 
     if (tests !== undefined) {
-      tests.forEach(testObj => {
+      tests.forEach((testObj: Record<string, any>) => {
         const test = Test.fromJSON(testObj);
         test.setContextID(id);
         if (copy) {
@@ -74,7 +76,7 @@ export default class Suite extends Resource implements Runnable {
   }
 
   public setVariable(name: string, type: VariableTypes, value: string): void {
-    if (!Object.prototype.hasOwnProperty.call(this.options, "variables")) {
+    if (this.options.variables === undefined) {
       this.options.variables = {};
     }
     this.options.variables[name] = {
@@ -115,15 +117,15 @@ export default class Suite extends Resource implements Runnable {
     }, this);
   }
 
-  public toJSON(): object {
-    const obj = {};
+  public toJSON(): Record<string, any> {
+    const obj: Record<string, any> = {};
 
     obj[Suite.resourceType] = {
       name: this.name,
     };
 
     for (const option in this.options) {
-      obj[Suite.resourceType][option] = this.options[option];
+      obj[Suite.resourceType][option] = (this.options as Record<string, any>)[option];
     }
 
     if (this.tests.length) {
@@ -134,12 +136,20 @@ export default class Suite extends Resource implements Runnable {
   }
 
   public run(email_users: number[] = []): void {
-    _run(email_users, Suite.resourceTypeRun, this.getResourceID(), Resource.client, Resource.config, (jobID: number) => {
-      this.jobID = jobID;
-    }, this);
+    const resourceID = this.getResourceID();
+    if (resourceID === undefined) {
+      throw new Error("Suites can only be run once they have been saved.");
+    } else {
+      _run(email_users, Suite.resourceTypeRun, resourceID, Resource.client, Resource.config, (jobID: number) => {
+        this.jobID = jobID;
+      }, this);
+    }
   }
 
   public progress(callback: (jobStatus: JobStatus) => void, thisArg: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+    if (this.jobID === undefined) {
+      throw new Error("You must run the suite before fetching progress.");
+    }
     _progress(this.jobID, Resource.client, Resource.config, callback, thisArg);
   }
 }

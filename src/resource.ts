@@ -1,6 +1,6 @@
 import HTTPClient from "./httpClient/httpClient";
 
-const resourceTypes = {
+const resourceTypes: Record<string, string> = {
   dataLayerValidations: "data_layer_validations",
   steps: "steps",
   suites: "suites",
@@ -32,7 +32,7 @@ export default abstract class Resource {
   protected static client: HTTPClient;
   protected static config: Config;
 
-  public options: ResourceOptions;
+  public options: ResourceOptions = {};
 
   public constructor(public name: string) { }
 
@@ -61,10 +61,10 @@ export default abstract class Resource {
    * Convert the resource to an Object
    *
    * @abstract
-   * @returns {object} object representation of the resource
+   * @returns {Record<string, any>} object representation of the resource
    * @memberof Resource
    */
-  public abstract toJSON(): object;
+  public abstract toJSON(): Record<string, any>;
 
   /**
    * Convert the resource to a JSON string
@@ -79,33 +79,33 @@ export default abstract class Resource {
   /**
    * Gets the resourceID of a resource
    *
-   * @returns {number} resourceID of the resource
+   * @returns {(number | undefined)} resourceID of the resource
    * @memberof Resource
    */
-  public getResourceID(): number {
+  public getResourceID(): number | undefined {
     return this.resourceID;
   }
 
   /**
    * Gets the contextID of a resource
    *
-   * @returns {number} contextID of the resource
+   * @returns {(number | undefined)} contextID of the resource
    * @memberof Resource
    */
-  public getContextID(): number {
+  public getContextID(): number | undefined {
     return this.contextID;
   }
 
   /**
    * Sets the resourceID of a resource
    *
-   * @param {number} id the resourceID to set
+   * @param {(number | undefined)} id the resourceID to set
    * @memberof Resource
    */
-  public setResourceID(id: number): void {
+  public setResourceID(id: number | undefined): void {
     this.resourceID = id;
     (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-      this[childType].forEach((child: Resource) => {
+      (this as Record<string, any>)[childType].forEach((child: Resource) => {
         child.setContextID(id);
       });
     });
@@ -114,10 +114,10 @@ export default abstract class Resource {
   /**
    * Sets the contextID of a resource
    *
-   * @param {number} id the contextID to set
+   * @param {(number | undefined)} id the contextID to set
    * @memberof Resource
    */
-  public setContextID(id: number): void {
+  public setContextID(id: number | undefined): void {
     this.contextID = id;
   }
 
@@ -221,8 +221,8 @@ export default abstract class Resource {
 
       (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
         if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
-          responseObj[resourceType][resourceTypes[childType]].forEach((childObj: object, index: number) => {
-            this[childType][index].setResourceID(childObj["id"]);
+          responseObj[resourceType][resourceTypes[childType]].forEach((childObj: Record<string, any>, index: number) => {
+            (this as Record<string, any>)[childType][index].setResourceID(childObj["id"]);
           });
         }
       });
@@ -256,7 +256,7 @@ export default abstract class Resource {
       },
     }, () => {
       for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
-        this[childType].forEach((child: Resource) => {
+        (this as Record<string, any>)[childType].forEach((child: Resource) => {
           child.save();
         });
       }
@@ -277,9 +277,9 @@ export default abstract class Resource {
    * @memberof Resource
    */
   protected insertChild(child: object, index: number = 0, resourceType: string): void {
-    this[resourceType].splice(index, 0, child);
+    (this as Record<string, any>)[resourceType].splice(index, 0, child);
     if ((this.constructor as any).childTypes.indexOf(resourceType) > -1) { // eslint-disable-line @typescript-eslint/no-explicit-any
-      this[resourceType].forEach((child: Resource, index: number) => {
+      (this as Record<string, any>)[resourceType].forEach((child: Resource, index: number) => {
         child.setOptions({ position: index + 1 });
       });
     }
@@ -294,19 +294,19 @@ export default abstract class Resource {
    * @memberof Resource
    */
   protected deleteChild(index: number, childType: string): void {
-    this.toDelete.push(this[childType][index]);
-    this[childType].splice(index, 1);
+    this.toDelete.push((this as Record<string, any>)[childType][index]);
+    (this as Record<string, any>)[childType].splice(index, 1);
   }
 
   /**
    * Removes children from obj so that the Resource can be updated
    *
    * @private
-   * @param {object} obj object to remove children from
+   * @param {Record<string, any>} obj object to remove children from
    * @returns {object} obj without children
    * @memberof Resource
    */
-  private removeChildren(obj: object): object {
+  private removeChildren(obj: Record<string, any>): object {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     for (const childType of (this.constructor as any).childTypes) {
       if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {

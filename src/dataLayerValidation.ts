@@ -53,7 +53,7 @@ export default class DataLayerValidation extends Resource {
     dataLayerValidation.setOptions(options, true);
 
     if (property_validations !== undefined) {
-      property_validations.forEach(propertyValidationObj => {
+      property_validations.forEach((propertyValidationObj: PropertyValidation) => {
         dataLayerValidation.insertPropertyValidation(propertyValidationObj);
       });
     }
@@ -77,14 +77,14 @@ export default class DataLayerValidation extends Resource {
     super.setOptions(options, override);
   }
 
-  public toJSON(): object {
-    const obj: object = {
+  public toJSON(): Record<string, any> {
+    const obj: Record<string, any> = {
       name: this.name,
       property_validations: this.propertyValidations,
     };
 
     for (const option in this.options) {
-      obj[option] = this.options[option];
+      obj[option] = (this.options as Record<string, any>)[option];
     }
 
     return obj;

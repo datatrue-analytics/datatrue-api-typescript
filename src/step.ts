@@ -99,7 +99,7 @@ export default class Step extends Resource {
     step.setOptions(options, true);
 
     if (tag_validations !== undefined) {
-      tag_validations.forEach(tagValidationObj => {
+      tag_validations.forEach((tagValidationObj: Record<string, any>) => {
         const tagValidation = TagValidation.fromJSON(tagValidationObj);
         tagValidation.setContextID(id);
         if (copy) {
@@ -110,7 +110,7 @@ export default class Step extends Resource {
     }
 
     if (data_layer_validations !== undefined) {
-      data_layer_validations.forEach(dataLayerValidationObj => {
+      data_layer_validations.forEach((dataLayerValidationObj: Record<string, any>) => {
         const dataLayerValidation = DataLayerValidation.fromJSON(dataLayerValidationObj);
         dataLayerValidation.setContextID(id);
         if (copy) {
@@ -151,14 +151,14 @@ export default class Step extends Resource {
     super.setOptions(options, override);
   }
 
-  public toJSON(): object {
-    const obj = {
+  public toJSON(): Record<string, any> {
+    const obj: Record<string, any> = {
       name: this.name,
       action: this.action,
     };
 
     for (const option in this.options) {
-      obj[option] = this.options[option];
+      obj[option] = (this.options as Record<string, any>)[option];
     }
 
     if (this.tagValidations.length) {

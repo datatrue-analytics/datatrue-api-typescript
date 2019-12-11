@@ -1,6 +1,8 @@
 import path from "path";
 import webpack from "webpack";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
 import GasPlugin from "gas-webpack-plugin";
 
 const src = path.resolve(__dirname, "src");
