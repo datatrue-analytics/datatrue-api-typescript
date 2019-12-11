@@ -134,7 +134,7 @@ export default class Test extends Resource implements Runnable {
     };
 
     if (this.tagValidations.length) {
-      obj["tag_validations"] = this.tagValidations.map(tagValidation => JSON.parse(tagValidation.toString()));
+      obj[Test.resourceType]["tag_validations"] = this.tagValidations.map(tagValidation => tagValidation.toJSON());
     }
 
     for (const option in this.options) {

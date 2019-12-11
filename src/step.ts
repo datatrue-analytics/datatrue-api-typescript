@@ -162,11 +162,11 @@ export default class Step extends Resource {
     }
 
     if (this.tagValidations.length) {
-      obj["tag_validations"] = this.tagValidations.map(tagValidation => JSON.parse(tagValidation.toString()));
+      obj["tag_validations"] = this.tagValidations.map(tagValidation => tagValidation.toJSON());
     }
 
     if (this.dataLayerValidations.length) {
-      obj["data_layer_validations"] = this.dataLayerValidations.map(dataLayerValidation => JSON.parse(dataLayerValidation.toString()));
+      obj["data_layer_validations"] = this.dataLayerValidations.map(dataLayerValidation => dataLayerValidation.toJSON());
     }
 
     return obj;

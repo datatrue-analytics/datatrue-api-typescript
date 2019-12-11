@@ -30,7 +30,23 @@ export default class Suite extends Resource implements Runnable {
 
   public static fromID(id: number, callback?: (suite: Suite) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
     super.getResource(id, Suite.resourceType, (resource: string) => {
-      callback.call(thisArg, Suite.fromJSON(JSON.parse(resource)));
+      const suiteObj = JSON.parse(resource);
+
+      if (suiteObj.tests !== undefined) {
+        const tests: Test[] = new Array(suiteObj.tests.length);
+
+        suiteObj.tests.forEach((testObj: object, index: number) => {
+          Test.fromID(testObj["id"], (test: Test) => {
+            test.setContextID(id);
+            tests[index] = test;
+            if (tests.filter(fullTest => fullTest !== undefined).length === tests.length) {
+              suiteObj.tests = tests.map(fullTest => fullTest.toJSON()[Test.resourceType]);
+
+              callback.call(thisArg, Suite.fromJSON(suiteObj));
+            }
+          });
+        });
+      }
     });
   }
 
@@ -43,26 +59,18 @@ export default class Suite extends Resource implements Runnable {
     }
     suite.setOptions(options, true);
 
-    const fullTests: Test[] = new Array(tests.length);
-
     if (tests !== undefined) {
-      tests.forEach((testObj: object, index: number) => {
-        Test.fromID(testObj["id"], (test: Test) => {
-          test.setContextID(id);
-          if (copy) {
-            test.setResourceID(undefined);
-          }
-          fullTests[index] = test;
-          if (fullTests.filter(fullTest => fullTest !== undefined).length === tests.length) {
-            fullTests.forEach(fullTest => {
-              suite.insertTest(fullTest);
-            });
-          }
-        });
+      tests.forEach(testObj => {
+        const test = Test.fromJSON(testObj);
+        test.setContextID(id);
+        if (copy) {
+          test.setResourceID(undefined);
+        }
+        suite.insertTest(test);
       });
     }
 
-    return suite; // TODO add callback
+    return suite;
   }
 
   public setVariable(name: string, type: VariableTypes, value: string): void {
@@ -119,14 +127,7 @@ export default class Suite extends Resource implements Runnable {
     }
 
     if (this.tests.length) {
-      obj[Suite.resourceType]["tests"] = this.tests.map(test => {
-        return {
-          id: test.getResourceID(),
-          name: test.name,
-          description: test.options.description,
-          test_type: test.options.test_type,
-        };
-      });
+      obj[Suite.resourceType]["tests"] = this.tests.map(test => test.toJSON()[Test.resourceType]);
     }
 
     return obj;

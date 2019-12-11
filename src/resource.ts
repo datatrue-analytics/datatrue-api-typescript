@@ -278,13 +278,10 @@ export default abstract class Resource {
    */
   protected insertChild(child: object, index: number = 0, resourceType: string): void {
     this[resourceType].splice(index, 0, child);
-    for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
-      if (childType === resourceType) {
-        this[resourceType].forEach((child: Resource, index: number) => {
-          child.setOptions({ position: index + 1 });
-        });
-        break;
-      }
+    if ((this.constructor as any).childTypes.indexOf(resourceType) > -1) { // eslint-disable-line @typescript-eslint/no-explicit-any
+      this[resourceType].forEach((child: Resource, index: number) => {
+        child.setOptions({ position: index + 1 });
+      });
     }
   }
 
