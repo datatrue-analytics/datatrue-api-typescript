@@ -1,12 +1,13 @@
 function create(): void {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
+  const ui = SpreadsheetApp.getUi();
 
   getTokens();
 
   const testName: string = sheet.getRange("B16").getDisplayValue();
   const testDescription: string = sheet.getRange("B17").getDisplayValue();
-  const accountID: string = sheet.getRange("B5").getDisplayValue();
+  let accountID: string = sheet.getRange("B5").getDisplayValue();
   let suiteID: string = sheet.getRange("B6").getDisplayValue();
   const testID: string = sheet.getRange("B7").getDisplayValue();
   const url: string = sheet.getRange("B9").getDisplayValue();
@@ -18,16 +19,30 @@ function create(): void {
   let path = url.match(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/)[2];
   path = (path === "") ? ".*" : path;
 
+  if (accountID === "") {
+    accountID = ui.prompt("Please enter your DataTrue Account ID", "", ui.ButtonSet.OK).getResponseText();
+    if (accountID === "") {
+      throw new Error("Account ID must be provided");
+    }
+  }
+
   sheet.getRange("B5").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/accounts/${accountID}/suites", "${accountID}")`);
   SpreadsheetApp.flush();
 
-  if (!suiteID) {
-    const sheetFile = DriveApp.getFileById(ss.getId());
-    const fileName = sheetFile.getName();
+  if (suiteID === "") {
+    suiteID = ui.prompt("Please enter your Suite ID", "Leave empty to create a new suite", ui.ButtonSet.OK).getResponseText();
 
-    const suite = new DataTrue.Suite(fileName, parseInt(accountID));
-    suite.save();
-    suiteID = suite.getResourceID().toString();
+    if (suiteID === "") {
+      const suiteName = ui.prompt("Please enter a name for your Suite", "", ui.ButtonSet.OK).getResponseText();
+
+      if (suiteName === "") {
+        throw new Error("Suite name must be provided");
+      }
+
+      const suite = new DataTrue.Suite(suiteName, parseInt(accountID));
+      suite.save();
+      suiteID = suite.getResourceID().toString();
+    }
   }
 
   sheet.getRange("B6").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
