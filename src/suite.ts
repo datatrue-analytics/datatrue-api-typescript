@@ -28,9 +28,10 @@ export default class Suite extends Resource implements Runnable {
     this.setOptions(options);
   }
 
-  public static fromID(id: number): Suite {
-    const obj = JSON.parse(super.getResource(id, Suite.resourceType));
-    return Suite.fromJSON(obj);
+  public static fromID(id: number, callback?: (suite: Suite) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+    super.getResource(id, Suite.resourceType, (resource: string) => {
+      callback.call(thisArg, Suite.fromJSON(JSON.parse(resource)));
+    });
   }
 
   public static fromJSON(obj: Record<string, any>, copy: boolean = false): Suite { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -42,18 +43,26 @@ export default class Suite extends Resource implements Runnable {
     }
     suite.setOptions(options, true);
 
+    const fullTests: Test[] = new Array(tests.length);
+
     if (tests !== undefined) {
-      tests.forEach(testObj => {
-        const test = Test.fromID(testObj["id"]);
-        test.setContextID(id);
-        if (copy) {
-          test.setResourceID(undefined);
-        }
-        suite.insertTest(test);
+      tests.forEach((testObj: object, index: number) => {
+        Test.fromID(testObj["id"], (test: Test) => {
+          test.setContextID(id);
+          if (copy) {
+            test.setResourceID(undefined);
+          }
+          fullTests[index] = test;
+          if (fullTests.filter(fullTest => fullTest !== undefined).length === tests.length) {
+            fullTests.forEach(fullTest => {
+              suite.insertTest(fullTest);
+            });
+          }
+        });
       });
     }
 
-    return suite;
+    return suite; // TODO add callback
   }
 
   public setVariable(name: string, type: VariableTypes, value: string): void {
@@ -82,11 +91,20 @@ export default class Suite extends Resource implements Runnable {
     return this.tests.slice();
   }
 
-  protected create(): void {
-    super.create();
-    this.tests.forEach(test => {
-      test.save();
-    });
+  protected create(callback: () => void, thisArg: any): void {
+    let done = 0;
+    super.create(() => {
+      this.tests.forEach(test => {
+        test.save(() => {
+          done++;
+          if (done === this.tests.length) {
+            if (typeof callback === "function") {
+              callback.call(thisArg);
+            }
+          }
+        });
+      });
+    }, this);
   }
 
   public toJSON(): object {
@@ -115,10 +133,12 @@ export default class Suite extends Resource implements Runnable {
   }
 
   public run(email_users: number[] = []): void {
-    this.jobID = _run(email_users, Suite.resourceTypeRun, this.getResourceID(), Resource.client, Resource.config.apiEndpoint, Resource.config.ciToken);
+    _run(email_users, Suite.resourceTypeRun, this.getResourceID(), Resource.client, Resource.config, (jobID: number) => {
+      this.jobID = jobID;
+    }, this);
   }
 
-  public progress(): JobStatus {
-    return _progress(this.jobID, Resource.client, Resource.config.apiEndpoint, Resource.config.ciToken);
+  public progress(callback: (jobStatus: JobStatus) => void, thisArg: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+    _progress(this.jobID, Resource.client, Resource.config, callback, thisArg);
   }
 }

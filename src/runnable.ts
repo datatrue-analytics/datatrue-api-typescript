@@ -1,4 +1,5 @@
 import HTTPClient from "./httpClient/httpClient";
+import { Config } from "./resource";
 
 export interface JobStatus {
   status: string,
@@ -30,7 +31,7 @@ export default interface Runnable {
   jobID: number,
 
   run(email_users: number[]): void,
-  progress(): JobStatus,
+  progress(callback: (jobStatus: JobStatus) => void, thisArg: any): void, // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**
@@ -39,16 +40,19 @@ export default interface Runnable {
  * @param {number[]} [email_users=[]] a list of IDs for who should be emailed regarding the test run
  * @param {string} resourceTypeRun the type of the resource being run
  * @param {number} resourceID the ID of the resource to run
- * @returns {number} the ID of the job that was created
+ * @param {HTTPClient} client client to make the HTTP request
+ * @param {Config} config config
+ * @param {(jobID: number) => void} [callback] callback to execute once the resource has been run
+ * @param {*} [thisArg] the context to execute the callback in
  */
-export const _run = function _run(email_users: number[] = [], resourceTypeRun: string, resourceID: number, client: HTTPClient, apiEndpoint: string, ciToken: string): number {
+export function _run(email_users: number[] = [], resourceTypeRun: string, resourceID: number, client: HTTPClient, config: Config, callback?: (jobID: number) => void, thisArg?: any): void {
   const uri = [
-    apiEndpoint,
+    config.apiEndpoint,
     "ci_api",
-    `test_runs?api_key=${ciToken}`,
+    `test_runs?api_key=${config.ciToken}`,
   ].join("/");
 
-  const response = client.makeRequest(uri, "post", {
+  client.makeRequest(uri, "post", {
     body: JSON.stringify({
       "test_run": {
         "test_class": resourceTypeRun,
@@ -59,31 +63,38 @@ export const _run = function _run(email_users: number[] = [], resourceTypeRun: s
     headers: {
       "content-type": "application/json",
     },
+  }, (response) => {
+    if (typeof callback === "function") {
+      callback.call(thisArg, JSON.parse(response.body)["job_id"]);
+    }
   });
-
-  return JSON.parse(response.text)["job_id"];
-};
+}
 
 /**
- * Retrieve the progress of a running test
+ *
  *
  * @param {number} jobID ID of the job to fetch progress for
- * @returns {JobStatus} the status of the running test
+ * @param {HTTPClient} client client to make the HTTP request
+ * @param {Config} config config
+ * @param {(jobStatus: JobStatus) => void} callback callback to execute once the progress has been retrieved
+ * @param {*} thisArg context to execute the callback in
  */
-export const _progress = function _progress(jobID: number, client: HTTPClient, apiEndpoint: string, ciToken: string): JobStatus {
+export function _progress(jobID: number, client: HTTPClient, config: Config, callback: (jobStatus: JobStatus) => void, thisArg: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
   const uri = [
-    apiEndpoint,
+    config.apiEndpoint,
     "ci_api",
     "test_runs",
     "progress",
-    `${jobID}?api_key=${ciToken}`,
+    `${jobID}?api_key=${config.ciToken}`,
   ].join("/");
 
-  const response = client.makeRequest(uri, "get", {
+  client.makeRequest(uri, "get", {
     headers: {
       "content-type": "application/json",
     },
+  }, (response) => {
+    if (typeof callback === "function") {
+      callback.call(thisArg, JSON.parse(response.body));
+    }
   });
-
-  return JSON.parse(response.text);
-};
+}

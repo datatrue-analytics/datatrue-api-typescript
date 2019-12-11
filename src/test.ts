@@ -45,9 +45,12 @@ export default class Test extends Resource implements Runnable {
     this.setOptions(options);
   }
 
-  public static fromID(id: number): Test {
-    const obj = JSON.parse(super.getResource(id, Test.resourceType));
-    return Test.fromJSON(obj);
+  public static fromID(id: number, callback?: (test: Test) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+    super.getResource(id, Test.resourceType, (resource: string) => {
+      if (typeof callback === "function") {
+        callback.call(thisArg, Test.fromJSON(JSON.parse(resource)));
+      }
+    });
   }
 
   public static fromJSON(obj: Record<string, any>, copy: boolean = false): Test { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -142,10 +145,12 @@ export default class Test extends Resource implements Runnable {
   }
 
   public run(email_users: number[] = []): void {
-    this.jobID = _run(email_users, Test.resourceTypeRun, this.getResourceID(), Resource.client, Resource.config.apiEndpoint, Resource.config.ciToken);
+    _run(email_users, Test.resourceTypeRun, this.getResourceID(), Resource.client, Resource.config, (jobID: number) => {
+      this.jobID = jobID;
+    }, this);
   }
 
-  public progress(): JobStatus {
-    return _progress(this.jobID, Resource.client, Resource.config.apiEndpoint, Resource.config.ciToken);
+  public progress(callback?: (jobStatus: JobStatus) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+    _progress(this.jobID, Resource.client, Resource.config, callback, thisArg);
   }
 }

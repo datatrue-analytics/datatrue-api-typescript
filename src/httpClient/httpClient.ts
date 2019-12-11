@@ -5,11 +5,11 @@ export interface HTTPOptions {
 
 export interface Response {
   status: number,
-  text: string,
+  body: string,
 }
 
 export type Method = "get" | "delete" | "patch" | "post" | "put";
 
 export default interface HTTPClient {
-  makeRequest: (url: string, method: Method, options: HTTPOptions) => Response,
+  makeRequest: (url: string, method: Method, options: HTTPOptions, callback?: (response?: Response) => void, thisArg?: any) => void, // eslint-disable-line @typescript-eslint/no-explicit-any
 }

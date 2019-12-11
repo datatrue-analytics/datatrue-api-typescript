@@ -35,9 +35,12 @@ export default class DataLayerValidation extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number): DataLayerValidation {
-    const obj = JSON.parse(super.getResource(id, DataLayerValidation.resourceType));
-    return DataLayerValidation.fromJSON(obj);
+  public static fromID(id: number, callback?: (dataLayerValidation: DataLayerValidation) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+    super.getResource(id, DataLayerValidation.resourceType, (resource: string) => {
+      if (typeof callback === "function") {
+        callback.call(thisArg, DataLayerValidation.fromJSON(JSON.parse(resource)));
+      }
+    });
   }
 
   public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataLayerValidation { // eslint-disable-line @typescript-eslint/no-explicit-any

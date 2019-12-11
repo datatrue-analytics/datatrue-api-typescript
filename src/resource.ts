@@ -13,6 +13,12 @@ export interface ResourceOptions {
   position?: number,
 }
 
+export interface Config {
+  apiEndpoint: string,
+  managementToken: string,
+  ciToken: string,
+}
+
 export default abstract class Resource {
   public static readonly contextType: string;
   public static readonly resourceType: string;
@@ -24,9 +30,9 @@ export default abstract class Resource {
   protected contextID?: number;
 
   protected static client: HTTPClient;
-  protected static config: { apiEndpoint: string, managementToken: string, ciToken: string };
+  protected static config: Config;
 
-  public options: object;
+  public options: ResourceOptions;
 
   public constructor(public name: string) { }
 
@@ -35,9 +41,11 @@ export default abstract class Resource {
    *
    * @static
    * @param {number} id the ID of the resource
+   * @param {(resource: Resource) => void} callback callback to execute once resource has been fetched
+   * @param {any} [thisArg] context of the callback
    * @memberof Resource
    */
-  public static fromID(id: number): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
+  public static fromID(id: number, callback: (resource: Resource) => void, thisArg?: any): void { } // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 
   /**
    * Create a resource from an object
@@ -134,28 +142,32 @@ export default abstract class Resource {
   /**
    * Fetch a resource from DataTrue
    *
+   * @protected
    * @static
    * @param {number} id the id of the resource to fetch
    * @param {string} resourceType the type of the resource to fetch
-   * @returns {string} the resource represented as a JSON string
+   * @param {(resource: string) => void} [callback] callback to execute once the resource has been fetched
+   * @param {*} [thisArg] context of the callback
    * @memberof Resource
    */
-  protected static getResource(id: number, resourceType: string): string {
+  protected static getResource(id: number, resourceType: string, callback?: (resource: string) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
       resourceType + "s",
       id].join("/");
 
-    const response = Resource.client.makeRequest(uri, "get", {
+    Resource.client.makeRequest(uri, "get", {
       body: this.toString(),
       "headers": {
         "content-type": "application/json",
         "authorization": "Token " + Resource.config.managementToken,
       },
+    }, (response) => {
+      if (typeof callback === "function") {
+        callback.call(thisArg, response.body);
+      }
     });
-
-    return response.text;
   }
 
   /**
@@ -163,14 +175,21 @@ export default abstract class Resource {
    *
    * @memberof Resource
    */
-  public save(): void {
+  public save(callback?: () => void, thisArg?: any): void {
+    const after = (): void => {
+      this.toDelete.forEach(child => child.delete());
+      this.toDelete = [];
+
+      if (typeof callback === "function") {
+        callback.call(thisArg);
+      }
+    };
+
     if (this.resourceID) {
-      this.update();
+      this.update(after, this);
     } else {
-      this.create();
+      this.create(after, this);
     }
-    this.toDelete.forEach(child => child.delete());
-    this.toDelete = [];
   }
 
   /**
@@ -179,7 +198,7 @@ export default abstract class Resource {
    * @protected
    * @memberof Resource
    */
-  protected create(): void {
+  protected create(callback?: () => void, thisArg?: any): void {
     const resourceType: string = (this.constructor as any).resourceType; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const uri = [
@@ -189,25 +208,29 @@ export default abstract class Resource {
       this.contextID,
       resourceType + "s"].join("/");
 
-    const response = Resource.client.makeRequest(uri, "post", {
+    Resource.client.makeRequest(uri, "post", {
       body: this.toString(),
       headers: {
         "content-type": "application/json",
         "authorization": "Token " + Resource.config.managementToken,
       },
-    });
+    }, (response) => {
+      const responseObj = JSON.parse(response.body);
 
-    const responseObj = JSON.parse(response.text);
+      this.setResourceID(responseObj[resourceType]["id"]);
 
-    this.setResourceID(responseObj[resourceType]["id"]);
+      (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+        if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
+          responseObj[resourceType][resourceTypes[childType]].forEach((childObj: object, index: number) => {
+            this[childType][index].setResourceID(childObj["id"]);
+          });
+        }
+      });
 
-    (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
-      if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
-        responseObj[resourceType][resourceTypes[childType]].forEach((childObj, index) => {
-          this[childType][index].setResourceID(childObj["id"]);
-        });
+      if (typeof callback === "function") {
+        callback.call(thisArg);
       }
-    });
+    }, this);
   }
 
   /**
@@ -216,7 +239,7 @@ export default abstract class Resource {
    * @protected
    * @memberof Resource
    */
-  protected update(): void {
+  protected update(callback?: () => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
@@ -231,13 +254,17 @@ export default abstract class Resource {
         "content-type": "application/json",
         "authorization": "Token " + Resource.config.managementToken,
       },
-    });
+    }, () => {
+      for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
+        this[childType].forEach((child: Resource) => {
+          child.save();
+        });
+      }
 
-    for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
-      this[childType].forEach((child: Resource) => {
-        child.save();
-      });
-    }
+      if (typeof callback === "function") {
+        callback.call(thisArg);
+      }
+    }, this);
   }
 
   /**

@@ -81,9 +81,12 @@ export default class Step extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number): Step {
-    const obj = JSON.parse(super.getResource(id, Step.resourceType));
-    return Step.fromJSON(obj);
+  public static fromID(id: number, callback?: (step: Step) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+    super.getResource(id, Step.resourceType, (resource: string) => {
+      if (typeof callback === "function") {
+        callback.call(thisArg, Step.fromJSON(JSON.parse(resource)));
+      }
+    });
   }
 
   public static fromJSON(obj: Record<string, any>, copy: boolean = false): Step { // eslint-disable-line @typescript-eslint/no-explicit-any

@@ -1,7 +1,7 @@
 import HTTPClient, { HTTPOptions, Response, Method } from "./httpClient";
 
 export default class AppsScriptClient implements HTTPClient {
-  public makeRequest(url: string, method: Method, options: HTTPOptions): Response {
+  public makeRequest(url: string, method: Method, options: HTTPOptions, callback?: (response?: Response) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
     options["method"] = method;
     options["contentType"] = "application/json";
 
@@ -10,8 +10,10 @@ export default class AppsScriptClient implements HTTPClient {
       delete options.body;
     }
 
-    const response =  UrlFetchApp.fetch(url, options);
+    const response = UrlFetchApp.fetch(url, options);
 
-    return { status: response.getResponseCode(), text: response.getContentText() };
+    if (typeof callback === "function") {
+      callback.call(thisArg, { status: response.getResponseCode, body: response.getContentText() });
+    }
   }
 }
