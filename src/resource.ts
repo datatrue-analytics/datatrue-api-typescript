@@ -173,6 +173,8 @@ export default abstract class Resource {
   /**
    * Save a resource to DataTrue
    *
+   * @param {() => void} [callback] callback to execute after the Resource has been saved
+   * @param {*} [thisArg] context of the callback
    * @memberof Resource
    */
   public save(callback?: () => void, thisArg?: any): void {
@@ -196,6 +198,8 @@ export default abstract class Resource {
    * Create the resource in DataTrue
    *
    * @protected
+   * @param {() => void} [callback] callback to execute after the Resource has been created
+   * @param {*} [thisArg] context of the callback
    * @memberof Resource
    */
   protected create(callback?: () => void, thisArg?: any): void {
@@ -237,6 +241,8 @@ export default abstract class Resource {
    * Update the resource and all children in DataTrue
    *
    * @protected
+   * @param {() => void} [callback] callback to execute after the Resource has been updated
+   * @param {*} [thisArg] context of the callback
    * @memberof Resource
    */
   protected update(callback?: () => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
