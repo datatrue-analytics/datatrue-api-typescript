@@ -254,7 +254,7 @@ export default abstract class Resource {
     const payload = this.toJSON();
 
     Resource.client.makeRequest(uri, "put", {
-      body: JSON.stringify(this.removeChildren(payload)),
+      body: JSON.stringify(this.beforeUpdate(payload)),
       headers: {
         "content-type": "application/json",
         "authorization": "Token " + Resource.config.managementToken,
@@ -311,7 +311,7 @@ export default abstract class Resource {
    * @returns {object} obj without children
    * @memberof Resource
    */
-  private removeChildren(obj: Record<string, any>): object {
+  private beforeUpdate(obj: Record<string, any>): object {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     for (const childType of (this.constructor as any).childTypes) {
       if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
