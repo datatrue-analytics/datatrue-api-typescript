@@ -45,7 +45,7 @@ export default abstract class Resource {
    * @param {any} [thisArg] context of the callback
    * @memberof Resource
    */
-  public static fromID(id: number, callback: (resource: Resource) => void, thisArg?: any): void { } // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  public static fromID(id: number, callback: (resource: Resource) => void, thisArg?: any): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
 
   /**
    * Create a resource from an object
@@ -55,7 +55,7 @@ export default abstract class Resource {
    * @param {boolean} [copy=false] whether to create a copy of the resource or not (removes resource IDs)
    * @memberof Resource
    */
-  public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { } // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
 
   /**
    * Convert the resource to an Object
@@ -104,7 +104,7 @@ export default abstract class Resource {
    */
   public setResourceID(id: number | undefined): void {
     this.resourceID = id;
-    (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    (this.constructor as any).childTypes.forEach((childType: string) => {
       (this as Record<string, any>)[childType].forEach((child: Resource) => {
         child.setContextID(id);
       });
@@ -150,7 +150,7 @@ export default abstract class Resource {
    * @param {*} [thisArg] context of the callback
    * @memberof Resource
    */
-  protected static getResource(id: number, resourceType: string, callback?: (resource: string) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+  protected static getResource(id: number, resourceType: string, callback?: (resource: string) => void, thisArg?: any): void {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
@@ -202,12 +202,12 @@ export default abstract class Resource {
    * @memberof Resource
    */
   protected create(callback?: () => void, thisArg?: any): void {
-    const resourceType: string = (this.constructor as any).resourceType; // eslint-disable-line @typescript-eslint/no-explicit-any
+    const resourceType: string = (this.constructor as any).resourceType;
 
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
-      (this.constructor as any).contextType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
+      (this.constructor as any).contextType + "s",
       this.contextID,
       resourceType + "s"].join("/");
 
@@ -222,7 +222,7 @@ export default abstract class Resource {
 
       this.setResourceID(responseObj[resourceType]["id"]);
 
-      (this.constructor as any).childTypes.forEach((childType: string) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+      (this.constructor as any).childTypes.forEach((childType: string) => {
         if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
           responseObj[resourceType][resourceTypes[childType]].forEach((childObj: Record<string, any>, index: number) => {
             (this as Record<string, any>)[childType][index].setResourceID(childObj["id"]);
@@ -244,11 +244,11 @@ export default abstract class Resource {
    * @param {*} [thisArg] context of the callback
    * @memberof Resource
    */
-  protected update(callback?: () => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+  protected update(callback?: () => void, thisArg?: any): void {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
-      (this.constructor as any).resourceType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
+      (this.constructor as any).resourceType + "s",
       this.resourceID].join("/");
 
     const payload = this.toJSON();
@@ -260,7 +260,7 @@ export default abstract class Resource {
         "authorization": "Token " + Resource.config.userToken,
       },
     }, () => {
-      for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
+      for (const childType of (this.constructor as any).childTypes) {
         (this as Record<string, any>)[childType].forEach((child: Resource) => {
           child.save();
         });
@@ -283,7 +283,7 @@ export default abstract class Resource {
    */
   protected insertChild(child: object, index: number = 0, resourceType: string): void {
     (this as Record<string, any>)[resourceType].splice(index, 0, child);
-    if ((this.constructor as any).childTypes.indexOf(resourceType) > -1) { // eslint-disable-line @typescript-eslint/no-explicit-any
+    if ((this.constructor as any).childTypes.indexOf(resourceType) > -1) {
       (this as Record<string, any>)[resourceType].forEach((child: Resource, index: number) => {
         child.setOptions({ position: index + 1 });
       });
@@ -312,11 +312,9 @@ export default abstract class Resource {
    * @memberof Resource
    */
   private beforeUpdate(obj: Record<string, any>): object {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
     for (const childType of (this.constructor as any).childTypes) {
       if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
         delete obj[(this.constructor as any).resourceType][resourceTypes[childType]];
-        /* eslint-enable @typescript-eslint/no-explicit-any */
       } else {
         delete obj[resourceTypes[childType]];
       }
@@ -333,7 +331,7 @@ export default abstract class Resource {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
-      (this.constructor as any).resourceType + "s", // eslint-disable-line @typescript-eslint/no-explicit-any
+      (this.constructor as any).resourceType + "s",
       this.contextID].join("/");
 
     Resource.client.makeRequest(uri, "delete", {

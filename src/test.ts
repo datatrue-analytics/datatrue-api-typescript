@@ -45,7 +45,7 @@ export default class Test extends Resource implements Runnable {
     this.setOptions(options);
   }
 
-  public static fromID(id: number, callback?: (test: Test) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public static fromID(id: number, callback?: (test: Test) => void, thisArg?: any): void {
     super.getResource(id, Test.resourceType, (resource: string) => {
       if (typeof callback === "function") {
         callback.call(thisArg, Test.fromJSON(JSON.parse(resource)));
@@ -53,7 +53,7 @@ export default class Test extends Resource implements Runnable {
     });
   }
 
-  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Test { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Test {
     const { name, id, steps, tag_validations, ...options } = obj;
 
     const test = new Test(name);
@@ -155,7 +155,7 @@ export default class Test extends Resource implements Runnable {
     }
   }
 
-  public progress(callback?: (jobStatus: JobStatus) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public progress(callback?: (jobStatus: JobStatus) => void, thisArg?: any): void {
     if (this.jobID === undefined) {
       throw new Error("You must run the test before fetching progress.");
     }

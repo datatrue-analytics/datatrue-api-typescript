@@ -81,7 +81,7 @@ export default class Step extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number, callback?: (step: Step) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public static fromID(id: number, callback?: (step: Step) => void, thisArg?: any): void {
     super.getResource(id, Step.resourceType, (resource: string) => {
       if (typeof callback === "function") {
         callback.call(thisArg, Step.fromJSON(JSON.parse(resource)));
@@ -89,7 +89,7 @@ export default class Step extends Resource {
     });
   }
 
-  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Step { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Step {
     const { name, id, action, tag_validations, data_layer_validations, ...options } = obj;
 
     const step = new Step(name, action);

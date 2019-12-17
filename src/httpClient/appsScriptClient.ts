@@ -1,7 +1,7 @@
 import HTTPClient, { HTTPOptions, Response, Method } from "./httpClient";
 
 export default class AppsScriptClient implements HTTPClient {
-  public makeRequest(url: string, method: Method, options: HTTPOptions, callback?: (response: Response) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public makeRequest(url: string, method: Method, options: HTTPOptions, callback?: (response: Response) => void, thisArg?: any): void {
     const opts: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {};
     opts.contentType = "application/json";
     opts.headers = options.headers;

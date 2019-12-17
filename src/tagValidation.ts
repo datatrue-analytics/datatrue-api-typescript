@@ -54,7 +54,7 @@ export default class TagValidation extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number, callback?: (tagValidation: TagValidation) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public static fromID(id: number, callback?: (tagValidation: TagValidation) => void, thisArg?: any): void {
     super.getResource(id, TagValidation.resourceType, (resource: string) => {
       if (typeof callback === "function") {
         callback.call(thisArg, TagValidation.fromJSON(JSON.parse(resource)));
@@ -62,7 +62,7 @@ export default class TagValidation extends Resource {
     });
   }
 
-  public static fromJSON(obj: Record<string, any>, copy: boolean = false): TagValidation { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public static fromJSON(obj: Record<string, any>, copy: boolean = false): TagValidation {
     const { name, id, tag_definition, query_validation, ...options } = obj;
 
     if (Object.prototype.hasOwnProperty.call(options, "interception")) {

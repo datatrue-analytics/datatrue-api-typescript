@@ -28,7 +28,7 @@ export default class Suite extends Resource implements Runnable {
     this.setOptions(options);
   }
 
-  public static fromID(id: number, callback?: (suite: Suite) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public static fromID(id: number, callback?: (suite: Suite) => void, thisArg?: any): void {
     super.getResource(id, Suite.resourceType, (resource: string) => {
       const suiteObj = JSON.parse(resource);
 
@@ -52,7 +52,7 @@ export default class Suite extends Resource implements Runnable {
     });
   }
 
-  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Suite { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Suite {
     const { name, id, tests, ...options } = obj;
 
     const suite = new Suite(name);
@@ -146,7 +146,7 @@ export default class Suite extends Resource implements Runnable {
     }
   }
 
-  public progress(callback: (jobStatus: JobStatus) => void, thisArg: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+  public progress(callback: (jobStatus: JobStatus) => void, thisArg: any): void {
     if (this.jobID === undefined) {
       throw new Error("You must run the suite before fetching progress.");
     }

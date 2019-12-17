@@ -31,7 +31,7 @@ export default interface Runnable {
   jobID?: number,
 
   run(email_users: number[]): void,
-  progress(callback: (jobStatus: JobStatus) => void, thisArg: any): void, // eslint-disable-line @typescript-eslint/no-explicit-any
+  progress(callback: (jobStatus: JobStatus) => void, thisArg: any): void,
 }
 
 /**
@@ -49,7 +49,7 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
   const uri = [
     config.apiEndpoint,
     "ci_api",
-    `test_runs?api_key=${config.ciToken}`,
+    `test_runs?api_key=${config.accountToken}`,
   ].join("/");
 
   client.makeRequest(uri, "post", {
@@ -79,13 +79,13 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
  * @param {(jobStatus: JobStatus) => void} callback callback to execute once the progress has been retrieved
  * @param {*} thisArg context to execute the callback in
  */
-export function _progress(jobID: number, client: HTTPClient, config: Config, callback?: (jobStatus: JobStatus) => void, thisArg?: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+export function _progress(jobID: number, client: HTTPClient, config: Config, callback?: (jobStatus: JobStatus) => void, thisArg?: any): void {
   const uri = [
     config.apiEndpoint,
     "ci_api",
     "test_runs",
     "progress",
-    `${jobID}?api_key=${config.ciToken}`,
+    `${jobID}?api_key=${config.accountToken}`,
   ].join("/");
 
   client.makeRequest(uri, "get", {
