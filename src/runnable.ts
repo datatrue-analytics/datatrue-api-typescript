@@ -37,6 +37,7 @@ export default interface Runnable {
 /**
  * Run the resource in DataTrue
  *
+ * @hidden
  * @param {number[]} [email_users=[]] a list of IDs for who should be emailed regarding the test run
  * @param {string} resourceTypeRun the type of the resource being run
  * @param {number} resourceID the ID of the resource to run
@@ -73,6 +74,7 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
 /**
  * Retrieve progress for a job
  *
+ * @hidden
  * @param {number} jobID ID of the job to fetch progress for
  * @param {HTTPClient} client client to make the HTTP request
  * @param {Config} config config

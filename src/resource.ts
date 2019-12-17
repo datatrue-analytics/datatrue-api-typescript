@@ -8,17 +8,30 @@ const resourceTypes: Record<string, string> = {
   tests: "tests",
 };
 
+/**
+ * @hidden
+ */
 export interface ResourceOptions {
   description?: string,
   position?: number,
 }
 
+/**
+ * @hidden
+ */
 export interface Config {
   apiEndpoint: string,
   userToken: string,
   accountToken: string,
 }
 
+/**
+ * Base class for all DataTrue resource types
+ *
+ * @abstract
+ * @class Resource
+ * @hidden
+ */
 export default abstract class Resource {
   public static readonly contextType: string;
   public static readonly resourceType: string;
@@ -43,7 +56,6 @@ export default abstract class Resource {
    * @param {number} id the ID of the resource
    * @param {(resource: Resource) => void} callback callback to execute once resource has been fetched
    * @param {any} [thisArg] context of the callback
-   * @memberof Resource
    */
   public static fromID(id: number, callback: (resource: Resource) => void, thisArg?: any): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
 
@@ -53,7 +65,6 @@ export default abstract class Resource {
    * @static
    * @param {Record<string, any>} obj object to create resource from
    * @param {boolean} [copy=false] whether to create a copy of the resource or not (removes resource IDs)
-   * @memberof Resource
    */
   public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
 
@@ -62,7 +73,6 @@ export default abstract class Resource {
    *
    * @abstract
    * @returns {Record<string, any>} object representation of the resource
-   * @memberof Resource
    */
   public abstract toJSON(): Record<string, any>;
 
@@ -70,7 +80,6 @@ export default abstract class Resource {
    * Convert the resource to a JSON string
    *
    * @returns {string} the resource represented as a JSON string
-   * @memberof Resource
    */
   public toString(): string {
     return JSON.stringify(this.toJSON());
@@ -80,7 +89,6 @@ export default abstract class Resource {
    * Gets the resourceID of a resource
    *
    * @returns {(number | undefined)} resourceID of the resource
-   * @memberof Resource
    */
   public getResourceID(): number | undefined {
     return this.resourceID;
@@ -90,7 +98,6 @@ export default abstract class Resource {
    * Gets the contextID of a resource
    *
    * @returns {(number | undefined)} contextID of the resource
-   * @memberof Resource
    */
   public getContextID(): number | undefined {
     return this.contextID;
@@ -100,7 +107,6 @@ export default abstract class Resource {
    * Sets the resourceID of a resource
    *
    * @param {(number | undefined)} id the resourceID to set
-   * @memberof Resource
    */
   public setResourceID(id: number | undefined): void {
     this.resourceID = id;
@@ -115,7 +121,6 @@ export default abstract class Resource {
    * Sets the contextID of a resource
    *
    * @param {(number | undefined)} id the contextID to set
-   * @memberof Resource
    */
   public setContextID(id: number | undefined): void {
     this.contextID = id;
@@ -126,7 +131,6 @@ export default abstract class Resource {
    *
    * @param {ResourceOptions} options the object to set options from
    * @param {boolean} [override] whether to override the options object
-   * @memberof Resource
    */
   public setOptions(options: ResourceOptions, override?: boolean): void {
     if (override) {
@@ -148,7 +152,6 @@ export default abstract class Resource {
    * @param {string} resourceType the type of the resource to fetch
    * @param {(resource: string) => void} [callback] callback to execute once the resource has been fetched
    * @param {*} [thisArg] context of the callback
-   * @memberof Resource
    */
   protected static getResource(id: number, resourceType: string, callback?: (resource: string) => void, thisArg?: any): void {
     const uri = [
@@ -174,7 +177,6 @@ export default abstract class Resource {
    *
    * @param {() => void} [callback] callback to execute after the Resource has been saved
    * @param {*} [thisArg] context of the callback
-   * @memberof Resource
    */
   public save(callback?: () => void, thisArg?: any): void {
     const after = (): void => {
@@ -199,7 +201,6 @@ export default abstract class Resource {
    * @protected
    * @param {() => void} [callback] callback to execute after the Resource has been created
    * @param {*} [thisArg] context of the callback
-   * @memberof Resource
    */
   protected create(callback?: () => void, thisArg?: any): void {
     const resourceType: string = (this.constructor as any).resourceType;
@@ -242,7 +243,6 @@ export default abstract class Resource {
    * @protected
    * @param {() => void} [callback] callback to execute after the Resource has been updated
    * @param {*} [thisArg] context of the callback
-   * @memberof Resource
    */
   protected update(callback?: () => void, thisArg?: any): void {
     const uri = [
@@ -279,7 +279,6 @@ export default abstract class Resource {
    * @param {object} child child to add to the Resource
    * @param {number} [index=0] index to add the child at
    * @param {string} resourceType type of the child
-   * @memberof Resource
    */
   protected insertChild(child: object, index: number = 0, resourceType: string): void {
     (this as Record<string, any>)[resourceType].splice(index, 0, child);
@@ -296,7 +295,6 @@ export default abstract class Resource {
    * @protected
    * @param {number} index index to delete the child from
    * @param {string} childType type of the child
-   * @memberof Resource
    */
   protected deleteChild(index: number, childType: string): void {
     this.toDelete.push((this as Record<string, any>)[childType][index]);
@@ -309,7 +307,6 @@ export default abstract class Resource {
    * @private
    * @param {Record<string, any>} obj object to remove children from
    * @returns {object} obj without children
-   * @memberof Resource
    */
   private beforeUpdate(obj: Record<string, any>): object {
     for (const childType of (this.constructor as any).childTypes) {
@@ -325,7 +322,6 @@ export default abstract class Resource {
   /**
    * Delete the resource in DataTrue
    *
-   * @memberof Resource
    */
   public delete(): void {
     const uri = [
