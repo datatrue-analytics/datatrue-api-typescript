@@ -2,8 +2,8 @@ function create(): void {
   checkTokens();
 
   const userProperties = PropertiesService.getUserProperties();
-  DataTrue.managementToken = userProperties.getProperty("DATATRUE_MANAGEMENT_TOKEN");
-  DataTrue.ciToken = userProperties.getProperty("DATATRUE_CI_TOKEN");
+  DataTrue.managementToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
+  DataTrue.ciToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
 
   var base = SpreadsheetApp.getActive().getActiveRange().getRow();
   var column = SpreadsheetApp.getActive().getActiveRange().getColumn();
