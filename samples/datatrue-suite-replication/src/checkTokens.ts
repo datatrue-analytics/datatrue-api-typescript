@@ -1,9 +1,9 @@
 function checkTokens(): void {
   const userProperties = PropertiesService.getUserProperties();
-  const managementToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
-  const ciToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
+  const userToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
+  const accountToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
 
-  if (managementToken === null || ciToken === null) {
+  if (userToken === null || accountToken === null) {
     setTokens();
   }
 }

@@ -15,8 +15,8 @@ export interface ResourceOptions {
 
 export interface Config {
   apiEndpoint: string,
-  managementToken: string,
-  ciToken: string,
+  userToken: string,
+  accountToken: string,
 }
 
 export default abstract class Resource {
@@ -160,7 +160,7 @@ export default abstract class Resource {
     Resource.client.makeRequest(uri, "get", {
       "headers": {
         "content-type": "application/json",
-        "authorization": "Token " + Resource.config.managementToken,
+        "authorization": "Token " + Resource.config.userToken,
       },
     }, (response) => {
       if (typeof callback === "function") {
@@ -215,7 +215,7 @@ export default abstract class Resource {
       body: this.toString(),
       headers: {
         "content-type": "application/json",
-        "authorization": "Token " + Resource.config.managementToken,
+        "authorization": "Token " + Resource.config.userToken,
       },
     }, (response) => {
       const responseObj = JSON.parse(response.body);
@@ -257,7 +257,7 @@ export default abstract class Resource {
       body: JSON.stringify(this.beforeUpdate(payload)),
       headers: {
         "content-type": "application/json",
-        "authorization": "Token " + Resource.config.managementToken,
+        "authorization": "Token " + Resource.config.userToken,
       },
     }, () => {
       for (const childType of (this.constructor as any).childTypes) { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -339,7 +339,7 @@ export default abstract class Resource {
     Resource.client.makeRequest(uri, "delete", {
       headers: {
         "content-type": "application/json",
-        "authorization": "Token " + Resource.config.managementToken,
+        "authorization": "Token " + Resource.config.userToken,
       },
     });
   }

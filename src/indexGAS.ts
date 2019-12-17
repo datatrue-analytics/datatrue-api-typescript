@@ -10,8 +10,8 @@ import Resource from "./resource";
 
 const config = {
   apiEndpoint: "datatrue.com",
-  managementToken: "",
-  ciToken: "",
+  userToken: "",
+  accountToken: "",
 };
 
 global.DataLayerValidation = DataLayerValidation;

@@ -2,14 +2,14 @@ function setTokens(): void {
   const userProperties = PropertiesService.getUserProperties();
   const ui = SpreadsheetApp.getUi();
 
-  const managementTokenPrompt = ui.prompt("Please enter your API tokens", "Management API", ui.ButtonSet.OK);
-  const managementToken = managementTokenPrompt.getResponseText();
+  const userTokenPrompt = ui.prompt("Please enter your API tokens", "Management API", ui.ButtonSet.OK);
+  const userToken = userTokenPrompt.getResponseText();
 
-  const ciTokenPrompt = ui.prompt("Please enter your API tokens", "CI API", ui.ButtonSet.OK);
-  const ciToken = ciTokenPrompt.getResponseText();
+  const accountTokenPrompt = ui.prompt("Please enter your API tokens", "CI API", ui.ButtonSet.OK);
+  const accountToken = accountTokenPrompt.getResponseText();
 
   userProperties.setProperties({
-    "DATATRUE_USER_TOKEN": managementToken,
-    "DATATRUE_ACCOUNT_TOKEN": ciToken,
+    "DATATRUE_USER_TOKEN": userToken,
+    "DATATRUE_ACCOUNT_TOKEN": accountToken,
   });
 }

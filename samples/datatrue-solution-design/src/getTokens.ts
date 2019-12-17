@@ -4,18 +4,18 @@ function getTokens(): void {
 
   const userProperties = PropertiesService.getUserProperties();
 
-  let managementToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
-  let ciToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
+  let userToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
+  let accountToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
 
-  if (managementToken === null || ciToken === null) {
+  if (userToken === null || accountToken === null) {
     setTokens();
 
-    managementToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
-    ciToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
+    userToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
+    accountToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
   }
 
-  DataTrue.config.managementToken = managementToken;
-  DataTrue.config.ciToken = ciToken;
+  DataTrue.config.userToken = userToken;
+  DataTrue.config.accountToken = accountToken;
 
   namedRanges.some(namedRange => {
     if (namedRange.getName() === "api_endpoint") {
