@@ -1,5 +1,5 @@
 {
-  "name": "datatrue-api-google-apps-script",
+  "name": "datatrue-api",
   "version": "1.0.0",
   "description": "A place for adding miscellaneous scripts and samples relating to datatrue",
   "main": "dist/index.js",
