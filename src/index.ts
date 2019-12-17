@@ -4,7 +4,7 @@ import Step, { StepOptions, StepActions, SelectorTypes, IframeSelectorTypes, Ste
 import Suite, { SuiteOptions, SuiteTypes } from "./suite";
 import TagValidation, { TagValidationOptions, QueryValidation, TagDefinition } from "./tagValidation";
 import Test, { TestOptions, TestTypes, VariableTypes, Variables } from "./test";
-import NodeClient from "./httpClient/node";
+import NodeClient from "./httpClient/nodeClient";
 import Resource from "./resource";
 
 const config = {

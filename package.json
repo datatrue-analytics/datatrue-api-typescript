@@ -26,6 +26,7 @@
     "@kenchan0130/babel-preset-google-apps-script": "^0.2.4",
     "@types/google-apps-script": "^1.0.7",
     "@types/node": "^12.12.16",
+    "@types/node-fetch": "^2.5.4",
     "@types/webpack": "^4.41.0",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
     "@typescript-eslint/parser": "^2.9.0",
@@ -41,6 +42,6 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "sync-request": "^6.1.0"
+    "node-fetch": "^2.6.0"
   }
 }
