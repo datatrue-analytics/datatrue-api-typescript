@@ -7,6 +7,8 @@
   "scripts": {
     "build": "tsc",
     "build:gas": "webpack",
+    "prepublish:gas": "npm run build:gas",
+    "publish:gas": "clasp push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

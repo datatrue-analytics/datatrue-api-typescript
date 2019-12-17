@@ -158,7 +158,6 @@ export default abstract class Resource {
       id].join("/");
 
     Resource.client.makeRequest(uri, "get", {
-      body: this.toString(),
       "headers": {
         "content-type": "application/json",
         "authorization": "Token " + Resource.config.managementToken,

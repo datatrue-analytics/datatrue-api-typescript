@@ -21,4 +21,5 @@ global.TagValidation = TagValidation;
 global.Test = Test;
 global.config = config;
 
-Resource.client = new AppsScriptClient();
+Resource["client"] = new AppsScriptClient();
+Resource["config"] = config;
