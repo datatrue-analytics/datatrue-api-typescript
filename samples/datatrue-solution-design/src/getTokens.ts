@@ -14,12 +14,12 @@ function getTokens(): void {
     ciToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
   }
 
-  DataTrue.managementToken = managementToken;
-  DataTrue.ciToken = ciToken;
+  DataTrue.config.managementToken = managementToken;
+  DataTrue.config.ciToken = ciToken;
 
   namedRanges.some(namedRange => {
     if (namedRange.getName() === "api_endpoint") {
-      DataTrue.apiEndpoint = namedRange.getRange().getDisplayValue();
+      DataTrue.config.apiEndpoint = namedRange.getRange().getDisplayValue();
       return;
     }
   });

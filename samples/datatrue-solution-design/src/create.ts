@@ -26,7 +26,7 @@ function create(): void {
     }
   }
 
-  sheet.getRange("B5").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/accounts/${accountID}/suites", "${accountID}")`);
+  sheet.getRange("B5").setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites", "${accountID}")`);
   SpreadsheetApp.flush();
 
   if (suiteID === "") {
@@ -45,7 +45,7 @@ function create(): void {
     }
   }
 
-  sheet.getRange("B6").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
+  sheet.getRange("B6").setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
   SpreadsheetApp.flush();
 
   let test: DataTrue.Test;
@@ -173,5 +173,5 @@ function create(): void {
     }
   }
 
-  sheet.getRange("B7").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/tests/${test.getResourceID()}", "${test.getResourceID()}")`);
+  sheet.getRange("B7").setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/tests/${test.getResourceID()}", "${test.getResourceID()}")`);
 }
