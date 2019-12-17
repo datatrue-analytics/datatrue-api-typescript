@@ -19,6 +19,6 @@
     "exclude": [
         "node_modules",
         "src/indexGAS.ts",
-        "src/httpClient/appsScript.ts"
+        "src/httpClient/appsScriptClient.ts"
     ]
 }
