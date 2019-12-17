@@ -71,7 +71,7 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
 }
 
 /**
- *
+ * Retrieve progress for a job
  *
  * @param {number} jobID ID of the job to fetch progress for
  * @param {HTTPClient} client client to make the HTTP request
