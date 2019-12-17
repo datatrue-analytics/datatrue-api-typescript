@@ -73,6 +73,8 @@
     ],
     "semi": "off",
     "@typescript-eslint/semi": "error",
+    "jsdoc/check-tag-names": "off",
+    "jsdoc/no-undefined-types": "off",
     "no-multiple-empty-lines": [
       "error",
       {
