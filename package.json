@@ -35,6 +35,7 @@
     "eslint": "^6.7.2",
     "eslint-plugin-jsdoc": "^18.4.3",
     "gas-webpack-plugin": "^1.0.2",
+    "husky": "^3.1.0",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.5.4",
     "typedoc": "^0.15.5",
