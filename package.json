@@ -7,6 +7,7 @@
   "scripts": {
     "build": "tsc",
     "build:gas": "webpack",
+    "docs": "git restore docs && git commit -n --allow-empty --message \"temp\" && git stash --include-untracked && git reset --soft HEAD^ && npx typedoc; git stash pop",
     "prepublish:gas": "npm run build:gas",
     "publish:gas": "clasp push",
     "test": "echo \"Error: no test specified\" && exit 1"
