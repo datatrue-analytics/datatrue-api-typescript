@@ -1,5 +1,5 @@
 {
   "hooks": {
-    "pre-commit": " git commit -n --message \"temp\" && git stash --include-untracked && git reset --soft HEAD^ && npx typedoc && git add docs; git stash pop"
+    "pre-commit": "git commit -n --message \"temp\" && git stash --include-untracked && git reset --soft HEAD^ && npx typedoc && git add docs; git stash pop"
   }
 }
