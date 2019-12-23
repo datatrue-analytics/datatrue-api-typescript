@@ -1,7 +1,7 @@
 {
   "name": "datatrue-api",
   "version": "1.0.0",
-  "description": "A place for adding miscellaneous scripts and samples relating to datatrue",
+  "description": "An API wrapper for the DataTrue APIs written in TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
