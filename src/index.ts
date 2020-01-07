@@ -1,6 +1,6 @@
 import DataLayerValidation, { DataLayerValidationOptions, PropertyValidation } from "./dataLayerValidation";
 import { JobStatus } from "./runnable";
-import Step, { StepOptions, StepActions, SelectorTypes, IframeSelectorTypes, StepSettings } from "./step";
+import Step, { StepOptions, StepActions, WebSelectorTypes, MobileSelectorTypes, SelectorTypes, IframeSelectorTypes, StepSettings } from "./step";
 import Suite, { SuiteOptions, SuiteTypes } from "./suite";
 import TagValidation, { TagValidationOptions, QueryValidation, TagDefinition, TagValidationContexts } from "./tagValidation";
 import Test, { TestOptions, TestTypes, VariableTypes, Variables } from "./test";
@@ -27,6 +27,8 @@ export {
   Step,
   StepOptions,
   StepActions,
+  WebSelectorTypes,
+  MobileSelectorTypes,
   SelectorTypes,
   IframeSelectorTypes,
   StepSettings,

@@ -28,14 +28,21 @@ export enum StepActions {
   PRESS_BACK = 22
 }
 
-export enum SelectorTypes {
+export enum WebSelectorTypes {
   TEXT = "text",
   ELEMENT_ID = "id",
   CSS = "css",
   XPATH = "xpath",
-  ACCESSIBILITY_ID = "accessibility_id",
-  ACTIVE_ELEMENT = "active_element",
 }
+
+export enum MobileSelectorTypes {
+  ELEMENT_ID = "id",
+  XPATH = "xpath",
+  ACCESSIBILITY_ID = "accessibility_id",
+  ACTIVE_ELEMENT = "active_element"
+}
+
+export type SelectorTypes = WebSelectorTypes | MobileSelectorTypes;
 
 export enum IframeSelectorTypes {
   ELEMENT_ID = "id",

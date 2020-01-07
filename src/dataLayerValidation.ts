@@ -1,12 +1,13 @@
 import Resource, { ResourceOptions } from "./resource";
+import { WebSelectorTypes, IframeSelectorTypes } from "./step";
 
 export interface DataLayerValidationOptions extends ResourceOptions {
   enabled?: boolean,
   source?: string,
   selector?: string,
-  selector_type?: string,
+  selector_type?: WebSelectorTypes,
   iframe_selector?: string,
-  iframe_selector_type?: string,
+  iframe_selector_type?: IframeSelectorTypes,
   attr?: string,
   cookie_name?: string,
   js_variable_name?: string,
@@ -19,6 +20,7 @@ export interface DataLayerValidationOptions extends ResourceOptions {
 export interface PropertyValidation {
   name: string,
   value: string,
+  regex?: boolean,
 }
 
 export default class DataLayerValidation extends Resource {
@@ -53,8 +55,17 @@ export default class DataLayerValidation extends Resource {
     dataLayerValidation.setOptions(options, true);
 
     if (property_validations !== undefined) {
-      property_validations.forEach((propertyValidationObj: PropertyValidation) => {
-        dataLayerValidation.insertPropertyValidation(propertyValidationObj);
+      property_validations.forEach((propertyValidationObj: Record<string, any>) => {
+        const obj: PropertyValidation = {
+          name: propertyValidationObj.name,
+          value: propertyValidationObj.value,
+        };
+
+        if (propertyValidationObj.regex !== undefined) {
+          obj.regex = propertyValidationObj.regex === "1" ? true : false;
+        }
+
+        dataLayerValidation.insertPropertyValidation(obj);
       });
     }
 
@@ -80,7 +91,18 @@ export default class DataLayerValidation extends Resource {
   public toJSON(): Record<string, any> {
     const obj: Record<string, any> = {
       name: this.name,
-      property_validations: this.propertyValidations,
+      property_validations: this.propertyValidations.map(propertyValidation => {
+        const obj: Record<string, any> = {
+          name: propertyValidation.name,
+          value: propertyValidation.value,
+        };
+
+        if (propertyValidation.regex !== undefined) {
+          obj.regex = propertyValidation.regex ? "1" : "0";
+        }
+
+        return obj;
+      }),
     };
 
     for (const option in this.options) {
