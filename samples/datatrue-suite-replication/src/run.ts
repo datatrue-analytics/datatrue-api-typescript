@@ -1,5 +1,5 @@
 function run(): void {
-  checkTokens();
+  getTokens();
 
   const userProperties = PropertiesService.getUserProperties();
   DataTrue.config.userToken = userProperties.getProperty("DATATRUE_USER_TOKEN");

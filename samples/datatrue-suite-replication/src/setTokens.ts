@@ -2,10 +2,10 @@ function setTokens(): void {
   const userProperties = PropertiesService.getUserProperties();
   const ui = SpreadsheetApp.getUi();
 
-  const userTokenPrompt = ui.prompt("Please enter your API tokens", "Management API", ui.ButtonSet.OK);
+  const userTokenPrompt = ui.prompt("Please enter your API tokens", "User API Key (for creating tests)", ui.ButtonSet.OK);
   const userToken = userTokenPrompt.getResponseText();
 
-  const accountTokenPrompt = ui.prompt("Please enter your API tokens", "CI API", ui.ButtonSet.OK);
+  const accountTokenPrompt = ui.prompt("Please enter your API tokens", "Account API Key (for running tests)", ui.ButtonSet.OK);
   const accountToken = accountTokenPrompt.getResponseText();
 
   userProperties.setProperties({
