@@ -20,7 +20,6 @@ export interface TagValidationOptions extends ResourceOptions {
   query_detection?: string,
   account_id?: string,
   interception?: {
-    do_validation?: boolean,
     intercept?: boolean,
     intercept_status?: string,
     intercept_headers?: string,
@@ -45,9 +44,7 @@ export default class TagValidation extends Resource {
 
   public tagDefinition: TagDefinition;
   public options: TagValidationOptions = {
-    interception: {
-      do_validation: true,
-    },
+    do_validation: true,
   };
 
   public constructor(name: string, key: string, public readonly contextType: TagValidationContexts = TagValidationContexts.STEP, public contextID?: number, options: TagValidationOptions = {}) {
@@ -69,10 +66,11 @@ export default class TagValidation extends Resource {
   public static fromJSON(obj: Record<string, any>, copy: boolean = false): TagValidation {
     const { name, id, tag_definition, query_validation, ...options } = obj;
 
+    if (Object.prototype.hasOwnProperty.call(options, "do_validation")) {
+      options["do_validation"] = options["do_validation"] === "1" ? true : false;
+    }
+
     if (Object.prototype.hasOwnProperty.call(options, "interception")) {
-      if (Object.prototype.hasOwnProperty.call(options["interception"], "do_validation")) {
-        options["interception"]["do_validation"] = options["interception"]["do_validation"] === "1" ? true : false;
-      }
       if (Object.prototype.hasOwnProperty.call(options["interception"], "intercept")) {
         options["interception"]["intercept"] = options["interception"]["intercept"] === "1" ? true : false;
       }
@@ -120,10 +118,11 @@ export default class TagValidation extends Resource {
       obj[option] = (this.options as Record<string, any>)[option];
     }
 
+    if (Object.prototype.hasOwnProperty.call(obj, "do_validation")) {
+      obj["do_validation"] = obj["do_validation"] ? "1" : "0";
+    }
+
     if (Object.prototype.hasOwnProperty.call(obj, "interception")) {
-      if (Object.prototype.hasOwnProperty.call(obj["interception"], "do_validation")) {
-        obj["interception"]["do_validation"] = obj["interception"]["do_validation"] ? "1" : "0";
-      }
       if (Object.prototype.hasOwnProperty.call(obj["interception"], "intercept")) {
         obj["interception"]["intercept"] = obj["interception"]["intercept"] ? "1" : "0";
       }
