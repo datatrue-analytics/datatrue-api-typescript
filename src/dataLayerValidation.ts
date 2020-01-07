@@ -22,12 +22,12 @@ export interface PropertyValidation {
 }
 
 export default class DataLayerValidation extends Resource {
-  public static readonly contextType: string = "step";
   public static readonly resourceType: string = "data_layer_validations";
   public static readonly childTypes: string[] = [];
 
   private propertyValidations: PropertyValidation[] = [];
 
+  public readonly contextType: string = "step";
   public options: DataLayerValidationOptions = {};
 
   public constructor(name: string, public contextID?: number, options: DataLayerValidationOptions = {}) {

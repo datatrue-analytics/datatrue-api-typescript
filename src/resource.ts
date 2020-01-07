@@ -33,7 +33,6 @@ export interface Config {
  * @hidden
  */
 export default abstract class Resource {
-  public static readonly contextType: string;
   public static readonly resourceType: string;
   public static readonly childTypes: readonly string[];
   public static readonly resourceTypeRun?: string;
@@ -45,6 +44,7 @@ export default abstract class Resource {
   protected static client: HTTPClient;
   protected static config: Config;
 
+  public abstract readonly contextType: string;
   public options: ResourceOptions = {};
 
   public constructor(public name: string) { }
@@ -208,7 +208,7 @@ export default abstract class Resource {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
-      (this.constructor as any).contextType + "s",
+      this.contextType + "s",
       this.contextID,
       resourceType + "s"].join("/");
 

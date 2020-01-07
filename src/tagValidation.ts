@@ -32,8 +32,12 @@ export interface TagDefinition {
   key: string,
 }
 
+export enum TagValidationContexts {
+  TEST = "test",
+  STEP = "step",
+}
+
 export default class TagValidation extends Resource {
-  public static readonly contextType: string = "step";
   public static readonly resourceType: string = "tag_validation";
   public static readonly childTypes: string[] = [];
 
@@ -46,7 +50,7 @@ export default class TagValidation extends Resource {
     },
   };
 
-  public constructor(name: string, key: string, public contextID?: number, options: TagValidationOptions = {}) {
+  public constructor(name: string, key: string, public readonly contextType: TagValidationContexts = TagValidationContexts.STEP, public contextID?: number, options: TagValidationOptions = {}) {
     super(name);
     this.tagDefinition = {
       key: key,

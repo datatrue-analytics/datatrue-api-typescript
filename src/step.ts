@@ -67,13 +67,13 @@ export interface StepSettings {
 }
 
 export default class Step extends Resource {
-  public static readonly contextType: string = "test";
   public static readonly resourceType: string = "step";
   public static readonly childTypes: readonly string[] = ["tagValidations", "dataLayerValidations"];
 
   private tagValidations: TagValidation[] = [];
   private dataLayerValidations: DataLayerValidation[] = [];
 
+  public readonly contextType: string = "test";
   public options: StepOptions = {};
 
   public constructor(name: string, private action: StepActions, public contextID?: number, options: StepOptions = {}) {

@@ -13,13 +13,13 @@ export enum SuiteTypes {
 }
 
 export default class Suite extends Resource implements Runnable {
-  public static readonly contextType: string = "account";
   public static readonly resourceType: string = "suite";
   public static readonly resourceTypeRun: string = "Suite";
   public static readonly childTypes: readonly string[] = ["tests"];
 
   private tests: Test[] = [];
 
+  public readonly contextType: string = "account";
   public jobID?: number;
   public options: SuiteOptions = { variables: {} };
 
