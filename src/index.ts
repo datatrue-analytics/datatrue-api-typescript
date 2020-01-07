@@ -2,7 +2,7 @@ import DataLayerValidation, { DataLayerValidationOptions, PropertyValidation } f
 import { JobStatus } from "./runnable";
 import Step, { StepOptions, StepActions, SelectorTypes, IframeSelectorTypes, StepSettings } from "./step";
 import Suite, { SuiteOptions, SuiteTypes } from "./suite";
-import TagValidation, { TagValidationOptions, QueryValidation, TagDefinition } from "./tagValidation";
+import TagValidation, { TagValidationOptions, QueryValidation, TagDefinition, TagValidationContexts } from "./tagValidation";
 import Test, { TestOptions, TestTypes, VariableTypes, Variables } from "./test";
 import NodeClient from "./httpClient/nodeClient";
 import Resource from "./resource";
@@ -39,6 +39,7 @@ export {
   TagValidationOptions,
   QueryValidation,
   TagDefinition,
+  TagValidationContexts,
 
   Test,
   TestOptions,

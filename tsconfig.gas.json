@@ -2,7 +2,8 @@
   "compilerOptions": {
     "types": [
       "google-apps-script"
-    ]
+    ],
+    "declaration": false
   },
   "extends": "./tsconfig.json",
   "exclude": [
