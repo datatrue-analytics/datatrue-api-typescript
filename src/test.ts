@@ -74,8 +74,8 @@ export default class Test extends Resource implements Runnable {
     }
 
     if (tag_validations !== undefined) {
-      tag_validations.forEach((TagValidationObj: Record<string, any>) => {
-        const tagValidation = TagValidation.fromJSON(TagValidationObj);
+      tag_validations.forEach((tagValidationObj: Record<string, any>) => {
+        const tagValidation = TagValidation.fromJSON(tagValidationObj);
         tagValidation.setContextID(id);
         if (copy) {
           tagValidation.setResourceID(undefined);
