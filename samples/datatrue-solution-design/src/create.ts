@@ -64,7 +64,7 @@ function create(): void {
     const initialStep = new DataTrue.Step(`Go To ${url}`, DataTrue.StepActions.GOTO_URL, undefined, { target: url });
 
     if (useMockPage) {
-      const intercept = new DataTrue.TagValidation("Mock Page", "Custom Tag", undefined, {
+      const intercept = new DataTrue.TagValidation("Mock Page", "Custom Tag", DataTrue.TagValidations.STEP, undefined, {
         hostname_validation: hostname,
         pathname_validation: path,
         hostname_detection: hostname,
