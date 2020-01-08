@@ -1,5 +1,10 @@
 // @ts-nocheck
 
+import { SynchronousPromise } from "synchronous-promise";
+
+declare var __awaiter: Function;
+__awaiter = SynchronousPromise.installGlobally();
+
 import AppsScriptClient from "./httpClient/appsScriptClient";
 import DataLayerValidation from "./dataLayerValidation";
 import Step, { StepActions, SelectorTypes, IframeSelectorTypes } from "./step";
