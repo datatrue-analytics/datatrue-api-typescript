@@ -1,5 +1,7 @@
 // @ts-nocheck
 
+global.Promise = undefined;
+
 import { SynchronousPromise } from "synchronous-promise";
 
 declare var __awaiter: Function;
