@@ -122,11 +122,8 @@ export default class Suite extends Resource implements Runnable {
 
     obj[Suite.resourceType] = {
       name: this.name,
+      ...this.options,
     };
-
-    for (const option in this.options) {
-      obj[Suite.resourceType][option] = (this.options as Record<string, any>)[option];
-    }
 
     if (this.tests.length) {
       obj[Suite.resourceType]["tests"] = this.tests.map(test => test.toJSON()[Test.resourceType]);

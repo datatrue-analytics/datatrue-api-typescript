@@ -162,11 +162,8 @@ export default class Step extends Resource {
     const obj: Record<string, any> = {
       name: this.name,
       action: this.action,
+      ...this.options,
     };
-
-    for (const option in this.options) {
-      obj[option] = (this.options as Record<string, any>)[option];
-    }
 
     if (this.tagValidations.length) {
       obj["tag_validations"] = this.tagValidations.map(tagValidation => tagValidation.toJSON());

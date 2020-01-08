@@ -112,11 +112,8 @@ export default class TagValidation extends Resource {
       name: this.name,
       tag_definition: this.tagDefinition,
       query_validation: this.queryValidations,
+      ...this.options,
     };
-
-    for (const option in this.options) {
-      obj[option] = (this.options as Record<string, any>)[option];
-    }
 
     if (Object.prototype.hasOwnProperty.call(obj, "do_validation")) {
       obj["do_validation"] = obj["do_validation"] ? "1" : "0";

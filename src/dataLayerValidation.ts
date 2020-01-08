@@ -103,11 +103,8 @@ export default class DataLayerValidation extends Resource {
 
         return obj;
       }),
+      ...this.options,
     };
-
-    for (const option in this.options) {
-      obj[option] = (this.options as Record<string, any>)[option];
-    }
 
     return obj;
   }
