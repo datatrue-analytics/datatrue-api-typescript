@@ -310,7 +310,7 @@ export default abstract class Resource {
    */
   private beforeUpdate(obj: Record<string, any>): object {
     for (const childType of (this.constructor as any).childTypes) {
-      if (Object.prototype.hasOwnProperty.call(obj, (this.constructor as any).resourceType)) {
+      if (obj[(this.constructor as any).resourceType] !== undefined) {
         delete obj[(this.constructor as any).resourceType][resourceTypes[childType]];
       } else {
         delete obj[resourceTypes[childType]];
@@ -321,7 +321,6 @@ export default abstract class Resource {
 
   /**
    * Delete the resource in DataTrue
-   *
    */
   public delete(): void {
     const uri = [

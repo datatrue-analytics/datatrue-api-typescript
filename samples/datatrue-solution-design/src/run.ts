@@ -14,7 +14,7 @@ function run(): void {
   let progress = test.progress();
 
   while (progress.status !== "completed" && progress.status !== "aborted") {
-    if (Object.prototype.hasOwnProperty.call(progress, "progress") && Object.prototype.hasOwnProperty.call(progress.progress, "tests")) {
+    if (progress.progress?.tests !== undefined) {
       runStatus.setValue(progress.progress.tests[0].state);
       SpreadsheetApp.flush();
     }

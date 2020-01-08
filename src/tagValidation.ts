@@ -66,14 +66,12 @@ export default class TagValidation extends Resource {
   public static fromJSON(obj: Record<string, any>, copy: boolean = false): TagValidation {
     const { name, id, tag_definition, query_validation, ...options } = obj;
 
-    if (Object.prototype.hasOwnProperty.call(options, "do_validation")) {
-      options["do_validation"] = options["do_validation"] === "1" ? true : false;
+    if (options.do_validation !== undefined) {
+      options.do_validation = options.do_validation === "1" ? true : false;
     }
 
-    if (Object.prototype.hasOwnProperty.call(options, "interception")) {
-      if (Object.prototype.hasOwnProperty.call(options["interception"], "intercept")) {
-        options["interception"]["intercept"] = options["interception"]["intercept"] === "1" ? true : false;
-      }
+    if (options.interception?.intercept !== undefined) {
+      options.interception.intercept = options.interception.intercept === "1" ? true : false;
     }
 
     const tagValidation = new TagValidation(name, tag_definition.key);
@@ -115,14 +113,12 @@ export default class TagValidation extends Resource {
       ...this.options,
     };
 
-    if (Object.prototype.hasOwnProperty.call(obj, "do_validation")) {
-      obj["do_validation"] = obj["do_validation"] ? "1" : "0";
+    if (obj.do_validation !== undefined) {
+      obj.do_validation = obj.do_validation ? "1" : "0";
     }
 
-    if (Object.prototype.hasOwnProperty.call(obj, "interception")) {
-      if (Object.prototype.hasOwnProperty.call(obj["interception"], "intercept")) {
-        obj["interception"]["intercept"] = obj["interception"]["intercept"] ? "1" : "0";
-      }
+    if (obj.interception?.intercept !== undefined) {
+      obj.interception.intercept = obj.interception.intercept ? "1" : "0";
     }
 
     return obj;
