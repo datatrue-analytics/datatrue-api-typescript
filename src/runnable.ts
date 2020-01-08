@@ -61,9 +61,6 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
         "email_users": email_users,
       },
     }),
-    headers: {
-      "content-type": "application/json",
-    },
   }, (response) => {
     if (typeof callback === "function") {
       callback.call(thisArg, JSON.parse(response.body)["job_id"]);
@@ -90,11 +87,7 @@ export function _progress(jobID: number, client: HTTPClient, config: Config, cal
     `${jobID}?api_key=${config.accountToken}`,
   ].join("/");
 
-  client.makeRequest(uri, "get", {
-    headers: {
-      "content-type": "application/json",
-    },
-  }, (response) => {
+  client.makeRequest(uri, "get", { }, (response) => {
     if (typeof callback === "function") {
       callback.call(thisArg, JSON.parse(response.body));
     }

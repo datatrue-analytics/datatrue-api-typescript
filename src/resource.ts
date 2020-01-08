@@ -162,7 +162,6 @@ export default abstract class Resource {
 
     Resource.client.makeRequest(uri, "get", {
       "headers": {
-        "content-type": "application/json",
         "authorization": "Token " + Resource.config.userToken,
       },
     }, (response) => {
@@ -215,7 +214,6 @@ export default abstract class Resource {
     Resource.client.makeRequest(uri, "post", {
       body: this.toString(),
       headers: {
-        "content-type": "application/json",
         "authorization": "Token " + Resource.config.userToken,
       },
     }, (response) => {
@@ -256,7 +254,6 @@ export default abstract class Resource {
     Resource.client.makeRequest(uri, "put", {
       body: JSON.stringify(this.beforeUpdate(payload)),
       headers: {
-        "content-type": "application/json",
         "authorization": "Token " + Resource.config.userToken,
       },
     }, () => {
@@ -331,7 +328,6 @@ export default abstract class Resource {
 
     Resource.client.makeRequest(uri, "delete", {
       headers: {
-        "content-type": "application/json",
         "authorization": "Token " + Resource.config.userToken,
       },
     });

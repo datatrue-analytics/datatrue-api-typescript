@@ -4,9 +4,13 @@ export default class AppsScriptClient implements HTTPClient {
   public makeRequest(url: string, method: Method, options: HTTPOptions, callback?: (response: Response) => void, thisArg?: any): void {
     const opts: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {};
     opts.contentType = "application/json";
-    opts.headers = options.headers;
+    opts.headers = {
+      "content-type": "application/json",
+      ...options.headers,
+    };
     opts.method = method;
     opts.payload = options.body;
+    opts.muteHttpExceptions = true;
 
     const response = UrlFetchApp.fetch(url, opts);
 
