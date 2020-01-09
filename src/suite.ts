@@ -108,10 +108,8 @@ export default class Suite extends Resource implements Runnable {
 
   protected create(): Promise<void> {
     return super.create().then(() => {
-      const promises: Promise<void>[] = [];
-
-      this.tests.forEach(test => {
-        promises.push(test.save());
+      const promises = this.tests.map(test => {
+        return test.save();
       });
 
       return Promise.all(promises).then();

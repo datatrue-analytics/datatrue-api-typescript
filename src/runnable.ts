@@ -43,7 +43,7 @@ export default interface Runnable {
  * @param {number} resourceID the ID of the resource to run
  * @param {HTTPClient} client client to make the HTTP request
  * @param {Config} config config
- * @returns {Promise<number>} Promise of the job_id
+ * @returns {Promise<string>} Promise of the job_id
  */
 export function _run(email_users: number[] = [], resourceTypeRun: string, resourceID: number, client: HTTPClient, config: Config): Promise<string> {
   const uri = [

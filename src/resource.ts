@@ -176,11 +176,10 @@ export default abstract class Resource {
    */
   public save(): Promise<void> {
     const after = (): Promise<void> => {
-      const promises: Promise<void>[] = [];
-      this.toDelete.slice().forEach(child => {
-        promises.push(child.delete().then(() => {
-          this.toDelete = this.toDelete.filter(item => item.getResourceID() !== child.getResourceID());
-        }));
+      const promises = this.toDelete.slice().map(child => {
+        return child.delete().then(() => {
+          this.toDelete.splice(this.toDelete.indexOf(child), 1);
+        });
       });
       return Promise.all(promises).then();
     };
@@ -254,11 +253,12 @@ export default abstract class Resource {
         "authorization": "Token " + Resource.config.userToken,
       },
     }).then(() => {
-      for (const childType of (this.constructor as any).childTypes) {
-        (this as Record<string, any>)[childType].forEach((child: Resource) => {
-          child.save();
+      const promises = (this.constructor as any).childTypes.flatMap((childType: string) => {
+        return (this as Record<string, any>)[childType].map((child: Resource) => {
+          return child.save();
         });
-      }
+      });
+      return Promise.all(promises).then(() => {});
     });
   }
 
