@@ -165,6 +165,9 @@ export default abstract class Resource {
         "authorization": "Token " + Resource.config.userToken,
       },
     }).then(response => {
+      if (response.status >= 400) {
+        throw response;
+      }
       return response.body;
     });
   }
@@ -217,6 +220,10 @@ export default abstract class Resource {
         "authorization": "Token " + Resource.config.userToken,
       },
     }).then(response => {
+      if (response.status >= 400) {
+        throw response;
+      }
+
       const responseObj = JSON.parse(response.body);
 
       this.setResourceID(responseObj[resourceType]["id"]);
@@ -252,7 +259,11 @@ export default abstract class Resource {
       headers: {
         "authorization": "Token " + Resource.config.userToken,
       },
-    }).then(() => {
+    }).then((response) => {
+      if (response.status >= 400) {
+        throw response;
+      }
+
       const promises = (this.constructor as any).childTypes.flatMap((childType: string) => {
         return (this as Record<string, any>)[childType].map((child: Resource) => {
           return child.save();
@@ -325,6 +336,10 @@ export default abstract class Resource {
       headers: {
         "authorization": "Token " + Resource.config.userToken,
       },
-    }).then(() => {});
+    }).then((response) => {
+      if (response.status >= 400) {
+        throw response;
+      }
+    });
   }
 }

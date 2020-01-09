@@ -61,6 +61,9 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
       },
     }),
   }).then(response => {
+    if (response.status >= 400) {
+      throw response;
+    }
     return JSON.parse(response.body)["job_id"];
   });
 }
@@ -84,6 +87,9 @@ export function _progress(jobID: string, client: HTTPClient, config: Config): Pr
   ].join("/");
 
   return client.makeRequest(uri, "get", { }).then(response => {
+    if (response.status >= 400) {
+      throw response;
+    }
     return JSON.parse(response.body);
   });
 }
