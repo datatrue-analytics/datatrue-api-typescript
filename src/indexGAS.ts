@@ -1,5 +1,8 @@
 // @ts-nocheck
 
+import "core-js/features/array/includes";
+import "core-js/features/array/flat-map";
+
 global.Promise = undefined;
 
 import { SynchronousPromise } from "synchronous-promise";

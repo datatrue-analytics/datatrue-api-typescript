@@ -111,7 +111,7 @@ export default abstract class Resource {
    */
   public setResourceID(id: number | undefined): void {
     this.resourceID = id;
-    (this.constructor as any).childTypes.forEach((childType: string) => {
+    (this.constructor as typeof Resource).childTypes.forEach((childType: string) => {
       (this as Record<string, any>)[childType].forEach((child: Resource) => {
         child.setContextID(id);
       });
@@ -205,7 +205,7 @@ export default abstract class Resource {
    * @returns {Promise<void>} Promise
    */
   protected create(): Promise<void> {
-    const resourceType: string = (this.constructor as any).resourceType;
+    const resourceType: string = (this.constructor as typeof Resource).resourceType;
 
     const uri = [
       Resource.config.apiEndpoint,
@@ -229,7 +229,7 @@ export default abstract class Resource {
       this.setResourceID(responseObj[resourceType]["id"]);
 
       // Sets resource IDs for all children that were created
-      (this.constructor as any).childTypes.forEach((childType: string) => {
+      (this.constructor as typeof Resource).childTypes.forEach((childType: string) => {
         if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
           responseObj[resourceType][resourceTypes[childType]].forEach((childObj: Record<string, any>, index: number) => {
             (this as Record<string, any>)[childType][index].setResourceID(childObj["id"]);
@@ -249,7 +249,7 @@ export default abstract class Resource {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
-      (this.constructor as any).resourceType + "s",
+      (this.constructor as typeof Resource).resourceType + "s",
       this.resourceID].join("/");
 
     const payload = this.toJSON();
@@ -264,7 +264,7 @@ export default abstract class Resource {
         throw response;
       }
 
-      const promises = (this.constructor as any).childTypes.flatMap((childType: string) => {
+      const promises = (this.constructor as typeof Resource).childTypes.flatMap((childType: string) => {
         return (this as Record<string, any>)[childType].map((child: Resource) => {
           return child.save();
         });
@@ -283,7 +283,7 @@ export default abstract class Resource {
    */
   protected insertChild(child: object, index: number = 0, resourceType: string): void {
     (this as Record<string, any>)[resourceType].splice(index, 0, child);
-    if ((this.constructor as any).childTypes.indexOf(resourceType) > -1) {
+    if ((this.constructor as typeof Resource).childTypes.includes(resourceType)) {
       (this as Record<string, any>)[resourceType].forEach((child: Resource, index: number) => {
         child.setOptions({ position: index + 1 });
       });
@@ -310,9 +310,9 @@ export default abstract class Resource {
    * @returns {object} obj without children
    */
   private beforeUpdate(obj: Record<string, any>): object {
-    for (const childType of (this.constructor as any).childTypes) {
-      if (obj[(this.constructor as any).resourceType] !== undefined) {
-        delete obj[(this.constructor as any).resourceType][resourceTypes[childType]];
+    for (const childType of (this.constructor as typeof Resource).childTypes) {
+      if (obj[(this.constructor as typeof Resource).resourceType] !== undefined) {
+        delete obj[(this.constructor as typeof Resource).resourceType][resourceTypes[childType]];
       } else {
         delete obj[resourceTypes[childType]];
       }
@@ -329,7 +329,7 @@ export default abstract class Resource {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
-      (this.constructor as any).resourceType + "s",
+      (this.constructor as typeof Resource).resourceType + "s",
       this.contextID].join("/");
 
     return Resource.client.makeRequest(uri, "delete", {
