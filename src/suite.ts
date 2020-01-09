@@ -43,7 +43,12 @@ export default class Suite extends Resource implements Runnable {
         });
       }
 
-      return Promise.all(promises).then(() => {
+      let seq = Promise.resolve();
+      for (const pr of promises) {
+        seq = seq.then(() => pr);
+      }
+
+      return seq.then(() => {
         delete suiteObj.tests;
         const suite = Suite.fromJSON(suiteObj);
         tests.forEach(test => suite.insertTest(test));
@@ -103,13 +108,13 @@ export default class Suite extends Resource implements Runnable {
 
   protected create(): Promise<void> {
     return super.create().then(() => {
-      const pr: Promise<void>[] = [];
+      const promises: Promise<void>[] = [];
 
       this.tests.forEach(test => {
-        pr.push(test.save());
+        promises.push(test.save());
       });
 
-      return Promise.all(pr).then();
+      return Promise.all(promises).then();
     });
   }
 
