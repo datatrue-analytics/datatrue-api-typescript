@@ -37,11 +37,9 @@ export default class DataLayerValidation extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number, callback?: (dataLayerValidation: DataLayerValidation) => void, thisArg?: any): void {
-    super.getResource(id, DataLayerValidation.resourceType, (resource: string) => {
-      if (typeof callback === "function") {
-        callback.call(thisArg, DataLayerValidation.fromJSON(JSON.parse(resource)));
-      }
+  public static fromID(id: number): Promise<DataLayerValidation> {
+    return super.getResource(id, DataLayerValidation.resourceType).then(resource => {
+      return DataLayerValidation.fromJSON(JSON.parse(resource));
     });
   }
 

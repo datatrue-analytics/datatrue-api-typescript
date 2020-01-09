@@ -28,10 +28,10 @@ export interface JobStatus {
 }
 
 export default interface Runnable {
-  jobID?: number,
+  jobID?: string,
 
-  run(email_users: number[]): void,
-  progress(callback: (jobStatus: JobStatus) => void, thisArg: any): void,
+  run(email_users: number[]): Promise<string>,
+  progress(): Promise<JobStatus>,
 }
 
 /**
@@ -43,17 +43,16 @@ export default interface Runnable {
  * @param {number} resourceID the ID of the resource to run
  * @param {HTTPClient} client client to make the HTTP request
  * @param {Config} config config
- * @param {(jobID: number) => void} [callback] callback to execute once the resource has been run
- * @param {*} [thisArg] the context to execute the callback in
+ * @returns {Promise<string>} Promise of the job_id
  */
-export function _run(email_users: number[] = [], resourceTypeRun: string, resourceID: number, client: HTTPClient, config: Config, callback?: (jobID: number) => void, thisArg?: any): void {
+export function _run(email_users: number[] = [], resourceTypeRun: string, resourceID: number, client: HTTPClient, config: Config): Promise<string> {
   const uri = [
     config.apiEndpoint,
     "ci_api",
     `test_runs?api_key=${config.accountToken}`,
   ].join("/");
 
-  client.makeRequest(uri, "post", {
+  return client.makeRequest(uri, "post", {
     body: JSON.stringify({
       "test_run": {
         "test_class": resourceTypeRun,
@@ -61,10 +60,11 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
         "email_users": email_users,
       },
     }),
-  }, (response) => {
-    if (typeof callback === "function") {
-      callback.call(thisArg, JSON.parse(response.body)["job_id"]);
+  }).then(response => {
+    if (response.status >= 400) {
+      throw response;
     }
+    return JSON.parse(response.body)["job_id"];
   });
 }
 
@@ -75,10 +75,9 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
  * @param {number} jobID ID of the job to fetch progress for
  * @param {HTTPClient} client client to make the HTTP request
  * @param {Config} config config
- * @param {(jobStatus: JobStatus) => void} callback callback to execute once the progress has been retrieved
- * @param {*} thisArg context to execute the callback in
+ * @returns {Promise<JobStatus>} Promise of the job status
  */
-export function _progress(jobID: number, client: HTTPClient, config: Config, callback?: (jobStatus: JobStatus) => void, thisArg?: any): void {
+export function _progress(jobID: string, client: HTTPClient, config: Config): Promise<JobStatus> {
   const uri = [
     config.apiEndpoint,
     "ci_api",
@@ -87,9 +86,10 @@ export function _progress(jobID: number, client: HTTPClient, config: Config, cal
     `${jobID}?api_key=${config.accountToken}`,
   ].join("/");
 
-  client.makeRequest(uri, "get", { }, (response) => {
-    if (typeof callback === "function") {
-      callback.call(thisArg, JSON.parse(response.body));
+  return client.makeRequest(uri, "get", { }).then(response => {
+    if (response.status >= 400) {
+      throw response;
     }
+    return JSON.parse(response.body);
   });
 }

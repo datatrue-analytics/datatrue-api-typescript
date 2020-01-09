@@ -20,7 +20,7 @@ export default class Suite extends Resource implements Runnable {
   private tests: Test[] = [];
 
   public readonly contextType: string = "account";
-  public jobID?: number;
+  public jobID?: string;
   public options: SuiteOptions = { variables: {} };
 
   public constructor(name: string, public contextID?: number, options: SuiteOptions = {}) {
@@ -28,27 +28,32 @@ export default class Suite extends Resource implements Runnable {
     this.setOptions(options);
   }
 
-  public static fromID(id: number, callback?: (suite: Suite) => void, thisArg?: any): void {
-    super.getResource(id, Suite.resourceType, (resource: string) => {
+  public static fromID(id: number): Promise<Suite> {
+    return super.getResource(id, Suite.resourceType).then(resource => {
       const suiteObj = JSON.parse(resource);
+      let promises: Promise<void>[] = [];
+      const tests: Test[] = new Array(suiteObj.tests.length);
 
       if (suiteObj.tests !== undefined) {
-        const tests: Test[] = new Array(suiteObj.tests.length);
-
-        suiteObj.tests.forEach((testObj: Record<string, any>, index: number) => {
-          Test.fromID(testObj["id"], (test: Test) => {
+        promises = suiteObj.tests.map((testObj: Record<string, any>, index: number) => {
+          return Test.fromID(testObj["id"]).then(test => {
             test.setContextID(id);
             tests[index] = test;
-            if (tests.filter(fullTest => fullTest !== undefined).length === tests.length) {
-              suiteObj.tests = tests.map(fullTest => fullTest.toJSON()[Test.resourceType]);
-
-              if (typeof callback === "function") {
-                callback.call(thisArg, Suite.fromJSON(suiteObj));
-              }
-            }
           });
         });
       }
+
+      let seq = Promise.resolve();
+      for (const pr of promises) {
+        seq = seq.then(() => pr);
+      }
+
+      return seq.then(() => {
+        delete suiteObj.tests;
+        const suite = Suite.fromJSON(suiteObj);
+        tests.forEach(test => suite.insertTest(test));
+        return suite;
+      });
     });
   }
 
@@ -101,20 +106,14 @@ export default class Suite extends Resource implements Runnable {
     return this.tests.slice();
   }
 
-  protected create(callback: () => void, thisArg: any): void {
-    let done = 0;
-    super.create(() => {
-      this.tests.forEach(test => {
-        test.save(() => {
-          done++;
-          if (done === this.tests.length) {
-            if (typeof callback === "function") {
-              callback.call(thisArg);
-            }
-          }
-        });
+  protected create(): Promise<void> {
+    return super.create().then(() => {
+      const promises = this.tests.map(test => {
+        return test.save();
       });
-    }, this);
+
+      return Promise.all(promises).then();
+    });
   }
 
   public toJSON(): Record<string, any> {
@@ -132,21 +131,22 @@ export default class Suite extends Resource implements Runnable {
     return obj;
   }
 
-  public run(email_users: number[] = []): void {
+  public run(email_users: number[] = []): Promise<string> {
     const resourceID = this.getResourceID();
     if (resourceID === undefined) {
-      throw new Error("Suites can only be run once they have been saved.");
+      return Promise.reject(new Error("Suites can only be run once they have been saved."));
     } else {
-      _run(email_users, Suite.resourceTypeRun, resourceID, Resource.client, Resource.config, (jobID: number) => {
+      return _run(email_users, Suite.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
         this.jobID = jobID;
-      }, this);
+        return jobID;
+      });
     }
   }
 
-  public progress(callback: (jobStatus: JobStatus) => void, thisArg: any): void {
+  public progress(): Promise<JobStatus> {
     if (this.jobID === undefined) {
-      throw new Error("You must run the suite before fetching progress.");
+      return Promise.reject(new Error("You must run the suite before fetching progress."));
     }
-    _progress(this.jobID, Resource.client, Resource.config, callback, thisArg);
+    return _progress(this.jobID, Resource.client, Resource.config);
   }
 }

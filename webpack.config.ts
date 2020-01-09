@@ -17,17 +17,28 @@ const config: webpack.Configuration = {
     path: destination,
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js"],
+    extensions: [".ts", ".js"],
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.js$/,
         use: [
           {
             loader: "babel-loader",
             options: {
-              babelrc: true,
+              presets: ["@kenchan0130/babel-preset-google-apps-script"],
+            },
+          },
+        ],
+      },
+      {
+        test: /\.ts$/,
+        use: [
+          {
+            loader: "babel-loader",
+            options: {
+              presets: ["@kenchan0130/babel-preset-google-apps-script"],
             },
           },
           {
