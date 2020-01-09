@@ -28,27 +28,27 @@ export default class Suite extends Resource implements Runnable {
     this.setOptions(options);
   }
 
-  public static fromID(id: number, callback?: (suite: Suite) => void, thisArg?: any): void {
-    super.getResource(id, Suite.resourceType, (resource: string) => {
+  public static fromID(id: number): Promise<Suite> {
+    return super.getResource(id, Suite.resourceType).then(resource => {
       const suiteObj = JSON.parse(resource);
+      let promises: Promise<void>[] = [];
+      const tests: Test[] = new Array(suiteObj.tests.length);
 
       if (suiteObj.tests !== undefined) {
-        const tests: Test[] = new Array(suiteObj.tests.length);
-
-        suiteObj.tests.forEach((testObj: Record<string, any>, index: number) => {
-          Test.fromID(testObj["id"], (test: Test) => {
+        promises = suiteObj.tests.map((testObj: Record<string, any>, index: number) => {
+          return Test.fromID(testObj["id"]).then(test => {
             test.setContextID(id);
             tests[index] = test;
-            if (tests.filter(fullTest => fullTest !== undefined).length === tests.length) {
-              suiteObj.tests = tests.map(fullTest => fullTest.toJSON()[Test.resourceType]);
-
-              if (typeof callback === "function") {
-                callback.call(thisArg, Suite.fromJSON(suiteObj));
-              }
-            }
           });
         });
       }
+
+      return Promise.all(promises).then(() => {
+        delete suiteObj.tests;
+        const suite = Suite.fromJSON(suiteObj);
+        tests.forEach(test => suite.insertTest(test));
+        return suite;
+      });
     });
   }
 
@@ -101,20 +101,16 @@ export default class Suite extends Resource implements Runnable {
     return this.tests.slice();
   }
 
-  protected create(callback: () => void, thisArg: any): void {
-    let done = 0;
-    super.create(() => {
+  protected create(): Promise<void> {
+    return super.create().then(() => {
+      const pr: Promise<void>[] = [];
+
       this.tests.forEach(test => {
-        test.save(() => {
-          done++;
-          if (done === this.tests.length) {
-            if (typeof callback === "function") {
-              callback.call(thisArg);
-            }
-          }
-        });
+        pr.push(test.save());
       });
-    }, this);
+
+      return Promise.all(pr).then();
+    });
   }
 
   public toJSON(): Record<string, any> {

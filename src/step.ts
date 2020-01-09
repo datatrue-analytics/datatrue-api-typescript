@@ -88,11 +88,9 @@ export default class Step extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number, callback?: (step: Step) => void, thisArg?: any): void {
-    super.getResource(id, Step.resourceType, (resource: string) => {
-      if (typeof callback === "function") {
-        callback.call(thisArg, Step.fromJSON(JSON.parse(resource)));
-      }
+  public static fromID(id: number): Promise<Step> {
+    return super.getResource(id, Step.resourceType).then(resource => {
+      return Step.fromJSON(JSON.parse(resource));
     });
   }
 

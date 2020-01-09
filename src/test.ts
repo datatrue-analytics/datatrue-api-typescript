@@ -45,11 +45,9 @@ export default class Test extends Resource implements Runnable {
     this.setOptions(options);
   }
 
-  public static fromID(id: number, callback?: (test: Test) => void, thisArg?: any): void {
-    super.getResource(id, Test.resourceType, (resource: string) => {
-      if (typeof callback === "function") {
-        callback.call(thisArg, Test.fromJSON(JSON.parse(resource)));
-      }
+  public static fromID(id: number): Promise<Test> {
+    return super.getResource(id, Test.resourceType).then(resource => {
+      return Test.fromJSON(JSON.parse(resource));
     });
   }
 

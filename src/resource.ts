@@ -54,10 +54,11 @@ export default abstract class Resource {
    *
    * @static
    * @param {number} id the ID of the resource
-   * @param {(resource: Resource) => void} callback callback to execute once resource has been fetched
-   * @param {any} [thisArg] context of the callback
+   * @returns {Promise<Resource>} Promise of the resource
    */
-  public static fromID(id: number, callback: (resource: Resource) => void, thisArg?: any): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
+  public static fromID(id: number): Promise<Resource> { // eslint-disable-line @typescript-eslint/no-unused-vars
+    return Promise.reject(new Error("Function not implemented"));
+  }
 
   /**
    * Create a resource from an object
@@ -150,58 +151,58 @@ export default abstract class Resource {
    * @static
    * @param {number} id the id of the resource to fetch
    * @param {string} resourceType the type of the resource to fetch
-   * @param {(resource: string) => void} [callback] callback to execute once the resource has been fetched
-   * @param {*} [thisArg] context of the callback
+   * @returns {Promise<string>} Promise of the resource as a JSON string
    */
-  protected static getResource(id: number, resourceType: string, callback?: (resource: string) => void, thisArg?: any): void {
+  protected static getResource(id: number, resourceType: string): Promise<string> {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
       resourceType + "s",
       id].join("/");
 
-    Resource.client.makeRequest(uri, "get", {
+    return Resource.client.makeRequest(uri, "get", {
       "headers": {
         "authorization": "Token " + Resource.config.userToken,
       },
-    }, (response) => {
-      if (typeof callback === "function") {
-        callback.call(thisArg, response.body);
-      }
+    }).then(response => {
+      return response.body;
     });
   }
 
   /**
    * Save a resource to DataTrue
    *
-   * @param {() => void} [callback] callback to execute after the Resource has been saved
-   * @param {*} [thisArg] context of the callback
+   * @returns {Promise<void>} Promise
    */
-  public save(callback?: () => void, thisArg?: any): void {
-    const after = (): void => {
-      this.toDelete.forEach(child => child.delete());
-      this.toDelete = [];
-
-      if (typeof callback === "function") {
-        callback.call(thisArg);
-      }
+  public save(): Promise<void> {
+    const after = (): Promise<void> => {
+      const promises: Promise<void>[] = [];
+      this.toDelete.slice().forEach(child => {
+        promises.push(child.delete().then(() => {
+          this.toDelete = this.toDelete.filter(item => item.getResourceID() !== child.getResourceID());
+        }));
+      });
+      return Promise.all(promises).then();
     };
 
+    let pr: Promise<void>;
+
     if (this.resourceID) {
-      this.update(after, this);
+      pr = this.update();
     } else {
-      this.create(after, this);
+      pr = this.create();
     }
+
+    return pr.then(after);
   }
 
   /**
    * Create the resource in DataTrue
    *
    * @protected
-   * @param {() => void} [callback] callback to execute after the Resource has been created
-   * @param {*} [thisArg] context of the callback
+   * @returns {Promise<void>} Promise
    */
-  protected create(callback?: () => void, thisArg?: any): void {
+  protected create(): Promise<void> {
     const resourceType: string = (this.constructor as any).resourceType;
 
     const uri = [
@@ -211,16 +212,17 @@ export default abstract class Resource {
       this.contextID,
       resourceType + "s"].join("/");
 
-    Resource.client.makeRequest(uri, "post", {
+    return Resource.client.makeRequest(uri, "post", {
       body: this.toString(),
       headers: {
         "authorization": "Token " + Resource.config.userToken,
       },
-    }, (response) => {
+    }).then(response => {
       const responseObj = JSON.parse(response.body);
 
       this.setResourceID(responseObj[resourceType]["id"]);
 
+      // Sets resource IDs for all children that were created
       (this.constructor as any).childTypes.forEach((childType: string) => {
         if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
           responseObj[resourceType][resourceTypes[childType]].forEach((childObj: Record<string, any>, index: number) => {
@@ -228,21 +230,16 @@ export default abstract class Resource {
           });
         }
       });
-
-      if (typeof callback === "function") {
-        callback.call(thisArg);
-      }
-    }, this);
+    });
   }
 
   /**
    * Update the resource and all children in DataTrue
    *
    * @protected
-   * @param {() => void} [callback] callback to execute after the Resource has been updated
-   * @param {*} [thisArg] context of the callback
+   * @returns {Promise<void>} Promise
    */
-  protected update(callback?: () => void, thisArg?: any): void {
+  protected update(): Promise<void> {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
@@ -251,22 +248,18 @@ export default abstract class Resource {
 
     const payload = this.toJSON();
 
-    Resource.client.makeRequest(uri, "put", {
+    return Resource.client.makeRequest(uri, "put", {
       body: JSON.stringify(this.beforeUpdate(payload)),
       headers: {
         "authorization": "Token " + Resource.config.userToken,
       },
-    }, () => {
+    }).then(() => {
       for (const childType of (this.constructor as any).childTypes) {
         (this as Record<string, any>)[childType].forEach((child: Resource) => {
           child.save();
         });
       }
-
-      if (typeof callback === "function") {
-        callback.call(thisArg);
-      }
-    }, this);
+    });
   }
 
   /**
@@ -318,18 +311,20 @@ export default abstract class Resource {
 
   /**
    * Delete the resource in DataTrue
+   *
+   * @returns {Promise<void>} Promise
    */
-  public delete(): void {
+  public delete(): Promise<void> {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
       (this.constructor as any).resourceType + "s",
       this.contextID].join("/");
 
-    Resource.client.makeRequest(uri, "delete", {
+    return Resource.client.makeRequest(uri, "delete", {
       headers: {
         "authorization": "Token " + Resource.config.userToken,
       },
-    });
+    }).then(() => {});
   }
 }

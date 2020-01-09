@@ -55,11 +55,9 @@ export default class TagValidation extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number, callback?: (tagValidation: TagValidation) => void, thisArg?: any): void {
-    super.getResource(id, TagValidation.resourceType, (resource: string) => {
-      if (typeof callback === "function") {
-        callback.call(thisArg, TagValidation.fromJSON(JSON.parse(resource)));
-      }
+  public static fromID(id: number): Promise<TagValidation> {
+    return super.getResource(id, TagValidation.resourceType).then(resource => {
+      return TagValidation.fromJSON(JSON.parse(resource));
     });
   }
 
