@@ -37,7 +37,7 @@ export default class Test extends Resource implements Runnable {
   private tagValidations: TagValidation[] = [];
 
   public readonly contextType: string = "suite";
-  public jobID?: number;
+  public jobID?: string;
   public options: TestOptions = { variables: {} };
 
   public constructor(name: string, public contextID?: number, options: TestOptions = {}) {
@@ -141,21 +141,22 @@ export default class Test extends Resource implements Runnable {
     return obj;
   }
 
-  public run(email_users: number[] = []): void {
+  public run(email_users: number[] = []): Promise<string> {
     const resourceID = this.getResourceID();
     if (resourceID === undefined) {
-      throw new Error("Tests can only be run once they have been saved.");
+      return Promise.reject(new Error("Tests can only be run once they have been saved."));
     } else {
-      _run(email_users, Test.resourceTypeRun, resourceID, Resource.client, Resource.config, (jobID: number) => {
+      return _run(email_users, Test.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
         this.jobID = jobID;
-      }, this);
+        return jobID;
+      });
     }
   }
 
-  public progress(callback?: (jobStatus: JobStatus) => void, thisArg?: any): void {
+  public progress(): Promise<JobStatus> {
     if (this.jobID === undefined) {
-      throw new Error("You must run the test before fetching progress.");
+      return Promise.reject(new Error("You must run the test before fetching progress."));
     }
-    _progress(this.jobID, Resource.client, Resource.config, callback, thisArg);
+    return _progress(this.jobID, Resource.client, Resource.config);
   }
 }
