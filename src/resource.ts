@@ -1,5 +1,8 @@
 import HTTPClient from "./httpClient/httpClient";
 
+/**
+ * @hidden
+ */
 const resourceTypes: Record<string, string> = {
   dataLayerValidations: "data_layer_validations",
   steps: "steps",

@@ -7,12 +7,18 @@ import Test, { TestOptions, TestTypes, VariableTypes, Variables } from "./test";
 import NodeClient from "./httpClient/nodeClient";
 import Resource from "./resource";
 
+/**
+ * @hidden
+ */
 const config = {
   apiEndpoint: "datatrue.com",
   userToken: "",
   accountToken: "",
 };
 
+/**
+ * @hidden
+ */
 const client = new NodeClient();
 Resource["client"] = client;
 Resource["config"] = config;
