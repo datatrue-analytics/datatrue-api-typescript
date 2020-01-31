@@ -5,11 +5,21 @@ import Test, { Variables, VariableTypes } from "./test";
 export interface SuiteOptions extends ResourceOptions {
   variables?: Variables,
   suite_type?: SuiteTypes,
+  restart_between_tests?: boolean,
+  excluded_domains?: string[],
+  sensitive_data_setting?: SensitiveDataSettings,
+  persona_id?: number,
 }
 
 export enum SuiteTypes {
   WEB = 0,
   MOBILE_APP = 1
+}
+
+export enum SensitiveDataSettings {
+  DISABLED = "disabled",
+  FAIL_WHEN_DETECTED = "fail_when_detected",
+  PASS_WHEN_DETECTED = "pass_when_detected",
 }
 
 export default class Suite extends Resource implements Runnable {
