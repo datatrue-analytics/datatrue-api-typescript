@@ -1,6 +1,6 @@
 export interface HTTPOptions {
   body?: string,
-  headers?: {[s: string]: string},
+  headers?: { [s: string]: string },
 }
 
 export interface Response {

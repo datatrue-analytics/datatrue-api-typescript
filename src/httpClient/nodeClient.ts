@@ -1,5 +1,5 @@
-import HTTPClient, { HTTPOptions, Response, Method } from "./httpClient";
 import fetch from "node-fetch";
+import HTTPClient, { HTTPOptions, Method, Response } from "./httpClient";
 
 export default class NodeClient implements HTTPClient {
   public makeRequest(url: string, method: Method, options: HTTPOptions): Promise<Response> {

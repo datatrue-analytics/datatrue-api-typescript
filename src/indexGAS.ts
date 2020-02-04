@@ -12,7 +12,7 @@ __awaiter = SynchronousPromise.installGlobally();
 
 import AppsScriptClient from "./httpClient/appsScriptClient";
 import DataLayerValidation from "./dataLayerValidation";
-import Step, { StepActions, SelectorTypes, IframeSelectorTypes } from "./step";
+import Step, { StepActions, SelectorTypes, WebSelectorTypes, MobileSelectorTypes, IframeSelectorTypes } from "./step";
 import Suite, { SuiteTypes } from "./suite";
 import TagValidation, { TagValidationContexts } from "./tagValidation";
 import Test, { TestTypes, VariableTypes } from "./test";
@@ -29,6 +29,8 @@ global.DataLayerValidation = DataLayerValidation;
 global.Step = Step;
 global.StepActions = StepActions;
 global.SelectorTypes = SelectorTypes;
+global.WebSelectorTypes = WebSelectorTypes;
+global.MobileSelectorTypes = MobileSelectorTypes;
 global.IframeSelectorTypes = IframeSelectorTypes;
 
 global.Suite = Suite;

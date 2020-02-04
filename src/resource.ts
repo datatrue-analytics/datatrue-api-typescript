@@ -272,7 +272,7 @@ export default abstract class Resource {
           return child.save();
         });
       });
-      return Promise.all(promises).then(() => {});
+      return Promise.all(promises).then(() => { });
     });
   }
 

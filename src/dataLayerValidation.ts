@@ -1,5 +1,5 @@
 import Resource, { ResourceOptions } from "./resource";
-import { WebSelectorTypes, IframeSelectorTypes } from "./step";
+import { IframeSelectorTypes, WebSelectorTypes } from "./step";
 
 export interface DataLayerValidationOptions extends ResourceOptions {
   enabled?: boolean,

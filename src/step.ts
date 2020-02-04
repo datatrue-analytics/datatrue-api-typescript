@@ -1,5 +1,5 @@
-import Resource, { ResourceOptions } from "./resource";
 import DataLayerValidation from "./dataLayerValidation";
+import Resource, { ResourceOptions } from "./resource";
 import TagValidation from "./tagValidation";
 
 export enum StepActions {

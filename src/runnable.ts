@@ -86,7 +86,7 @@ export function _progress(jobID: string, client: HTTPClient, config: Config): Pr
     `${jobID}?api_key=${config.accountToken}`,
   ].join("/");
 
-  return client.makeRequest(uri, "get", { }).then(response => {
+  return client.makeRequest(uri, "get", {}).then(response => {
     if (response.status >= 400) {
       throw response;
     }
