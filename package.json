@@ -24,7 +24,7 @@
   "homepage": "https://github.com/Lens10/datatrue-api-google-apps-script#readme",
   "devDependencies": {
     "@babel/core": "^7.8.4",
-    "@kenchan0130/babel-preset-google-apps-script": "^0.2.7",
+    "@kenchan0130/babel-preset-google-apps-script": "^0.5.1",
     "@types/google-apps-script": "^1.0.10",
     "@types/node": "^12.12.26",
     "@types/node-fetch": "^2.5.4",
