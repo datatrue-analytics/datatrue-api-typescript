@@ -30,7 +30,19 @@ export interface JobStatus {
 export default interface Runnable {
   jobID?: string,
 
+  /**
+   * Run the resource in DataTrue
+   *
+   * @param email_users an array of user IDs to whom the test results should be sent
+   * @returns Promise of the jobID
+   */
   run(email_users: number[]): Promise<string>,
+
+  /**
+   * Retrieve the JobStatus for a resource
+   *
+   * @returns Promise of the JobStatus
+   */
   progress(): Promise<JobStatus>,
 }
 
