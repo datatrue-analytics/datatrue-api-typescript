@@ -75,6 +75,8 @@
     "@typescript-eslint/semi": "error",
     "jsdoc/check-tag-names": "off",
     "jsdoc/no-undefined-types": "off",
+    "jsdoc/require-param-type": "off",
+    "jsdoc/require-returns-type": "off",
     "no-multiple-empty-lines": [
       "error",
       {

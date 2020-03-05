@@ -38,12 +38,12 @@ export default interface Runnable {
  * Run the resource in DataTrue
  *
  * @hidden
- * @param {number[]} [email_users=[]] a list of IDs for who should be emailed regarding the test run
- * @param {string} resourceTypeRun the type of the resource being run
- * @param {number} resourceID the ID of the resource to run
- * @param {HTTPClient} client client to make the HTTP request
- * @param {Config} config config
- * @returns {Promise<string>} Promise of the job_id
+ * @param email_users a list of IDs for who should be emailed regarding the test run
+ * @param resourceTypeRun the type of the resource being run
+ * @param resourceID the ID of the resource to run
+ * @param client client to make the HTTP request
+ * @param config config
+ * @returns Promise of the job_id
  */
 export function _run(email_users: number[] = [], resourceTypeRun: string, resourceID: number, client: HTTPClient, config: Config): Promise<string> {
   const uri = [
@@ -72,10 +72,10 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
  * Retrieve progress for a job
  *
  * @hidden
- * @param {number} jobID ID of the job to fetch progress for
- * @param {HTTPClient} client client to make the HTTP request
- * @param {Config} config config
- * @returns {Promise<JobStatus>} Promise of the job status
+ * @param jobID ID of the job to fetch progress for
+ * @param client client to make the HTTP request
+ * @param config config
+ * @returns Promise of the job status
  */
 export function _progress(jobID: string, client: HTTPClient, config: Config): Promise<JobStatus> {
   const uri = [

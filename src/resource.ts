@@ -31,8 +31,6 @@ export interface Config {
 /**
  * Base class for all DataTrue resource types
  *
- * @abstract
- * @class Resource
  * @hidden
  */
 export default abstract class Resource {
@@ -55,9 +53,8 @@ export default abstract class Resource {
   /**
    * Create a resource from a given ID
    *
-   * @static
-   * @param {number} id the ID of the resource
-   * @returns {Promise<Resource>} Promise of the resource
+   * @param id the ID of the resource
+   * @returns Promise of the resource
    */
   public static fromID(id: number): Promise<Resource> { // eslint-disable-line @typescript-eslint/no-unused-vars
     return Promise.reject(new Error("Function not implemented"));
@@ -66,24 +63,22 @@ export default abstract class Resource {
   /**
    * Create a resource from an object
    *
-   * @static
-   * @param {Record<string, any>} obj object to create resource from
-   * @param {boolean} [copy=false] whether to create a copy of the resource or not (removes resource IDs)
+   * @param obj object to create resource from
+   * @param copy whether to create a copy of the resource or not (removes resource IDs)
    */
   public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
 
   /**
    * Convert the resource to an Object
    *
-   * @abstract
-   * @returns {Record<string, any>} object representation of the resource
+   * @returns object representation of the resource
    */
   public abstract toJSON(): Record<string, any>;
 
   /**
    * Convert the resource to a JSON string
    *
-   * @returns {string} the resource represented as a JSON string
+   * @returns the resource represented as a JSON string
    */
   public toString(): string {
     return JSON.stringify(this.toJSON());
@@ -92,7 +87,7 @@ export default abstract class Resource {
   /**
    * Gets the resourceID of a resource
    *
-   * @returns {(number | undefined)} resourceID of the resource
+   * @returns resourceID of the resource
    */
   public getResourceID(): number | undefined {
     return this.resourceID;
@@ -101,7 +96,7 @@ export default abstract class Resource {
   /**
    * Gets the contextID of a resource
    *
-   * @returns {(number | undefined)} contextID of the resource
+   * @returns contextID of the resource
    */
   public getContextID(): number | undefined {
     return this.contextID;
@@ -110,7 +105,7 @@ export default abstract class Resource {
   /**
    * Sets the resourceID of a resource
    *
-   * @param {(number | undefined)} id the resourceID to set
+   * @param id the resourceID to set
    */
   public setResourceID(id: number | undefined): void {
     this.resourceID = id;
@@ -124,7 +119,7 @@ export default abstract class Resource {
   /**
    * Sets the contextID of a resource
    *
-   * @param {(number | undefined)} id the contextID to set
+   * @param id the contextID to set
    */
   public setContextID(id: number | undefined): void {
     this.contextID = id;
@@ -133,8 +128,8 @@ export default abstract class Resource {
   /**
    * Set options from the passed options object
    *
-   * @param {ResourceOptions} options the object to set options from
-   * @param {boolean} [override] whether to override the options object
+   * @param options the object to set options from
+   * @param override whether to override the options object
    */
   public setOptions(options: ResourceOptions, override?: boolean): void {
     if (override) {
@@ -150,11 +145,9 @@ export default abstract class Resource {
   /**
    * Fetch a resource from DataTrue
    *
-   * @protected
-   * @static
-   * @param {number} id the id of the resource to fetch
-   * @param {string} resourceType the type of the resource to fetch
-   * @returns {Promise<string>} Promise of the resource as a JSON string
+   * @param id the id of the resource to fetch
+   * @param resourceType the type of the resource to fetch
+   * @returns Promise of the resource as a JSON string
    */
   protected static getResource(id: number, resourceType: string): Promise<string> {
     const uri = [
@@ -178,7 +171,7 @@ export default abstract class Resource {
   /**
    * Save a resource to DataTrue
    *
-   * @returns {Promise<void>} Promise
+   * @returns Promise
    */
   public save(): Promise<void> {
     const after = (): Promise<void> => {
@@ -204,8 +197,7 @@ export default abstract class Resource {
   /**
    * Create the resource in DataTrue
    *
-   * @protected
-   * @returns {Promise<void>} Promise
+   * @returns Promise
    */
   protected create(): Promise<void> {
     const resourceType: string = (this.constructor as typeof Resource).resourceType;
@@ -245,8 +237,7 @@ export default abstract class Resource {
   /**
    * Update the resource and all children in DataTrue
    *
-   * @protected
-   * @returns {Promise<void>} Promise
+   * @returns Promise
    */
   protected update(): Promise<void> {
     const uri = [
@@ -279,10 +270,9 @@ export default abstract class Resource {
   /**
    * Add a child to a resource
    *
-   * @protected
-   * @param {object} child child to add to the Resource
-   * @param {number} [index=0] index to add the child at
-   * @param {string} resourceType type of the child
+   * @param child child to add to the Resource
+   * @param index index to add the child at
+   * @param resourceType type of the child
    */
   protected insertChild(child: object, index: number = 0, resourceType: string): void {
     (this as Record<string, any>)[resourceType].splice(index, 0, child);
@@ -296,9 +286,8 @@ export default abstract class Resource {
   /**
    * Delete a child from a resource
    *
-   * @protected
-   * @param {number} index index to delete the child from
-   * @param {string} childType type of the child
+   * @param index index to delete the child from
+   * @param childType type of the child
    */
   protected deleteChild(index: number, childType: string): void {
     this.toDelete.push((this as Record<string, any>)[childType][index]);
@@ -308,9 +297,8 @@ export default abstract class Resource {
   /**
    * Removes children from obj so that the Resource can be updated
    *
-   * @private
-   * @param {Record<string, any>} obj object to remove children from
-   * @returns {object} obj without children
+   * @param obj object to remove children from
+   * @returns obj without children
    */
   private beforeUpdate(obj: Record<string, any>): object {
     for (const childType of (this.constructor as typeof Resource).childTypes) {
@@ -326,7 +314,7 @@ export default abstract class Resource {
   /**
    * Delete the resource in DataTrue
    *
-   * @returns {Promise<void>} Promise
+   * @returns Promise
    */
   public delete(): Promise<void> {
     const uri = [
