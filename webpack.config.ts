@@ -22,25 +22,8 @@ const config: webpack.Configuration = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: [
-          {
-            loader: "babel-loader",
-            options: {
-              presets: ["@kenchan0130/babel-preset-google-apps-script"],
-            },
-          },
-        ],
-      },
-      {
         test: /\.ts$/,
         use: [
-          {
-            loader: "babel-loader",
-            options: {
-              presets: ["@kenchan0130/babel-preset-google-apps-script"],
-            },
-          },
           {
             loader: "ts-loader",
             options: {
