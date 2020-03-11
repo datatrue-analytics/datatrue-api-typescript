@@ -1,15 +1,5 @@
 // @ts-nocheck
 
-import "core-js/features/array/includes";
-import "core-js/features/array/flat-map";
-
-global.Promise = undefined;
-
-import { SynchronousPromise } from "synchronous-promise";
-
-declare var __awaiter: Function;
-__awaiter = SynchronousPromise.installGlobally();
-
 import AppsScriptClient from "./httpClient/appsScriptClient";
 import DataLayerValidation from "./dataLayerValidation";
 import Step, { StepActions, SelectorTypes, WebSelectorTypes, MobileSelectorTypes, IframeSelectorTypes } from "./step";
