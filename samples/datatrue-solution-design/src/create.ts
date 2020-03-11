@@ -1,4 +1,4 @@
-function create(): void {
+async function create(): Promise<void> {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
   const ui = SpreadsheetApp.getUi();
@@ -40,7 +40,7 @@ function create(): void {
       }
 
       const suite = new DataTrue.Suite(suiteName, parseInt(accountID));
-      suite.save();
+      await suite.save();
       suiteID = suite.getResourceID().toString();
     }
   }
@@ -159,7 +159,7 @@ function create(): void {
     }
   });
 
-  test.save();
+  await test.save();
 
   for (let i = 1; i < stepRows.getNumRows(); i++) {
     if (stepRows.getCell(i, 1).getDisplayValue() === "") {
