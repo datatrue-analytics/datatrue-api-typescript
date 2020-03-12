@@ -3,7 +3,8 @@
     "types": [
       "google-apps-script"
     ],
-    "declaration": false
+    "declaration": false,
+    "target": "ES2019"
   },
   "extends": "./tsconfig.json",
   "exclude": [
