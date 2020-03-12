@@ -1,0 +1,8 @@
+{
+  "exclude": "./src/httpClient/**",
+  "excludeNotExported": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "mode": "file",
+  "out": "docs"
+}

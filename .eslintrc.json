@@ -2,7 +2,7 @@
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": [
-      "./tsconfig.json"
+      "./tsconfig.eslint.json"
     ],
     "sourceType": "module"
   },
@@ -61,6 +61,7 @@
       }
     ],
     "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-inferrable-types": [
       "off"
     ],
@@ -72,6 +73,10 @@
     ],
     "semi": "off",
     "@typescript-eslint/semi": "error",
+    "jsdoc/check-tag-names": "off",
+    "jsdoc/no-undefined-types": "off",
+    "jsdoc/require-param-type": "off",
+    "jsdoc/require-returns-type": "off",
     "no-multiple-empty-lines": [
       "error",
       {

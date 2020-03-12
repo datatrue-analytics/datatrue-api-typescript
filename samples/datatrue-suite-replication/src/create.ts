@@ -1,9 +1,9 @@
-function create(): void {
-  checkTokens();
+async function create(): Promise<void> {
+  getTokens();
 
   const userProperties = PropertiesService.getUserProperties();
-  DataTrue.managementToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
-  DataTrue.ciToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
+  DataTrue.config.userToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
+  DataTrue.config.accountToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
 
   var base = SpreadsheetApp.getActive().getActiveRange().getRow();
   var column = SpreadsheetApp.getActive().getActiveRange().getColumn();
@@ -25,7 +25,7 @@ function create(): void {
       return (SpreadsheetApp.getActive().getRange("R" + (base + 1) + "C" + (index + 3) + ":R" + (base + 3) + "C" + (index + 3)));
     });
 
-    const variables = rawVariables.map(function(variable) {
+    const variables = rawVariables.map(function (variable) {
       return ({
         "name": variable.shift(),
         "default": variable.shift(),
@@ -33,11 +33,11 @@ function create(): void {
       });
     });
 
-    const originalSuite = DataTrue.Suite.fromID(parseInt(suiteId));
+    const originalSuite = await DataTrue.Suite.fromID(parseInt(suiteId));
 
-    names.forEach((name, i) => {
+    for (const [i, name] of names.entries()) {
       if (results[i].getValues()[2][0] === "y") {
-        return;
+        continue;
       }
 
       const id = results[i].getValues()[1][0];
@@ -46,7 +46,7 @@ function create(): void {
       if (id === "") {
         newSuite = DataTrue.Suite.fromJSON(originalSuite.toJSON()["suite"], true);
       } else {
-        newSuite = DataTrue.Suite.fromID(id);
+        newSuite = await DataTrue.Suite.fromID(id);
       }
 
       newSuite.name = name;
@@ -56,10 +56,10 @@ function create(): void {
         newSuite.setVariable(variable.name, DataTrue.VariableTypes.PRESET, variable.values[i]);
       });
 
-      newSuite.save();
+      await newSuite.save();
 
       results[i].setValues([[accountId], [newSuite.getResourceID()], ["y"]]);
-    });
+    }
   } else {
     SpreadsheetApp.getUi().alert("Test suite configuration table was not found. Please select the cell containing the name of the test you wish to replicate.");
   }

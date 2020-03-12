@@ -1,4 +1,4 @@
-function create(): void {
+async function create(): Promise<void> {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
   const ui = SpreadsheetApp.getUi();
@@ -26,7 +26,7 @@ function create(): void {
     }
   }
 
-  sheet.getRange("B5").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/accounts/${accountID}/suites", "${accountID}")`);
+  sheet.getRange("B5").setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites", "${accountID}")`);
   SpreadsheetApp.flush();
 
   if (suiteID === "") {
@@ -40,12 +40,12 @@ function create(): void {
       }
 
       const suite = new DataTrue.Suite(suiteName, parseInt(accountID));
-      suite.save();
+      await suite.save();
       suiteID = suite.getResourceID().toString();
     }
   }
 
-  sheet.getRange("B6").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
+  sheet.getRange("B6").setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
   SpreadsheetApp.flush();
 
   let test: DataTrue.Test;
@@ -64,7 +64,7 @@ function create(): void {
     const initialStep = new DataTrue.Step(`Go To ${url}`, DataTrue.StepActions.GOTO_URL, undefined, { target: url });
 
     if (useMockPage) {
-      const intercept = new DataTrue.TagValidation("Mock Page", "Custom Tag", undefined, {
+      const intercept = new DataTrue.TagValidation("Mock Page", "Custom Tag", DataTrue.TagValidations.STEP, undefined, {
         hostname_validation: hostname,
         pathname_validation: path,
         hostname_detection: hostname,
@@ -159,7 +159,7 @@ function create(): void {
     }
   });
 
-  test.save();
+  await test.save();
 
   for (let i = 1; i < stepRows.getNumRows(); i++) {
     if (stepRows.getCell(i, 1).getDisplayValue() === "") {
@@ -173,5 +173,5 @@ function create(): void {
     }
   }
 
-  sheet.getRange("B7").setValue(`=HYPERLINK("${DataTrue.apiEndpoint}/tests/${test.getResourceID()}", "${test.getResourceID()}")`);
+  sheet.getRange("B7").setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/tests/${test.getResourceID()}", "${test.getResourceID()}")`);
 }

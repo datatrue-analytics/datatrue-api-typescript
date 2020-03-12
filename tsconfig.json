@@ -1,18 +1,24 @@
 {
-    "compilerOptions": {
-        "lib": [
-            "esnext"
-        ],
-        "declaration": true,
-        "experimentalDecorators": true,
-        "outDir": "dist",
-        "outFile": "dist/index.js",
-        "sourceMap": true
-    },
-    "include": [
-        "src/**/*"
+  "compilerOptions": {
+    "lib": [
+      "esnext",
+      "DOM"
     ],
-    "exclude": [
-        "node_modules"
-    ]
+    "declaration": true,
+    "experimentalDecorators": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "types": [],
+    "strict": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/indexGAS.ts",
+    "src/httpClient/appsScriptClient.ts"
+  ]
 }

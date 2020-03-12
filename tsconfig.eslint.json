@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.gas.json",
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "webpack.config.ts"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "types": [
+      "google-apps-script"
+    ],
+    "declaration": false
+  },
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "src/index.ts",
+    "src/httpClient/nodeClient.ts"
+  ]
+}

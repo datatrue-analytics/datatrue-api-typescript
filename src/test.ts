@@ -1,150 +1,160 @@
-/// <reference path="_resource.ts" />
-/// <reference path="runnable.ts" />
-namespace DataTrue {
-  export interface TestOptions extends DataTrue.ResourceOptions {
-    variables?: DataTrue.Variables,
-    test_type?: DataTrue.TestTypes,
+import Resource, { ResourceOptions } from "./resource";
+import Runnable, { JobStatus, _progress, _run } from "./runnable";
+import Step from "./step";
+import TagValidation from "./tagValidation";
+
+export interface TestOptions extends ResourceOptions {
+  variables?: Variables,
+  test_type?: TestTypes,
+}
+
+export enum TestTypes {
+  SIMULATION = 0,
+  COVERAGE = 1,
+  EMAIL = 2,
+  MOBILE = 3,
+}
+
+export enum VariableTypes {
+  PRESET = "preset",
+  RUNTIME = "runtime",
+  COUNTER = "counter",
+}
+
+export interface Variables {
+  [s: string]: {
+    type: VariableTypes,
+    value: string,
+  },
+}
+
+export default class Test extends Resource implements Runnable {
+  public static readonly resourceType: string = "test";
+  public static readonly resourceTypeRun: string = "TestScenario";
+  public static readonly childTypes: string[] = ["steps", "tagValidations"];
+
+  private steps: Step[] = [];
+  private tagValidations: TagValidation[] = [];
+
+  public readonly contextType: string = "suite";
+  public jobID?: string;
+  public options: TestOptions = { variables: {} };
+
+  public constructor(name: string, public contextID?: number, options: TestOptions = {}) {
+    super(name);
+    this.setOptions(options);
   }
 
-  export enum TestTypes {
-    SIMULATION = 0,
-    COVERAGE = 1,
-    EMAIL = 2,
-    MOBILE = 3,
+  public static fromID(id: number): Promise<Test> {
+    return super.getResource(id, Test.resourceType).then(resource => {
+      return Test.fromJSON(JSON.parse(resource));
+    });
   }
 
-  export enum VariableTypes {
-    PRESET = "preset",
-    RUNTIME = "runtime",
-    COUNTER = "counter",
+  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Test {
+    const { name, id, steps, tag_validations, ...options } = obj;
+
+    const test = new Test(name);
+    if (!copy) {
+      test.setResourceID(id);
+    }
+    test.setOptions(options, true);
+
+    if (steps !== undefined) {
+      steps.forEach((stepObj: Record<string, any>) => {
+        const step = Step.fromJSON(stepObj);
+        step.setContextID(id);
+        if (copy) {
+          step.setResourceID(undefined);
+        }
+        test.insertStep(step);
+      });
+    }
+
+    if (tag_validations !== undefined) {
+      tag_validations.forEach((tagValidationObj: Record<string, any>) => {
+        const tagValidation = TagValidation.fromJSON(tagValidationObj);
+        tagValidation.setContextID(id);
+        if (copy) {
+          tagValidation.setResourceID(undefined);
+        }
+        test.insertTagValidation(tagValidation);
+      });
+    }
+
+    return test;
   }
 
-  export interface Variables {
-    [s: string]: {
-      type: VariableTypes,
-      value: string,
-    },
+  public insertStep(step: Step, index: number = this.steps.length): void {
+    super.insertChild(step, index, "steps");
   }
 
-  export class Test extends DataTrue.Resource implements Runnable {
-    public static readonly contextType: string = "suite";
-    public static readonly resourceType: string = "test";
-    public static readonly resourceTypeRun: string = "TestScenario";
-    public static readonly childTypes: string[] = ["steps", "tagValidations"];
+  public insertTagValidation(tagValidation: TagValidation, index: number = this.tagValidations.length): void {
+    super.insertChild(tagValidation, index, "tagValidations");
+  }
 
-    private steps: DataTrue.Step[] = [];
-    private tagValidations: DataTrue.TagValidation[] = [];
+  public deleteStep(index: number): void {
+    super.deleteChild(index, "steps");
+  }
 
-    public jobID: number;
-    public options: DataTrue.TestOptions = { variables: {} };
+  public deleteTagValidation(index: number): void {
+    super.deleteChild(index, "tagValidations");
+  }
 
-    public constructor(name: string, public contextID?: number, options: DataTrue.TestOptions = {}) {
-      super(name);
-      this.setOptions(options);
+  public getSteps(): readonly Step[] {
+    return this.steps.slice();
+  }
+
+  public getTagValidations(): readonly TagValidation[] {
+    return this.tagValidations.slice();
+  }
+
+  public setVariable(name: string, type: VariableTypes, value: string): void {
+    if (this.options.variables === undefined) {
+      this.options.variables = {};
+    }
+    this.options.variables[name] = {
+      type: type,
+      value: value,
+    };
+  }
+
+  public setOptions(options: TestOptions, override: boolean = false): void {
+    super.setOptions(options, override);
+  }
+
+  public toJSON(): Record<string, any> {
+    const obj: Record<string, any> = {};
+
+    obj[Test.resourceType] = {
+      name: this.name,
+      steps: this.steps.map(step => JSON.parse(step.toString())),
+      ...this.options,
+    };
+
+    if (this.tagValidations.length) {
+      obj[Test.resourceType]["tag_validations"] = this.tagValidations.map(tagValidation => tagValidation.toJSON());
     }
 
-    public static fromID(id: number): Test {
-      const obj = JSON.parse(super.getResource(id, Test.resourceType));
-      return DataTrue.Test.fromJSON(obj);
+    return obj;
+  }
+
+  public run(email_users: number[] = []): Promise<string> {
+    const resourceID = this.getResourceID();
+    if (resourceID === undefined) {
+      return Promise.reject(new Error("Tests can only be run once they have been saved."));
+    } else {
+      return _run(email_users, Test.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
+        this.jobID = jobID;
+        return jobID;
+      });
     }
+  }
 
-    public static fromJSON(obj: Record<string, any>, copy: boolean = false): Test { // eslint-disable-line @typescript-eslint/no-explicit-any
-      const { name, id, steps, tag_validations, ...options } = obj;
-
-      const test = new DataTrue.Test(name);
-      if (!copy) {
-        test.setResourceID(id);
-      }
-      test.setOptions(options, true);
-
-      if (steps !== undefined) {
-        steps.forEach(stepObj => {
-          const step = DataTrue.Step.fromJSON(stepObj);
-          step.setContextID(id);
-          if (copy) {
-            step.setResourceID(undefined);
-          }
-          test.insertStep(step);
-        });
-      }
-
-      if (tag_validations !== undefined) {
-        tag_validations.forEach(TagValidationObj => {
-          const tagValidation = DataTrue.TagValidation.fromJSON(TagValidationObj);
-          tagValidation.setContextID(id);
-          if (copy) {
-            tagValidation.setResourceID(undefined);
-          }
-          test.insertTagValidation(tagValidation);
-        });
-      }
-
-      return test;
+  public progress(): Promise<JobStatus> {
+    if (this.jobID === undefined) {
+      return Promise.reject(new Error("You must run the test before fetching progress."));
     }
-
-    public insertStep(step: DataTrue.Step, index: number = this.steps.length): void {
-      super.insertChild(step, index, "steps");
-    }
-
-    public insertTagValidation(tagValidation: DataTrue.TagValidation, index: number = this.tagValidations.length): void {
-      super.insertChild(tagValidation, index, "tagValidations");
-    }
-
-    public deleteStep(index: number): void {
-      super.deleteChild(index, "steps");
-    }
-
-    public deleteTagValidation(index: number): void {
-      super.deleteChild(index, "tagValidations");
-    }
-
-    public getSteps(): readonly DataTrue.Step[] {
-      return this.steps.slice();
-    }
-
-    public getTagValidations(): readonly DataTrue.TagValidation[] {
-      return this.tagValidations.slice();
-    }
-
-    public setVariable(name: string, type: DataTrue.VariableTypes, value: string): void {
-      if (!Object.prototype.hasOwnProperty.call(this.options, "variables")) {
-        this.options.variables = {};
-      }
-      this.options.variables[name] = {
-        type: type,
-        value: value,
-      };
-    }
-
-    public setOptions(options: DataTrue.TestOptions, override: boolean = false): void {
-      super.setOptions(options, override);
-    }
-
-    public toJSON(): object {
-      const obj: object = {};
-
-      obj[Test.resourceType] = {
-        name: this.name,
-        steps: this.steps.map(step => JSON.parse(step.toString())),
-      };
-
-      if (this.tagValidations.length) {
-        obj["tag_validations"] = this.tagValidations.map(tagValidation => JSON.parse(tagValidation.toString()));
-      }
-
-      for (const option in this.options) {
-        obj[Test.resourceType][option] = this.options[option];
-      }
-
-      return obj;
-    }
-
-    public run(email_users: number[] = []): void {
-      this.jobID = DataTrue._run(email_users, DataTrue.Test.resourceTypeRun, this.getResourceID());
-    }
-
-    public progress(): JobStatus {
-      return DataTrue._progress(this.jobID);
-    }
+    return _progress(this.jobID, Resource.client, Resource.config);
   }
 }

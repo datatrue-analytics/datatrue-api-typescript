@@ -1,10 +1,16 @@
 {
-  "name": "datatrue-api-google-apps-script",
+  "name": "datatrue-api",
   "version": "1.0.0",
-  "description": "A place for adding miscellaneous scripts and samples relating to datatrue",
+  "description": "An API wrapper for the DataTrue APIs written in TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
+    "build:gas": "webpack",
+    "docs": "./scripts/docs.sh",
+    "lint": "eslint --max-warnings 0 \"src/**/*.ts\"",
+    "prepublish:gas": "npm run build:gas",
+    "publish:gas": "clasp push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,11 +24,24 @@
   },
   "homepage": "https://github.com/Lens10/datatrue-api-google-apps-script#readme",
   "devDependencies": {
-    "@types/google-apps-script": "^1.0.7",
-    "@typescript-eslint/eslint-plugin": "^2.9.0",
-    "@typescript-eslint/parser": "^2.9.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-jsdoc": "^18.4.0",
-    "typescript": "^3.7.2"
+    "@types/google-apps-script": "^1.0.10",
+    "@types/node": "^12.12.29",
+    "@types/webpack": "^4.41.7",
+    "@typescript-eslint/eslint-plugin": "^2.22.0",
+    "@typescript-eslint/parser": "^2.22.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-jsdoc": "^22.0.0",
+    "gas-webpack-plugin": "^1.0.2",
+    "husky": "^4.2.1",
+    "ts-loader": "^6.2.1",
+    "ts-node": "^8.6.2",
+    "typedoc": "^0.16.11",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "cross-fetch": "^3.0.4"
   }
 }
