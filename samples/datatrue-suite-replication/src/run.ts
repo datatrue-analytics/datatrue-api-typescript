@@ -28,8 +28,8 @@ async function run(): Promise<void> {
 
   while (
     ! await asyncEvery(suites, async suite => {
-        const progress = await suite.progress();
-        return progress.status === "completed" || progress.status === "aborted";
+      const progress = await suite.progress();
+      return progress.status === "completed" || progress.status === "aborted";
     })
   ) {
     for (const [index, suite] of suites.entries()) {
