@@ -1,5 +1,4 @@
 import DataLayerValidation, { DataLayerValidationOptions, PropertyValidation } from "./dataLayerValidation";
-import NodeClient from "./httpClient/nodeClient";
 import Resource from "./resource";
 import { JobStatus } from "./runnable";
 import Step, { IframeSelectorTypes, MobileSelectorTypes, SelectorTypes, StepActions, StepOptions, StepSettings, WebSelectorTypes } from "./step";
@@ -16,11 +15,6 @@ const config = {
   accountToken: "",
 };
 
-/**
- * @hidden
- */
-const client = new NodeClient();
-Resource["client"] = client;
 Resource["config"] = config;
 
 export {

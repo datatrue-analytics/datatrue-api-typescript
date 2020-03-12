@@ -3,7 +3,7 @@ import webpack from "webpack";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
-import GasPlugin from "gas-webpack-plugin";
+import CreateFileWebpack from "create-file-webpack";
 
 const src = path.resolve(__dirname, "src");
 const destination = path.resolve(__dirname, "dist");
@@ -36,7 +36,11 @@ const config: webpack.Configuration = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new GasPlugin(),
+    new CreateFileWebpack({
+      path: "./dist",
+      fileName: "global.js",
+      content: "const global = this;",
+    }),
   ],
 };
 
