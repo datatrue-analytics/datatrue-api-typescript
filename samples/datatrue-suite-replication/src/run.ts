@@ -13,7 +13,7 @@ async function run(): Promise<void> {
 
   for (const suiteId of suiteIds) {
     const suite = await DataTrue.Suite.fromID(parseInt(suiteId));
-    console.log(await suite.run());
+    await suite.run();
     suites.push(suite);
   }
 
