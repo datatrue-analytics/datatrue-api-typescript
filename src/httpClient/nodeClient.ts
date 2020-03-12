@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import fetch from "cross-fetch";
 import HTTPClient, { HTTPOptions, Method, Response } from "./httpClient";
 
 export default class NodeClient implements HTTPClient {
