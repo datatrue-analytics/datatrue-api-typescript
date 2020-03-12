@@ -7,7 +7,7 @@
   },
   "author": "Omja Das",
   "dependencies": {
-    "@types/google-apps-script": "0.0.62",
+    "@types/google-apps-script": "1.0.10",
     "typescript": "^3.6.3"
   },
   "devDependencies": {
