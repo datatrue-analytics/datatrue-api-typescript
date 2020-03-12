@@ -25,7 +25,7 @@ async function create(): Promise<void> {
       return (SpreadsheetApp.getActive().getRange("R" + (base + 1) + "C" + (index + 3) + ":R" + (base + 3) + "C" + (index + 3)));
     });
 
-    const variables = rawVariables.map(function(variable) {
+    const variables = rawVariables.map(function (variable) {
       return ({
         "name": variable.shift(),
         "default": variable.shift(),
@@ -35,9 +35,9 @@ async function create(): Promise<void> {
 
     const originalSuite = await DataTrue.Suite.fromID(parseInt(suiteId));
 
-    names.forEach(async (name, i) => {
+    for (const [i, name] of names.entries()) {
       if (results[i].getValues()[2][0] === "y") {
-        return;
+        continue;
       }
 
       const id = results[i].getValues()[1][0];
@@ -59,7 +59,7 @@ async function create(): Promise<void> {
       await newSuite.save();
 
       results[i].setValues([[accountId], [newSuite.getResourceID()], ["y"]]);
-    });
+    }
   } else {
     SpreadsheetApp.getUi().alert("Test suite configuration table was not found. Please select the cell containing the name of the test you wish to replicate.");
   }
