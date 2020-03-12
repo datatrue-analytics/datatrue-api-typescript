@@ -1,16 +1,17 @@
 {
-    "compilerOptions": {
-        "lib": [
-            "esnext"
-        ],
-        "experimentalDecorators": true,
-        "outDir": "dist",
-        "sourceMap": true
-    },
-    "include": [
-        "src/**/*"
+  "compilerOptions": {
+    "lib": [
+      "esnext"
     ],
-    "exclude": [
-        "node_modules"
-    ]
+    "experimentalDecorators": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "downlevelIteration": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -1,4 +1,4 @@
-function create(): void {
+async function create(): Promise<void> {
   getTokens();
 
   const userProperties = PropertiesService.getUserProperties();
@@ -33,9 +33,9 @@ function create(): void {
       });
     });
 
-    const originalSuite = DataTrue.Suite.fromID(parseInt(suiteId));
+    const originalSuite = await DataTrue.Suite.fromID(parseInt(suiteId));
 
-    names.forEach((name, i) => {
+    names.forEach(async (name, i) => {
       if (results[i].getValues()[2][0] === "y") {
         return;
       }
@@ -46,7 +46,7 @@ function create(): void {
       if (id === "") {
         newSuite = DataTrue.Suite.fromJSON(originalSuite.toJSON()["suite"], true);
       } else {
-        newSuite = DataTrue.Suite.fromID(id);
+        newSuite = await DataTrue.Suite.fromID(id);
       }
 
       newSuite.name = name;
@@ -56,7 +56,7 @@ function create(): void {
         newSuite.setVariable(variable.name, DataTrue.VariableTypes.PRESET, variable.values[i]);
       });
 
-      newSuite.save();
+      await newSuite.save();
 
       results[i].setValues([[accountId], [newSuite.getResourceID()], ["y"]]);
     });
