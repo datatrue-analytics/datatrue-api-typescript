@@ -5,7 +5,10 @@
     ],
     "experimentalDecorators": true,
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "ES2019"
   },
   "include": [
     "src/**/*"

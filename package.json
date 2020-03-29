@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/Lens10/datatrue-api-google-apps-script#readme",
   "devDependencies": {
+    "@google/clasp": "^2.3.0",
     "@types/google-apps-script": "^1.0.10",
     "@types/node": "^12.12.29",
     "@types/webpack": "^4.41.7",
