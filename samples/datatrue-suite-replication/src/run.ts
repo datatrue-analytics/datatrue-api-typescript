@@ -1,4 +1,17 @@
-async function run(): Promise<void> {
+import * as DataTrue from "../../../dist";
+import { getTokens } from "./getTokens";
+
+async function asyncEvery(arr: any[], callback: (value: any, index: number, array: any[]) => unknown): Promise<boolean> {
+  for (const [i, v] of arr.entries()) {
+    if (!await callback(v, i, arr)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export async function run(): Promise<void> {
   getTokens();
 
   var base = SpreadsheetApp.getActive().getActiveRange().getRow();
@@ -27,7 +40,7 @@ async function run(): Promise<void> {
   });
 
   while (
-    ! await asyncEvery(suites, async suite => {
+    !await asyncEvery(suites, async suite => {
       const progress = await suite.progress();
       return progress.status === "completed" || progress.status === "aborted";
     })
@@ -61,14 +74,4 @@ async function run(): Promise<void> {
     SpreadsheetApp.flush();
     Utilities.sleep(500);
   }
-}
-
-async function asyncEvery(arr: any[], callback: (value: any, index: number, array: any[]) => unknown): Promise<boolean> {
-  for (const [i, v] of arr.entries()) {
-    if (! await callback(v, i, arr)) {
-      return false;
-    }
-  }
-
-  return true;
 }

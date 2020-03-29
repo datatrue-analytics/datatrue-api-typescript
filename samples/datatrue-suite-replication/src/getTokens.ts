@@ -1,4 +1,7 @@
-function getTokens(): void {
+import * as DataTrue from "../../../dist";
+import { setTokens } from "./setTokens";
+
+export function getTokens(): void {
   const ss = SpreadsheetApp.getActive();
   const namedRanges = ss.getNamedRanges();
 

@@ -1,9 +1,12 @@
-async function run(): Promise<void> {
+import * as DataTrue from "../../../dist";
+import { getTokens } from "./getTokens";
+
+export async function run(): Promise<void> {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
 
   getTokens();
-  
+
   const runStatus = sheet.getRange("B8");
   const testID: number = parseInt(sheet.getRange("B7").getDisplayValue());
   const test = await DataTrue.Test.fromID(testID);

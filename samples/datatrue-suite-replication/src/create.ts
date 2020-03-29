@@ -1,4 +1,6 @@
-async function create(): Promise<void> {
+import * as DataTrue from "../../../dist";
+
+export async function create(): Promise<void> {
   getTokens();
 
   const userProperties = PropertiesService.getUserProperties();

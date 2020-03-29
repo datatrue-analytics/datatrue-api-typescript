@@ -1,4 +1,4 @@
-function onOpen(): void {
+export function onOpen(): void {
   const sheet = SpreadsheetApp.getActiveSpreadsheet();
   const entries = [
     {
