@@ -10,7 +10,7 @@
     "docs": "./scripts/docs.sh",
     "lint": "eslint --max-warnings 0 \"src/**/*.ts\"",
     "prepublish:gas": "npm run build:gas",
-    "publish:gas": "clasp push",
+    "publish:gas": "clasp push && clasp version",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
