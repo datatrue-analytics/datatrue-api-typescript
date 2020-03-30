@@ -1,4 +1,7 @@
-async function create(): Promise<void> {
+import * as DataTrue from "../../../dist";
+import { getTokens } from "./getTokens";
+
+export async function create(): Promise<void> {
   const ss = SpreadsheetApp.getActive();
   const sheet = ss.getActiveSheet();
   const ui = SpreadsheetApp.getUi();
@@ -17,7 +20,7 @@ async function create(): Promise<void> {
 
   const hostname = url.match(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/)[1];
   let path = url.match(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/)[2];
-  path = (path === "") ? ".*" : path;
+  path = path === "" ? ".*" : path;
 
   if (accountID === "") {
     accountID = ui.prompt("Please enter your DataTrue Account ID", "", ui.ButtonSet.OK).getResponseText();
@@ -64,29 +67,30 @@ async function create(): Promise<void> {
     const initialStep = new DataTrue.Step(`Go To ${url}`, DataTrue.StepActions.GOTO_URL, undefined, { target: url });
 
     if (useMockPage) {
-      const intercept = new DataTrue.TagValidation("Mock Page", "Custom Tag", DataTrue.TagValidations.STEP, undefined, {
+      const intercept = new DataTrue.TagValidation("Mock Page", "Custom Tag", DataTrue.TagValidationContexts.STEP, undefined, {
         hostname_validation: hostname,
         pathname_validation: path,
         hostname_detection: hostname,
         pathname_detection: path,
+        do_validation: true,
         interception: {
-          do_validation: true,
           intercept: true,
           intercept_status: "200",
-          intercept_body: `<html>
-                           <head>
-                             <script src=${tagManagerUrl} async></script>
-                           </head>
-                           <body>
-                             <h1>
-                               ${testName}
-                             </h1>
-                             <h2>
-                               DataLayer test for ${url}<br />
-                               Using Tag Manager from ${tagManagerUrl}
-                             </h2>
-                           </body>
-                         </html>`,
+          intercept_body: `
+          <html>
+            <head>
+              <script src=${tagManagerUrl} async></script>
+            </head>
+            <body>
+              <h1>
+                ${testName}
+              </h1>
+              <h2>
+                DataLayer test for ${url}<br />
+                Using Tag Manager from ${tagManagerUrl}
+              </h2>
+            </body>
+          </html>`,
         },
       });
       initialStep.insertTagValidation(intercept);

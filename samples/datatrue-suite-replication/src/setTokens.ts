@@ -1,4 +1,4 @@
-function setTokens(): void {
+export function setTokens(): void {
   const userProperties = PropertiesService.getUserProperties();
   const ui = SpreadsheetApp.getUi();
 

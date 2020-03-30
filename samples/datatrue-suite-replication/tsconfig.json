@@ -6,7 +6,12 @@
     "experimentalDecorators": true,
     "outDir": "dist",
     "sourceMap": true,
-    "downlevelIteration": true
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "ES2019",
+    "types": [
+      "google-apps-script"
+    ],
   },
   "include": [
     "src/**/*"
