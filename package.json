@@ -4,11 +4,15 @@
   "description": "An API wrapper for the DataTrue APIs written in TypeScript",
   "main": "dist/indexNode.js",
   "types": "dist/indexNode.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "build:gas": "webpack",
     "docs": "./scripts/docs.sh",
     "lint": "eslint --max-warnings 0 \"src/**/*.ts\"",
+    "prepare": "npm run build",
     "prepublish:gas": "npm run build:gas",
     "publish:gas": "clasp push && clasp version",
     "test": "echo \"Error: no test specified\" && exit 1"

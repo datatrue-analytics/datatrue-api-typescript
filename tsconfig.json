@@ -12,7 +12,7 @@
     "module": "commonjs",
     "types": [],
     "strict": true,
-    "target": "ES2019"
+    "target": "ES2018"
   },
   "include": [
     "src/**/*"
