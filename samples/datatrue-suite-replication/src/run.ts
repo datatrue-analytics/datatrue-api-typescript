@@ -1,4 +1,4 @@
-import * as DataTrue from "../../../dist";
+import * as DataTrue from "datatrue-api";
 import { getTokens } from "./getTokens";
 
 async function asyncEvery(arr: any[], callback: (value: any, index: number, array: any[]) => unknown): Promise<boolean> {
