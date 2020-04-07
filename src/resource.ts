@@ -1,5 +1,4 @@
 import HTTPClient from "./httpClient/httpClient";
-import Test from "./test";
 
 /**
  * @hidden
@@ -304,9 +303,9 @@ export default abstract class Resource {
    * @returns object in correct format for DataTrue
    */
   private beforeSave(obj: Record<string, any>): Record<string, any> {
-    if ((this.constructor as typeof Resource).resourceType === Test.resourceType) {
+    if ((this.constructor as typeof Resource).resourceType === "test") {
       return {
-        [Test.resourceType]: obj,
+        test: obj,
       };
     } else {
       return obj;
@@ -328,9 +327,9 @@ export default abstract class Resource {
       }
     }
 
-    if ((this.constructor as typeof Resource).resourceType === Test.resourceType) {
+    if ((this.constructor as typeof Resource).resourceType === "test") {
       return {
-        [Test.resourceType]: obj,
+        test: obj,
       };
     } else {
       return obj;
