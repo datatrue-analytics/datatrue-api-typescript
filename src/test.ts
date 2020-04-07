@@ -124,16 +124,14 @@ export default class Test extends Resource implements Runnable {
   }
 
   public toJSON(): Record<string, any> {
-    const obj: Record<string, any> = {};
-
-    obj[Test.resourceType] = {
+    const obj: Record<string, any> = {
       name: this.name,
       steps: this.steps.map(step => JSON.parse(step.toString())),
       ...this.options,
     };
 
     if (this.tagValidations.length) {
-      obj[Test.resourceType]["tag_validations"] = this.tagValidations.map(tagValidation => tagValidation.toJSON());
+      obj["tag_validations"] = this.tagValidations.map(tagValidation => tagValidation.toJSON());
     }
 
     return obj;
