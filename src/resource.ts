@@ -1,4 +1,5 @@
 import HTTPClient from "./httpClient/httpClient";
+import Test from "./test";
 
 /**
  * @hidden
@@ -209,8 +210,10 @@ export default abstract class Resource {
       this.contextID,
       resourceType + "s"].join("/");
 
+    const payload = this.toJSON();
+
     return Resource.client.makeRequest(uri, "post", {
-      body: this.toString(),
+      body: JSON.stringify(this.beforeSave(payload)),
       headers: {
         "authorization": "Token " + Resource.config.userToken,
       },
@@ -274,7 +277,7 @@ export default abstract class Resource {
    * @param index index to add the child at
    * @param resourceType type of the child
    */
-  protected insertChild(child: object, index: number = 0, resourceType: string): void {
+  protected insertChild(child: Record<string, any>, index: number = 0, resourceType: string): void {
     (this as Record<string, any>)[resourceType].splice(index, 0, child);
     if ((this.constructor as typeof Resource).childTypes.includes(resourceType)) {
       (this as Record<string, any>)[resourceType].forEach((child: Resource, index: number) => {
@@ -295,12 +298,28 @@ export default abstract class Resource {
   }
 
   /**
+   * Format the object to the required specifications to save
+   *
+   * @param obj object to save
+   * @returns object in correct format for DataTrue
+   */
+  private beforeSave(obj: Record<string, any>): Record<string, any> {
+    if ((this.constructor as typeof Resource).resourceType === Test.resourceType) {
+      return {
+        [Test.resourceType]: obj,
+      };
+    } else {
+      return obj;
+    }
+  }
+
+  /**
    * Removes children from obj so that the Resource can be updated
    *
    * @param obj object to remove children from
    * @returns obj without children
    */
-  private beforeUpdate(obj: Record<string, any>): object {
+  private beforeUpdate(obj: Record<string, any>): Record<string, any> {
     for (const childType of (this.constructor as typeof Resource).childTypes) {
       if (obj[(this.constructor as typeof Resource).resourceType] !== undefined) {
         delete obj[(this.constructor as typeof Resource).resourceType][resourceTypes[childType]];
@@ -308,7 +327,14 @@ export default abstract class Resource {
         delete obj[resourceTypes[childType]];
       }
     }
-    return obj;
+
+    if ((this.constructor as typeof Resource).resourceType === Test.resourceType) {
+      return {
+        [Test.resourceType]: obj,
+      };
+    } else {
+      return obj;
+    }
   }
 
   /**
