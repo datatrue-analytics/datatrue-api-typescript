@@ -133,7 +133,7 @@ export default class Suite extends Resource implements Runnable {
     };
 
     if (this.tests.length) {
-      obj["tests"] = this.tests.map(test => test.toJSON()[Test.resourceType]);
+      obj["tests"] = this.tests.map(test => test.toJSON());
     }
 
     return obj;
