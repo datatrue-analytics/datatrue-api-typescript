@@ -47,7 +47,7 @@ export async function create(): Promise<void> {
       let newSuite: DataTrue.Suite;
 
       if (id === "") {
-        newSuite = DataTrue.Suite.fromJSON(originalSuite.toJSON()["suite"], true);
+        newSuite = DataTrue.Suite.fromJSON(originalSuite.toJSON(), true);
       } else {
         newSuite = await DataTrue.Suite.fromID(id);
       }
