@@ -12,6 +12,7 @@ export interface QueryValidation {
 export interface TagValidationOptions extends ResourceOptions {
   enabled?: boolean,
   do_validation?: boolean,
+  detect_duplicates?: boolean,
   validate_absence?: boolean,
   hostname_validation?: string,
   pathname_validation?: string,

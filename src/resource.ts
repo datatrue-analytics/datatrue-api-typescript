@@ -30,8 +30,6 @@ export interface Config {
 
 /**
  * Base class for all DataTrue resource types
- *
- * @hidden
  */
 export default abstract class Resource {
   public static readonly resourceType: string;
