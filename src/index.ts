@@ -18,6 +18,8 @@ const config = {
 Resource["config"] = config;
 
 export {
+  Resource,
+
   DataLayerValidation,
   DataLayerValidationOptions,
   PropertyValidation,
