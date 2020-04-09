@@ -162,7 +162,7 @@ export default abstract class Resource {
       },
     }).then(response => {
       if (response.status >= 400) {
-        throw response;
+        throw new Error(`Failed to retrieve ${resourceType} ${id}`);
       }
       return response.body;
     });
@@ -191,7 +191,9 @@ export default abstract class Resource {
       pr = this.create();
     }
 
-    return pr.then(after);
+    return pr.then(after).catch(() => {
+      throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID() ?? ""}`)
+    });
   }
 
   /**

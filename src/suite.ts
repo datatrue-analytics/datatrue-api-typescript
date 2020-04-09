@@ -147,6 +147,8 @@ export default class Suite extends Resource implements Runnable {
       return _run(email_users, Suite.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
         this.jobID = jobID;
         return jobID;
+      }).catch(() => {
+        throw new Error(`Failed to run suite ${this.getResourceID()}`);
       });
     }
   }

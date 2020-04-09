@@ -148,6 +148,8 @@ export default class Test extends Resource implements Runnable {
       return _run(email_users, Test.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
         this.jobID = jobID;
         return jobID;
+      }).catch(() => {
+        throw new Error(`Failed to run test ${this.getResourceID()}`);
       });
     }
   }
