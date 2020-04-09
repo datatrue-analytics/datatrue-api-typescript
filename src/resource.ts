@@ -162,7 +162,7 @@ export default abstract class Resource {
       },
     }).then(response => {
       if (response.status >= 400) {
-        throw response;
+        throw new Error(`Failed to retrieve ${resourceType} ${id}`);
       }
       return response.body;
     });
@@ -185,10 +185,14 @@ export default abstract class Resource {
 
     let pr: Promise<void>;
 
-    if (this.resourceID) {
-      pr = this.update();
-    } else {
-      pr = this.create();
+    try {
+      if (this.resourceID) {
+        pr = this.update();
+      } else {
+        pr = this.create();
+      }
+    } catch {
+      throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID()}`);
     }
 
     return pr.then(after);

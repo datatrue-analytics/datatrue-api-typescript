@@ -145,10 +145,14 @@ export default class Test extends Resource implements Runnable {
     if (resourceID === undefined) {
       return Promise.reject(new Error("Tests can only be run once they have been saved."));
     } else {
-      return _run(email_users, Test.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
-        this.jobID = jobID;
-        return jobID;
-      });
+      try {
+        return _run(email_users, Test.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
+          this.jobID = jobID;
+          return jobID;
+        });
+      } catch {
+        throw new Error(`Failed to run test ${this.getResourceID()}`);
+      }
     }
   }
 
