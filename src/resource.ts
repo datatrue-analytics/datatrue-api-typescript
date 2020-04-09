@@ -183,17 +183,19 @@ export default abstract class Resource {
       return Promise.all(promises).then();
     };
 
-    let pr: Promise<void>;
-
     if (this.resourceID) {
-      pr = this.update();
+      return this.update()
+        .then(after)
+        .catch(() => {
+          throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID()}`);
+        });
     } else {
-      pr = this.create();
+      return this.create()
+        .then(after)
+        .catch(() => {
+          throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType}`);
+        });
     }
-
-    return pr.then(after).catch(() => {
-      throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID() ?? ""}`)
-    });
   }
 
   /**
@@ -348,7 +350,7 @@ export default abstract class Resource {
       Resource.config.apiEndpoint,
       "management_api/v1",
       (this.constructor as typeof Resource).resourceType + "s",
-      this.contextID].join("/");
+      this.resourceID].join("/");
 
     return Resource.client.makeRequest(uri, "delete", {
       headers: {
@@ -356,7 +358,7 @@ export default abstract class Resource {
       },
     }).then((response) => {
       if (response.status >= 400) {
-        throw response;
+        throw new Error(`Failed to delete ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID()}`);
       }
     });
   }
