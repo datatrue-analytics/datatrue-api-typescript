@@ -185,17 +185,15 @@ export default abstract class Resource {
 
     let pr: Promise<void>;
 
-    try {
-      if (this.resourceID) {
-        pr = this.update();
-      } else {
-        pr = this.create();
-      }
-    } catch {
-      throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID()}`);
+    if (this.resourceID) {
+      pr = this.update();
+    } else {
+      pr = this.create();
     }
 
-    return pr.then(after);
+    return pr.then(after).catch(() => {
+      throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID() ?? ""}`)
+    });
   }
 
   /**
