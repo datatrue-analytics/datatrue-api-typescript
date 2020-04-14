@@ -63,8 +63,11 @@ export default abstract class Resource {
    *
    * @param obj object to create resource from
    * @param copy whether to create a copy of the resource or not (removes resource IDs)
+   * @returns new Resource
    */
-  public static fromJSON(obj: Record<string, any>, copy: boolean = false): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
+  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Resource { // eslint-disable-line @typescript-eslint/no-unused-vars
+    throw new Error("Function not implemented");
+  }
 
   /**
    * Convert the resource to an Object
