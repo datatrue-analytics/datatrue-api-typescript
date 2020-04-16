@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "build:gas": "webpack",
-    "docs": "./scripts/docs.sh",
+    "docs": "typedoc",
     "lint": "eslint --max-warnings 0 \"src/**/*.ts\"",
     "prepare": "npm run build",
     "prepublish:gas": "npm run build:gas",
@@ -38,7 +38,6 @@
     "create-file-webpack": "^1.0.2",
     "eslint": "^6.8.0",
     "eslint-plugin-jsdoc": "^23.0.0",
-    "husky": "^4.2.1",
     "ts-loader": "^7.0.0",
     "ts-node": "^8.6.2",
     "typedoc": "^0.17.0",
