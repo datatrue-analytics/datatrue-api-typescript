@@ -31,7 +31,7 @@ export interface Variables {
 export default class Test extends Resource implements Runnable {
   public static readonly resourceType: string = "test";
   public static readonly resourceTypeRun: string = "TestScenario";
-  public static readonly childTypes: string[] = ["steps", "tagValidations"];
+  public static readonly childTypes: readonly string[] = ["steps", "tagValidations"];
 
   private steps: Step[] = [];
   private tagValidations: TagValidation[] = [];

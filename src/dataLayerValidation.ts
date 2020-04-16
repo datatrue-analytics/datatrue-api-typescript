@@ -25,7 +25,7 @@ export interface PropertyValidation {
 
 export default class DataLayerValidation extends Resource {
   public static readonly resourceType: string = "data_layer_validations";
-  public static readonly childTypes: string[] = [];
+  public static readonly childTypes: readonly string[] = [];
 
   private propertyValidations: PropertyValidation[] = [];
 

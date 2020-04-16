@@ -39,7 +39,7 @@ export enum TagValidationContexts {
 
 export default class TagValidation extends Resource {
   public static readonly resourceType: string = "tag_validation";
-  public static readonly childTypes: string[] = [];
+  public static readonly childTypes: readonly string[] = [];
 
   private queryValidations: QueryValidation[] = [];
 
