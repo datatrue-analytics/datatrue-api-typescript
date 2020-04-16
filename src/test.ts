@@ -31,7 +31,7 @@ export interface Variables {
 export default class Test extends Resource implements Runnable {
   public static readonly resourceType: string = "test";
   public static readonly resourceTypeRun: string = "TestScenario";
-  public static readonly childTypes: string[] = ["steps", "tagValidations"];
+  public static readonly childTypes: readonly string[] = ["steps", "tagValidations"];
 
   private steps: Step[] = [];
   private tagValidations: TagValidation[] = [];
@@ -40,7 +40,11 @@ export default class Test extends Resource implements Runnable {
   public jobID?: string;
   public options: TestOptions = { variables: {} };
 
-  public constructor(name: string, public contextID?: number, options: TestOptions = {}) {
+  public constructor(
+    name: string,
+    public contextID?: number,
+    options: TestOptions = {}
+  ) {
     super(name);
     this.setOptions(options);
   }
@@ -51,7 +55,10 @@ export default class Test extends Resource implements Runnable {
     });
   }
 
-  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Test {
+  public static fromJSON(
+    obj: Record<string, any>,
+    copy: boolean = false
+  ): Test {
     const { name, id, steps, tag_validations, ...options } = obj;
 
     const test = new Test(name);
@@ -89,7 +96,10 @@ export default class Test extends Resource implements Runnable {
     super.insertChild(step, index, "steps");
   }
 
-  public insertTagValidation(tagValidation: TagValidation, index: number = this.tagValidations.length): void {
+  public insertTagValidation(
+    tagValidation: TagValidation,
+    index: number = this.tagValidations.length
+  ): void {
     super.insertChild(tagValidation, index, "tagValidations");
   }
 

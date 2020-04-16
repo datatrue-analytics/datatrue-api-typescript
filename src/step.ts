@@ -94,7 +94,10 @@ export default class Step extends Resource {
     });
   }
 
-  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Step {
+  public static fromJSON(
+    obj: Record<string, any>,
+    copy: boolean = false
+  ): Step {
     const { name, id, action, tag_validations, data_layer_validations, ...options } = obj;
 
     const step = new Step(name, action);
@@ -128,11 +131,17 @@ export default class Step extends Resource {
     return step;
   }
 
-  public insertTagValidation(tagValidation: TagValidation, index: number = this.tagValidations.length): void {
+  public insertTagValidation(
+    tagValidation: TagValidation,
+    index: number = this.tagValidations.length
+  ): void {
     super.insertChild(tagValidation, index, "tagValidations");
   }
 
-  public insertDataLayerValidation(dataLayerValidation: DataLayerValidation, index: number = this.dataLayerValidations.length): void {
+  public insertDataLayerValidation(
+    dataLayerValidation: DataLayerValidation,
+    index: number = this.dataLayerValidations.length
+  ): void {
     super.insertChild(dataLayerValidation, index, "dataLayerValidations");
   }
 

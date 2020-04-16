@@ -25,14 +25,18 @@ export interface PropertyValidation {
 
 export default class DataLayerValidation extends Resource {
   public static readonly resourceType: string = "data_layer_validations";
-  public static readonly childTypes: string[] = [];
+  public static readonly childTypes: readonly string[] = [];
 
   private propertyValidations: PropertyValidation[] = [];
 
   public readonly contextType: string = "step";
   public options: DataLayerValidationOptions = {};
 
-  public constructor(name: string, public contextID?: number, options: DataLayerValidationOptions = {}) {
+  public constructor(
+    name: string,
+    public contextID?: number,
+    options: DataLayerValidationOptions = {}
+  ) {
     super(name);
     this.setOptions(options);
   }
@@ -43,7 +47,10 @@ export default class DataLayerValidation extends Resource {
     });
   }
 
-  public static fromJSON(obj: Record<string, any>, copy: boolean = false): DataLayerValidation {
+  public static fromJSON(
+    obj: Record<string, any>,
+    copy: boolean = false
+  ): DataLayerValidation {
     const { name, id, property_validations, ...options } = obj;
 
     const dataLayerValidation = new DataLayerValidation(name);
@@ -70,7 +77,10 @@ export default class DataLayerValidation extends Resource {
     return dataLayerValidation;
   }
 
-  public insertPropertyValidation(propertyValidation: PropertyValidation, index: number = this.propertyValidations.length): void {
+  public insertPropertyValidation(
+    propertyValidation: PropertyValidation,
+    index: number = this.propertyValidations.length
+  ): void {
     super.insertChild(propertyValidation, index, "propertyValidations");
   }
 
@@ -82,7 +92,10 @@ export default class DataLayerValidation extends Resource {
     return this.propertyValidations.slice();
   }
 
-  public setOptions(options: DataLayerValidationOptions, override: boolean = false): void {
+  public setOptions(
+    options: DataLayerValidationOptions,
+    override: boolean = false
+  ): void {
     super.setOptions(options, override);
   }
 

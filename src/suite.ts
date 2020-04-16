@@ -33,7 +33,11 @@ export default class Suite extends Resource implements Runnable {
   public jobID?: string;
   public options: SuiteOptions = { variables: {} };
 
-  public constructor(name: string, public contextID?: number, options: SuiteOptions = {}) {
+  public constructor(
+    name: string,
+    public contextID?: number,
+    options: SuiteOptions = {}
+  ) {
     super(name);
     this.setOptions(options);
   }
@@ -67,7 +71,10 @@ export default class Suite extends Resource implements Runnable {
     });
   }
 
-  public static fromJSON(obj: Record<string, any>, copy: boolean = false): Suite {
+  public static fromJSON(
+    obj: Record<string, any>,
+    copy: boolean = false
+  ): Suite {
     const { name, id, tests, ...options } = obj;
 
     const suite = new Suite(name);

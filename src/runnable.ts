@@ -57,7 +57,13 @@ export default interface Runnable {
  * @param config config
  * @returns Promise of the job_id
  */
-export function _run(email_users: number[] = [], resourceTypeRun: string, resourceID: number, client: HTTPClient, config: Config): Promise<string> {
+export function _run(
+  email_users: number[] = [],
+  resourceTypeRun: string,
+  resourceID: number,
+  client: HTTPClient,
+  config: Config
+): Promise<string> {
   const uri = [
     config.apiEndpoint,
     "ci_api",
@@ -89,7 +95,11 @@ export function _run(email_users: number[] = [], resourceTypeRun: string, resour
  * @param config config
  * @returns Promise of the job status
  */
-export function _progress(jobID: string, client: HTTPClient, config: Config): Promise<JobStatus> {
+export function _progress(
+  jobID: string,
+  client: HTTPClient,
+  config: Config
+): Promise<JobStatus> {
   const uri = [
     config.apiEndpoint,
     "ci_api",
