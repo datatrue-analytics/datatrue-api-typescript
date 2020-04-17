@@ -41,7 +41,7 @@ export default class Test extends Resource implements Runnable {
 
   public constructor(
     name: string,
-    public test_type: TestTypes = TestTypes.SIMULATION,
+    public testType: TestTypes = TestTypes.SIMULATION,
     public contextID?: number,
     options: TestOptions = {}
   ) {
@@ -136,6 +136,7 @@ export default class Test extends Resource implements Runnable {
   public toJSON(): Record<string, any> {
     const obj: Record<string, any> = {
       name: this.name,
+      test_type: this.testType,
       ...this.options,
     };
 
