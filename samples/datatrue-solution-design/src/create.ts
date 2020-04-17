@@ -55,9 +55,9 @@ export async function create(): Promise<void> {
 
   if (testID) {
     // test = DataTrue.Test.fromID(parseInt(testID));
-    test = new DataTrue.Test(testName, parseInt(suiteID), { description: testDescription });
+    test = new DataTrue.Test(testName, DataTrue.TestTypes.SIMULATION, parseInt(suiteID), { description: testDescription });
   } else {
-    test = new DataTrue.Test(testName, parseInt(suiteID), { description: testDescription });
+    test = new DataTrue.Test(testName, DataTrue.TestTypes.SIMULATION, parseInt(suiteID), { description: testDescription });
   }
 
   const currentSteps = test.getSteps();
