@@ -83,7 +83,12 @@ export default class Step extends Resource {
   public readonly contextType: string = "test";
   public options: StepOptions = {};
 
-  public constructor(name: string, private action: StepActions, public contextID?: number, options: StepOptions = {}) {
+  public constructor(
+    name: string,
+    public action: StepActions,
+    public contextID?: number,
+    options: StepOptions = {}
+  ) {
     super(name);
     this.setOptions(options);
   }

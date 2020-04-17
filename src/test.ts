@@ -5,7 +5,6 @@ import TagValidation from "./tagValidation";
 
 export interface TestOptions extends ResourceOptions {
   variables?: Variables,
-  test_type?: TestTypes,
 }
 
 export enum TestTypes {
@@ -42,6 +41,7 @@ export default class Test extends Resource implements Runnable {
 
   public constructor(
     name: string,
+    public test_type: TestTypes = TestTypes.SIMULATION,
     public contextID?: number,
     options: TestOptions = {}
   ) {
@@ -59,9 +59,9 @@ export default class Test extends Resource implements Runnable {
     obj: Record<string, any>,
     copy: boolean = false
   ): Test {
-    const { name, id, steps, tag_validations, ...options } = obj;
+    const { name, id, test_type, steps, tag_validations, ...options } = obj;
 
-    const test = new Test(name);
+    const test = new Test(name, test_type);
     if (!copy) {
       test.setResourceID(id);
     }
