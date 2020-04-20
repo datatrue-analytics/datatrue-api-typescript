@@ -100,6 +100,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="test.html#contexttype" class="tsd-kind-icon">context<wbr>Type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="test.html#jobid" class="tsd-kind-icon">jobID</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="test.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="test.html#testtype" class="tsd-kind-icon">test<wbr>Type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-static"><a href="test.html#childtypes" class="tsd-kind-icon">child<wbr>Types</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-static"><a href="test.html#resourcetype" class="tsd-kind-icon">resource<wbr>Type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-static"><a href="test.html#resourcetyperun" class="tsd-kind-icon">resource<wbr>Type<wbr>Run</a></li>
@@ -145,20 +146,23 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Test<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, contextID<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/testoptions.html" class="tsd-signature-type">TestOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="test.html" class="tsd-signature-type">Test</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Test<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, testType<span class="tsd-signature-symbol">?: </span><a href="../enums/testtypes.html" class="tsd-signature-type">TestTypes</a>, contextID<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/testoptions.html" class="tsd-signature-type">TestOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="test.html" class="tsd-signature-type">Test</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="resource.html">Resource</a>.<a href="resource.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L41">test.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L40">test.ts:40</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> testType: <a href="../enums/testtypes.html" class="tsd-signature-type">TestTypes</a><span class="tsd-signature-symbol"> = TestTypes.SIMULATION</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> contextID: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
@@ -181,7 +185,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides Resource.contextID</p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L45">test.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L45">test.ts:45</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -192,7 +196,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="resource.html">Resource</a>.<a href="resource.html#contexttype">contextType</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L39">test.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L38">test.ts:38</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -203,7 +207,7 @@
 					<aside class="tsd-sources">
 						<p>Implementation of <a href="../interfaces/runnable.html">Runnable</a>.<a href="../interfaces/runnable.html#jobid">jobID</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L40">test.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L39">test.ts:39</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -214,7 +218,17 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="resource.html">Resource</a>.<a href="resource.html#name">name</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/resource.ts#L49">resource.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/resource.ts#L49">resource.ts:49</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="testtype" class="tsd-anchor"></a>
+					<h3>test<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">test<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/testtypes.html" class="tsd-signature-type">TestTypes</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L44">test.ts:44</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -225,7 +239,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="resource.html">Resource</a>.<a href="resource.html#childtypes">childTypes</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L34">test.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L33">test.ts:33</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -236,7 +250,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="resource.html">Resource</a>.<a href="resource.html#resourcetype">resourceType</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L32">test.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L31">test.ts:31</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -247,7 +261,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="resource.html">Resource</a>.<a href="resource.html#resourcetyperun">resourceTypeRun</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L33">test.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L32">test.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -265,7 +279,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="resource.html">Resource</a>.<a href="resource.html#delete">delete</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/resource.ts#L349">resource.ts:349</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/resource.ts#L349">resource.ts:349</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -288,7 +302,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L106">test.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L106">test.ts:106</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -311,7 +325,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L110">test.ts:110</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L110">test.ts:110</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -335,7 +349,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="resource.html">Resource</a>.<a href="resource.html#getcontextid">getContextID</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/resource.ts#L102">resource.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/resource.ts#L102">resource.ts:102</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -359,7 +373,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="resource.html">Resource</a>.<a href="resource.html#getresourceid">getResourceID</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/resource.ts#L93">resource.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/resource.ts#L93">resource.ts:93</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -382,7 +396,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L114">test.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L114">test.ts:114</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">keyof </span><a href="step.html" class="tsd-signature-type">Step</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -399,7 +413,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L118">test.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L118">test.ts:118</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">keyof </span><a href="tagvalidation.html" class="tsd-signature-type">TagValidation</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -416,7 +430,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L95">test.ts:95</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L95">test.ts:95</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -442,7 +456,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L99">test.ts:99</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L99">test.ts:99</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -469,7 +483,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/runnable.html">Runnable</a>.<a href="../interfaces/runnable.html#progress">progress</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L167">test.ts:167</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L168">test.ts:168</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/jobstatus.html" class="tsd-signature-type">JobStatus</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -487,7 +501,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/runnable.html">Runnable</a>.<a href="../interfaces/runnable.html#run">run</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L153">test.ts:153</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L154">test.ts:154</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -511,7 +525,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="resource.html">Resource</a>.<a href="resource.html#save">save</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/resource.ts#L177">resource.ts:177</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/resource.ts#L177">resource.ts:177</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -535,7 +549,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="resource.html">Resource</a>.<a href="resource.html#setcontextid">setContextID</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/resource.ts#L125">resource.ts:125</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/resource.ts#L125">resource.ts:125</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -567,7 +581,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="resource.html">Resource</a>.<a href="resource.html#setoptions">setOptions</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L132">test.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L132">test.ts:132</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -594,7 +608,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="resource.html">Resource</a>.<a href="resource.html#setresourceid">setResourceID</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/resource.ts#L111">resource.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/resource.ts#L111">resource.ts:111</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -625,7 +639,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L122">test.ts:122</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L122">test.ts:122</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -655,7 +669,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="resource.html">Resource</a>.<a href="resource.html#tojson">toJSON</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L136">test.ts:136</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L136">test.ts:136</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -673,7 +687,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="resource.html">Resource</a>.<a href="resource.html#tostring">toString</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/resource.ts#L84">resource.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/resource.ts#L84">resource.ts:84</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -697,7 +711,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="resource.html">Resource</a>.<a href="resource.html#fromid">fromID</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L52">test.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L52">test.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -721,7 +735,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="resource.html">Resource</a>.<a href="resource.html#fromjson">fromJSON</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L58">test.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L58">test.ts:58</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -747,7 +761,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="resource.html">Resource</a>.<a href="resource.html#options">options</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L41">test.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L40">test.ts:40</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -756,7 +770,7 @@
 						<div class="tsd-signature tsd-kind-icon">variables<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/045f0f6/src/test.ts#L41">test.ts:41</a></li>
+								<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/75c9d7f/src/test.ts#L40">test.ts:40</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -809,6 +823,9 @@
 						<a href="../enums/webselectortypes.html" class="tsd-kind-icon">Web<wbr>Selector<wbr>Types</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="account.html" class="tsd-kind-icon">Account</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="datalayervalidation.html" class="tsd-kind-icon">Data<wbr>Layer<wbr>Validation</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -842,6 +859,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="test.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="test.html#testtype" class="tsd-kind-icon">test<wbr>Type</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-static">
 								<a href="test.html#childtypes" class="tsd-kind-icon">child<wbr>Types</a>
