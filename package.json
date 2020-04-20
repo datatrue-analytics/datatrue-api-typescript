@@ -37,7 +37,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "create-file-webpack": "^1.0.2",
     "eslint": "^6.8.0",
-    "eslint-plugin-jsdoc": "^23.0.0",
+    "eslint-plugin-jsdoc": "^24.0.0",
     "ts-loader": "^7.0.0",
     "ts-node": "^8.6.2",
     "typedoc": "^0.17.0",
