@@ -1,3 +1,4 @@
+import Account from "./account";
 import DataLayerValidation, { DataLayerValidationOptions, PropertyValidation } from "./dataLayerValidation";
 import Resource from "./resource";
 import { JobStatus } from "./runnable";
@@ -10,7 +11,7 @@ import Test, { TestOptions, TestTypes, Variables, VariableTypes } from "./test";
  * @hidden
  */
 const config = {
-  apiEndpoint: "datatrue.com",
+  apiEndpoint: "https://datatrue.com",
   userToken: "",
   accountToken: "",
 };
@@ -19,6 +20,8 @@ Resource["config"] = config;
 
 export {
   Resource,
+
+  Account,
 
   DataLayerValidation,
   DataLayerValidationOptions,
