@@ -1,7 +1,7 @@
 import Account from "./account";
 import DataLayerValidation, { DataLayerValidationOptions, PropertyValidation } from "./dataLayerValidation";
 import Resource from "./resource";
-import { JobStatus } from "./runnable";
+import Runnable, { JobStatus } from "./runnable";
 import Step, { IframeSelectorTypes, MobileSelectorTypes, SelectorTypes, StepActions, StepOptions, StepSettings, WebSelectorTypes } from "./step";
 import Suite, { SuiteOptions, SuiteTypes } from "./suite";
 import TagValidation, { QueryValidation, TagDefinition, TagValidationContexts, TagValidationOptions } from "./tagValidation";
@@ -27,6 +27,7 @@ export {
   DataLayerValidationOptions,
   PropertyValidation,
 
+  Runnable,
   JobStatus,
 
   Step,
