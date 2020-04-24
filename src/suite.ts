@@ -146,12 +146,12 @@ export default class Suite extends Resource implements Runnable {
     return obj;
   }
 
-  public run(email_users: number[] = []): Promise<string> {
+  public run(email_users: number[] = [], variables: Record<string, string> = {}): Promise<string> {
     const resourceID = this.getResourceID();
     if (resourceID === undefined) {
       return Promise.reject(new Error("Suites can only be run once they have been saved."));
     } else {
-      return _run(email_users, Suite.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
+      return _run(email_users, variables, Suite.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
         this.jobID = jobID;
         return jobID;
       }).catch(() => {

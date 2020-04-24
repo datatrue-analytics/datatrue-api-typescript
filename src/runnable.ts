@@ -34,9 +34,10 @@ export default interface Runnable {
    * Run the resource in DataTrue
    *
    * @param email_users an array of user IDs to whom the test results should be sent
+   * @param variables variables to set for the test run
    * @returns Promise of the jobID
    */
-  run(email_users: number[]): Promise<string>,
+  run(email_users?: number[], variables?: Record<string, any>): Promise<string>,
 
   /**
    * Retrieve the JobStatus for a resource
@@ -51,6 +52,7 @@ export default interface Runnable {
  *
  * @hidden
  * @param email_users a list of IDs for who should be emailed regarding the test run
+ * @param variables variables to set for the test run
  * @param resourceTypeRun the type of the resource being run
  * @param resourceID the ID of the resource to run
  * @param client client to make the HTTP request
@@ -59,6 +61,7 @@ export default interface Runnable {
  */
 export function _run(
   email_users: number[] = [],
+  variables: Record<string, string>,
   resourceTypeRun: string,
   resourceID: number,
   client: HTTPClient,
@@ -77,6 +80,7 @@ export function _run(
         "test_id": resourceID,
         "email_users": email_users,
       },
+      variables: variables,
     }),
   }).then(response => {
     if (response.status >= 400) {
