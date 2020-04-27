@@ -45,29 +45,29 @@ export default class Suite extends Resource implements Runnable {
   public static fromID(id: number): Promise<Suite> {
     return super.getResource(id, Suite.resourceType).then(resource => {
       const suiteObj = JSON.parse(resource);
-      let promises: Promise<void>[] = [];
-      const tests: Test[] = new Array(suiteObj.tests.length);
+      return Suite.fromDTJSON(suiteObj);
+    });
+  }
 
-      if (suiteObj.tests !== undefined) {
-        promises = suiteObj.tests.map((testObj: Record<string, any>, index: number) => {
-          return Test.fromID(testObj["id"]).then(test => {
-            test.setContextID(id);
-            tests[index] = test;
-          });
+  private static fromDTJSON(suiteObj: Record<string, any>): Promise<Suite> {
+    const id = suiteObj.id;
+    let promises: Promise<void>[] = [];
+    const tests: Test[] = new Array(suiteObj.tests.length);
+
+    if (suiteObj.tests !== undefined) {
+      promises = suiteObj.tests.map((testObj: Record<string, any>, index: number) => {
+        return Test.fromID(testObj["id"]).then(test => {
+          test.setContextID(id);
+          tests[index] = test;
         });
-      }
-
-      let seq = Promise.resolve();
-      for (const pr of promises) {
-        seq = seq.then(() => pr);
-      }
-
-      return seq.then(() => {
-        delete suiteObj.tests;
-        const suite = Suite.fromJSON(suiteObj);
-        tests.forEach(test => suite.insertTest(test));
-        return suite;
       });
+    }
+
+    return Promise.all(promises).then(() => {
+      delete suiteObj.tests;
+      const suite = Suite.fromJSON(suiteObj);
+      tests.forEach(test => suite.insertTest(test));
+      return suite;
     });
   }
 

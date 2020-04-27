@@ -1,5 +1,6 @@
 import Resource from "./resource";
 import Suite from "./suite";
+import Test from "./test";
 
 export default class Account extends Resource {
   public static readonly resourceType: string = "account";
@@ -17,7 +18,37 @@ export default class Account extends Resource {
 
   public static fromID(id: number): Promise<Account> {
     return super.getResource(id, Account.resourceType).then(resource => {
-      return Account.fromJSON(JSON.parse(resource));
+      const uri = [
+        Resource.config.apiEndpoint,
+        "management_api/v1",
+        "accounts",
+        id,
+        "suites",
+      ].join("/");
+
+      return Resource.client.makeRequest(uri, "get", {
+        "headers": {
+          "authorization": "Token " + Resource.config.userToken,
+        },
+      }).then(response => {
+        if (response.status >= 400) {
+          throw new Error("Failed to retrieve suites");
+        }
+
+        const suitePromises: Promise<Suite>[] = JSON.parse(response.body).map((suiteObj: Record<string, any>) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          return Suite.fromDTJSON(suiteObj);
+        });
+
+        return Promise.all(suitePromises).then(suites => {
+          const account = Account.fromJSON(JSON.parse(resource));
+          suites.forEach(suite => {
+            account.insertSuite(suite);
+          });
+          return account;
+        });
+      });
     });
   }
 
