@@ -2,7 +2,11 @@ import fetch from "cross-fetch";
 import HTTPClient, { HTTPOptions, Method, Response } from "./httpClient";
 
 export default class NodeClient implements HTTPClient {
-  public async makeRequest(url: string, method: Method, options: HTTPOptions): Promise<Response> {
+  public async makeRequest(
+    url: string,
+    method: Method,
+    options: HTTPOptions
+  ): Promise<Response> {
     const { headers, ...restOptions } = options;
 
     try {

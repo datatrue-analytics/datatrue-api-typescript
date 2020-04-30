@@ -42,7 +42,11 @@ export default class DataLayerValidation extends Resource {
   }
 
   public static async fromID(id: number): Promise<DataLayerValidation> {
-    const resource = await super.getResource(id, DataLayerValidation.resourceType);
+    const resource = await super.getResource(
+      id,
+      DataLayerValidation.resourceType
+    );
+
     return DataLayerValidation.fromJSON(JSON.parse(resource));
   }
 

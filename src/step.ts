@@ -75,7 +75,10 @@ export interface StepSettings {
 
 export default class Step extends Resource {
   public static readonly resourceType: string = "step";
-  public static readonly childTypes: readonly string[] = ["tagValidations", "dataLayerValidations"];
+  public static readonly childTypes: readonly string[] = [
+    "tagValidations",
+    "dataLayerValidations",
+  ];
 
   private tagValidations: TagValidation[] = [];
   private dataLayerValidations: DataLayerValidation[] = [];
@@ -102,7 +105,14 @@ export default class Step extends Resource {
     obj: Record<string, any>,
     copy: boolean = false
   ): Step {
-    const { name, id, action, tag_validations, data_layer_validations, ...options } = obj;
+    const {
+      name,
+      id,
+      action,
+      tag_validations,
+      data_layer_validations,
+      ...options
+    } = obj;
 
     const step = new Step(name, action);
     if (!copy) {

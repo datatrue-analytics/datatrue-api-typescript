@@ -135,7 +135,10 @@ export default class Account extends Resource {
   }
 
   @Account.hydrateSuites
-  public insertSuite(suite: Suite, index: number = (this.suites as Suite[]).length): Promise<void> {
+  public insertSuite(
+    suite: Suite,
+    index: number = (this.suites as Suite[]).length
+  ): Promise<void> {
     super.insertChild(suite, index, "suites");
     return Promise.resolve();
   }

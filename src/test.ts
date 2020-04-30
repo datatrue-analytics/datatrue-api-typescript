@@ -39,7 +39,10 @@ export interface TestDTO {
 export default class Test extends Resource implements Runnable {
   public static readonly resourceType: string = "test";
   public static readonly resourceTypeRun: string = "TestScenario";
-  public static readonly childTypes: readonly string[] = ["steps", "tagValidations"];
+  public static readonly childTypes: readonly string[] = [
+    "steps",
+    "tagValidations",
+  ];
 
   private steps: Step[] = [];
   private tagValidations: TagValidation[] = [];
@@ -167,13 +170,24 @@ export default class Test extends Resource implements Runnable {
     return obj;
   }
 
-  public async run(email_users: number[] = [], variables: Record<string, string> = {}): Promise<string> {
+  public async run(
+    email_users: number[] = [],
+    variables: Record<string, string> = {}
+  ): Promise<string> {
     const resourceID = this.getResourceID();
     if (resourceID === undefined) {
       throw new Error("Tests can only be run once they have been saved.");
     } else {
       try {
-        const jobID = await _run(email_users, variables, Test.resourceTypeRun, resourceID, Resource.client, Resource.config);
+        const jobID = await _run(
+          email_users,
+          variables,
+          Test.resourceTypeRun,
+          resourceID,
+          Resource.client,
+          Resource.config
+        );
+
         this.jobID = jobID;
         return jobID;
       } catch (e) {

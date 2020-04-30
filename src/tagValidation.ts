@@ -82,7 +82,12 @@ export default class TagValidation extends Resource {
       options.interception.intercept = options.interception.intercept === "1" ? true : false;
     }
 
-    const tagValidation = new TagValidation(name, tag_definition.key, contextType);
+    const tagValidation = new TagValidation(
+      name,
+      tag_definition.key,
+      contextType
+    );
+
     if (!copy) {
       tagValidation.setResourceID(id);
     }

@@ -1,7 +1,11 @@
 import HTTPClient, { HTTPOptions, Method, Response } from "./httpClient";
 
 export default class AppsScriptClient implements HTTPClient {
-  public makeRequest(url: string, method: Method, options: HTTPOptions): Promise<Response> {
+  public makeRequest(
+    url: string,
+    method: Method,
+    options: HTTPOptions
+  ): Promise<Response> {
     const opts: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {};
     opts.contentType = "application/json";
     opts.headers = {
@@ -14,7 +18,10 @@ export default class AppsScriptClient implements HTTPClient {
 
     try {
       const response = UrlFetchApp.fetch(url, opts);
-      return Promise.resolve({ status: response.getResponseCode(), body: response.getContentText() });
+      return Promise.resolve({
+        status: response.getResponseCode(),
+        body: response.getContentText()
+      });
     } catch (e) {
       return Promise.reject(new Error(e.message));
     }
