@@ -95,7 +95,6 @@ export default class Suite extends Resource implements Runnable {
         if (copy) {
           test.setResourceID(undefined);
         }
-        suite.tests = [];
         suite.insertTest(test)
           .catch(() => {
             throw new Error("Unable to insert test");
