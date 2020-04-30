@@ -170,7 +170,7 @@ export default class Step extends Resource {
     super.setOptions(options, override);
   }
 
-  public toJSON(): Record<string, any> {
+  public async toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
       name: this.name,
       action: this.action,
@@ -178,11 +178,17 @@ export default class Step extends Resource {
     };
 
     if (this.tagValidations.length) {
-      obj["tag_validations"] = this.tagValidations.map(tagValidation => tagValidation.toJSON());
+      obj.tag_validations = [];
+      for (const tagValidation of this.tagValidations) {
+        obj.tag_validations.push(await tagValidation.toJSON());
+      }
     }
 
     if (this.dataLayerValidations.length) {
-      obj["data_layer_validations"] = this.dataLayerValidations.map(dataLayerValidation => dataLayerValidation.toJSON());
+      obj.data_layer_validations = [];
+      for (const dataLayerValidation of this.dataLayerValidations) {
+        obj.data_layer_validations.push(await dataLayerValidation.toJSON());
+      }
     }
 
     return obj;
