@@ -152,7 +152,10 @@ export default abstract class Resource {
    * @param resourceType the type of the resource to fetch
    * @returns Promise of the resource as a JSON string
    */
-  protected static async getResource(id: number, resourceType: string): Promise<string> {
+  protected static async getResource(
+    id: number,
+    resourceType: string
+  ): Promise<string> {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
@@ -285,7 +288,11 @@ export default abstract class Resource {
    * @param index index to add the child at
    * @param resourceType type of the child
    */
-  protected insertChild(child: Record<string, any>, index: number = 0, resourceType: string): void {
+  protected insertChild(
+    child: Record<string, any>,
+    index: number = 0,
+    resourceType: string
+  ): void {
     (this as Record<string, any>)[resourceType].splice(index, 0, child);
     if ((this.constructor as typeof Resource).childTypes.includes(resourceType)) {
       (this as Record<string, any>)[resourceType].forEach((child: Resource, index: number) => {

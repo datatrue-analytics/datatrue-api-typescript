@@ -75,7 +75,10 @@ export interface StepSettings {
 
 export default class Step extends Resource {
   public static readonly resourceType: string = "step";
-  public static readonly childTypes: readonly string[] = ["tagValidations", "dataLayerValidations"];
+  public static readonly childTypes: readonly string[] = [
+    "tagValidations",
+    "dataLayerValidations",
+  ];
 
   private tagValidations: TagValidation[] = [];
   private dataLayerValidations: DataLayerValidation[] = [];
@@ -93,17 +96,23 @@ export default class Step extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number): Promise<Step> {
-    return super.getResource(id, Step.resourceType).then(resource => {
-      return Step.fromJSON(JSON.parse(resource));
-    });
+  public static async fromID(id: number): Promise<Step> {
+    const resource = await super.getResource(id, Step.resourceType);
+    return Step.fromJSON(JSON.parse(resource));
   }
 
   public static fromJSON(
     obj: Record<string, any>,
     copy: boolean = false
   ): Step {
-    const { name, id, action, tag_validations, data_layer_validations, ...options } = obj;
+    const {
+      name,
+      id,
+      action,
+      tag_validations,
+      data_layer_validations,
+      ...options
+    } = obj;
 
     const step = new Step(name, action);
     if (!copy) {
