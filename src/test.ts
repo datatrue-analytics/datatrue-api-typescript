@@ -27,6 +27,15 @@ export interface Variables {
   },
 }
 
+export interface TestDTO {
+  id: number,
+  name: string,
+  description: string,
+  created_at: number,
+  updated_at: number,
+  test_type: number,
+}
+
 export default class Test extends Resource implements Runnable {
   public static readonly resourceType: string = "test";
   public static readonly resourceTypeRun: string = "TestScenario";
@@ -133,7 +142,7 @@ export default class Test extends Resource implements Runnable {
     super.setOptions(options, override);
   }
 
-  public toJSON(): Record<string, any> {
+  public async toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
       name: this.name,
       test_type: this.testType,
@@ -141,11 +150,19 @@ export default class Test extends Resource implements Runnable {
     };
 
     if (this.steps.length) {
-      obj["steps"] = this.steps.map(step => JSON.parse(step.toString()));
+      obj.steps = [];
+
+      for (const step of this.steps) {
+        obj.steps.push(await step.toJSON());
+      }
     }
 
     if (this.tagValidations.length) {
-      obj["tag_validations"] = this.tagValidations.map(tagValidation => tagValidation.toJSON());
+      obj.tag_validations = [];
+
+      for (const tagValidation of this.tagValidations) {
+        obj.tag_validations.push(await tagValidation.toJSON());
+      }
     }
 
     return obj;

@@ -75,6 +75,7 @@
     "@typescript-eslint/triple-slash-reference": [
       "off"
     ],
+    "@typescript-eslint/unbound-method": "off",
     "semi": "off",
     "@typescript-eslint/semi": "error",
     "jsdoc/check-tag-names": "off",

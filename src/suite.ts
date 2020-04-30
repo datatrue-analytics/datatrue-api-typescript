@@ -1,6 +1,6 @@
 import Resource, { ResourceOptions } from "./resource";
 import Runnable, { JobStatus, _progress, _run } from "./runnable";
-import Test, { Variables, VariableTypes } from "./test";
+import Test, { TestDTO, Variables, VariableTypes } from "./test";
 
 export interface SuiteOptions extends ResourceOptions {
   variables?: Variables,
@@ -22,12 +22,28 @@ export enum SensitiveDataSettings {
   PASS_WHEN_DETECTED = "pass_when_detected",
 }
 
+export interface SuiteDTO {
+  id: number,
+  name: string,
+  suite_type: number,
+  description: string,
+  sensitive_data_setting: string,
+  excluded_domains: string[],
+  persona_id: number,
+  restart_between_tests: boolean,
+  created_at: number,
+  updated_at: number,
+  variables: Record<string, Record<string, string>>,
+  tests: TestDTO[],
+}
+
 export default class Suite extends Resource implements Runnable {
   public static readonly resourceType: string = "suite";
   public static readonly resourceTypeRun: string = "Suite";
   public static readonly childTypes: readonly string[] = ["tests"];
 
-  private tests: Test[] = [];
+  private tests?: Test[];
+  private testDTOs: TestDTO[] = [];
 
   public readonly contextType: string = "account";
   public jobID?: string;
@@ -42,33 +58,22 @@ export default class Suite extends Resource implements Runnable {
     this.setOptions(options);
   }
 
-  public static fromID(id: number): Promise<Suite> {
-    return super.getResource(id, Suite.resourceType).then(resource => {
-      const suiteObj = JSON.parse(resource);
-      return Suite.fromDTJSON(suiteObj);
-    });
+  public static async fromID(id: number): Promise<Suite> {
+    const resource = await super.getResource(id, Suite.resourceType);
+    const suiteObj = JSON.parse(resource);
+    return Suite.fromDTO(suiteObj);
   }
 
-  private static fromDTJSON(suiteObj: Record<string, any>): Promise<Suite> {
-    const id = suiteObj.id;
-    let promises: Promise<void>[] = [];
-    const tests: Test[] = new Array(suiteObj.tests.length);
+  private static fromDTO(suiteObj: SuiteDTO): Promise<Suite> {
+    const testDTOs: TestDTO[] | undefined = suiteObj.tests;
 
-    if (suiteObj.tests !== undefined) {
-      promises = suiteObj.tests.map((testObj: Record<string, any>, index: number) => {
-        return Test.fromID(testObj["id"]).then(test => {
-          test.setContextID(id);
-          tests[index] = test;
-        });
-      });
+    delete suiteObj.tests;
+    const suite = Suite.fromJSON(suiteObj);
+    if (testDTOs !== undefined) {
+      suite.testDTOs = testDTOs;
     }
 
-    return Promise.all(promises).then(() => {
-      delete suiteObj.tests;
-      const suite = Suite.fromJSON(suiteObj);
-      tests.forEach(test => suite.insertTest(test));
-      return suite;
-    });
+    return Promise.resolve(suite);
   }
 
   public static fromJSON(
@@ -90,7 +95,11 @@ export default class Suite extends Resource implements Runnable {
         if (copy) {
           test.setResourceID(undefined);
         }
-        suite.insertTest(test);
+        suite.tests = [];
+        suite.insertTest(test)
+          .catch(() => {
+            throw new Error("Unable to insert test");
+          });
       });
     }
 
@@ -111,36 +120,73 @@ export default class Suite extends Resource implements Runnable {
     super.setOptions(options, override);
   }
 
-  public insertTest(test: Test, index: number = this.tests.length): void {
+  private static hydrateTests<T extends TypedPropertyDescriptor<(...args: any[]) => Promise<any>>>(
+    _target: Suite,
+    _propertyKey: string | symbol,
+    descriptor: T
+  ): T {
+    const method = descriptor.value;
+    descriptor.value = async function (...args: any[]) {
+      const self: Suite = this as unknown as Suite;
+
+      if (self.tests === undefined) {
+        const testPromises = self.testDTOs.map(testDTO => {
+          return Test.fromID(testDTO.id);
+        });
+
+        self.tests = await Promise.all(testPromises);
+      }
+
+      if (method !== undefined) {
+        return method.apply(self, args);
+      }
+      return Promise.resolve();
+    };
+    return descriptor;
+  }
+
+  @Suite.hydrateTests
+  public insertTest(
+    test: Test,
+    index: number = (this.tests as Test[]).length
+  ): Promise<void> {
     super.insertChild(test, index, "tests");
+    return Promise.resolve();
   }
 
-  public deleteTest(index: number): void {
+  @Suite.hydrateTests
+  public deleteTest(index: number): Promise<void> {
     super.deleteChild(index, "tests");
+    return Promise.resolve();
   }
 
-  public getTests(): readonly Test[] {
-    return this.tests.slice();
+  @Suite.hydrateTests
+  public getTests(): Promise<readonly Test[]> {
+    return Promise.resolve((this.tests as Test[]).slice());
   }
 
-  protected create(): Promise<void> {
-    return super.create().then(() => {
-      const promises = this.tests.map(test => {
-        return test.save();
-      });
-
-      return Promise.all(promises).then();
+  @Suite.hydrateTests
+  protected async create(): Promise<void> {
+    await super.create();
+    const promises = (this.tests as Test[]).map(test => {
+      return test.save();
     });
+    await Promise.all(promises);
   }
 
-  public toJSON(): Record<string, any> {
+  public async toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
       name: this.name,
       ...this.options,
     };
 
-    if (this.tests.length) {
-      obj["tests"] = this.tests.map(test => test.toJSON());
+    const tests: readonly Test[] = await this.getTests();
+
+    if (tests.length) {
+      obj.tests = [];
+      for (const test of tests) {
+        obj.tests.push(await test.toJSON());
+      }
     }
 
     return obj;

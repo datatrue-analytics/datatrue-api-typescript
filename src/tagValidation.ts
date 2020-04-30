@@ -120,7 +120,7 @@ export default class TagValidation extends Resource {
     super.setOptions(options, override);
   }
 
-  public toJSON(): Record<string, any> {
+  public toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
       name: this.name,
       tag_definition: this.tagDefinition,
@@ -136,6 +136,6 @@ export default class TagValidation extends Resource {
       obj.interception.intercept = obj.interception.intercept ? "1" : "0";
     }
 
-    return obj;
+    return Promise.resolve(obj);
   }
 }

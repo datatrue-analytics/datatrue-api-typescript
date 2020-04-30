@@ -74,15 +74,15 @@ export default abstract class Resource {
    *
    * @returns object representation of the resource
    */
-  public abstract toJSON(): Record<string, any>;
+  public abstract toJSON(): Promise<Record<string, any>>;
 
   /**
    * Convert the resource to a JSON string
    *
    * @returns the resource represented as a JSON string
    */
-  public toString(): string {
-    return JSON.stringify(this.toJSON());
+  public async toString(): Promise<string> {
+    return JSON.stringify(await this.toJSON());
   }
 
   /**
@@ -111,9 +111,11 @@ export default abstract class Resource {
   public setResourceID(id: number | undefined): void {
     this.resourceID = id;
     (this.constructor as typeof Resource).childTypes.forEach((childType: string) => {
-      (this as Record<string, any>)[childType].forEach((child: Resource) => {
-        child.setContextID(id);
-      });
+      if ((this as Record<string, any>)[childType] !== undefined) {
+        (this as Record<string, any>)[childType].forEach((child: Resource) => {
+          child.setContextID(id);
+        });
+      }
     });
   }
 
@@ -150,23 +152,24 @@ export default abstract class Resource {
    * @param resourceType the type of the resource to fetch
    * @returns Promise of the resource as a JSON string
    */
-  protected static getResource(id: number, resourceType: string): Promise<string> {
+  protected static async getResource(id: number, resourceType: string): Promise<string> {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
       resourceType + "s",
       id].join("/");
 
-    return Resource.client.makeRequest(uri, "get", {
+    const response = await Resource.client.makeRequest(uri, "get", {
       "headers": {
         "authorization": "Token " + Resource.config.userToken,
       },
-    }).then(response => {
-      if (response.status >= 400) {
-        throw new Error(`Failed to retrieve ${resourceType} ${id}`);
-      }
-      return response.body;
     });
+
+    if (response.status >= 400) {
+      throw new Error(`Failed to retrieve ${resourceType} ${id}`);
+    }
+
+    return response.body;
   }
 
   /**
@@ -174,28 +177,30 @@ export default abstract class Resource {
    *
    * @returns Promise
    */
-  public save(): Promise<void> {
-    const after = (): Promise<void> => {
+  public async save(): Promise<void> {
+    const after = async (): Promise<void> => {
       const promises = this.toDelete.slice().map(child => {
         return child.delete().then(() => {
           this.toDelete.splice(this.toDelete.indexOf(child), 1);
         });
       });
-      return Promise.all(promises).then();
+      await Promise.all(promises);
     };
 
     if (this.resourceID) {
-      return this.update()
-        .then(after)
-        .catch(() => {
-          throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID()}`);
-        });
+      try {
+        await this.update();
+        return after();
+      } catch (e) {
+        throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID()}`);
+      }
     } else {
-      return this.create()
-        .then(after)
-        .catch(() => {
-          throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType}`);
-        });
+      try {
+        await this.create();
+        return after();
+      } catch (e) {
+        throw new Error(`Failed to save ${(this.constructor as typeof Resource).resourceType}`);
+      }
     }
   }
 
@@ -204,7 +209,7 @@ export default abstract class Resource {
    *
    * @returns Promise
    */
-  protected create(): Promise<void> {
+  protected async create(): Promise<void> {
     const resourceType: string = (this.constructor as typeof Resource).resourceType;
 
     const uri = [
@@ -214,30 +219,29 @@ export default abstract class Resource {
       this.contextID,
       resourceType + "s"].join("/");
 
-    const payload = this.toJSON();
+    const payload = await this.toJSON();
 
-    return Resource.client.makeRequest(uri, "post", {
+    const response = await Resource.client.makeRequest(uri, "post", {
       body: JSON.stringify(this.beforeSave(payload)),
       headers: {
         "authorization": "Token " + Resource.config.userToken,
       },
-    }).then(response => {
-      if (response.status >= 400) {
-        throw response;
+    });
+
+    if (response.status >= 400) {
+      throw response;
+    }
+
+    const responseObj = JSON.parse(response.body);
+    this.setResourceID(responseObj[resourceType]["id"]);
+
+    // Sets resource IDs for all children that were created
+    (this.constructor as typeof Resource).childTypes.forEach((childType: string) => {
+      if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
+        responseObj[resourceType][resourceTypes[childType]].forEach((childObj: Record<string, any>, index: number) => {
+          (this as Record<string, any>)[childType][index].setResourceID(childObj["id"]);
+        });
       }
-
-      const responseObj = JSON.parse(response.body);
-
-      this.setResourceID(responseObj[resourceType]["id"]);
-
-      // Sets resource IDs for all children that were created
-      (this.constructor as typeof Resource).childTypes.forEach((childType: string) => {
-        if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
-          responseObj[resourceType][resourceTypes[childType]].forEach((childObj: Record<string, any>, index: number) => {
-            (this as Record<string, any>)[childType][index].setResourceID(childObj["id"]);
-          });
-        }
-      });
     });
   }
 
@@ -246,32 +250,32 @@ export default abstract class Resource {
    *
    * @returns Promise
    */
-  protected update(): Promise<void> {
+  protected async update(): Promise<void> {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
       (this.constructor as typeof Resource).resourceType + "s",
       this.resourceID].join("/");
 
-    const payload = this.toJSON();
+    const payload = await this.toJSON();
 
-    return Resource.client.makeRequest(uri, "put", {
+    const response = await Resource.client.makeRequest(uri, "put", {
       body: JSON.stringify(this.beforeUpdate(payload)),
       headers: {
         "authorization": "Token " + Resource.config.userToken,
       },
-    }).then((response) => {
-      if (response.status >= 400) {
-        throw response;
-      }
-
-      const promises = (this.constructor as typeof Resource).childTypes.flatMap((childType: string) => {
-        return (this as Record<string, any>)[childType].map((child: Resource) => {
-          return child.save();
-        });
-      });
-      return Promise.all(promises).then(() => { });
     });
+
+    if (response.status >= 400) {
+      throw response;
+    }
+    const promises = (this.constructor as typeof Resource).childTypes.flatMap((childType: string) => {
+      return (this as Record<string, any>)[childType].map((child: Resource) => {
+        return child.save();
+      });
+    });
+
+    await Promise.all(promises);
   }
 
   /**
@@ -346,21 +350,21 @@ export default abstract class Resource {
    *
    * @returns Promise
    */
-  public delete(): Promise<void> {
+  public async delete(): Promise<void> {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
       (this.constructor as typeof Resource).resourceType + "s",
       this.resourceID].join("/");
 
-    return Resource.client.makeRequest(uri, "delete", {
+    const response = await Resource.client.makeRequest(uri, "delete", {
       headers: {
         "authorization": "Token " + Resource.config.userToken,
       },
-    }).then((response) => {
-      if (response.status >= 400) {
-        throw new Error(`Failed to delete ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID()}`);
-      }
     });
+
+    if (response.status >= 400) {
+      throw new Error(`Failed to delete ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID()}`);
+    }
   }
 }
