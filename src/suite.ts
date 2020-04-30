@@ -135,12 +135,12 @@ export default class Suite extends Resource implements Runnable {
         });
 
         self.tests = await Promise.all(testPromises);
+        self.tests.forEach(test => test.setContextID(self.getContextID()));
       }
 
       if (method !== undefined) {
         return method.apply(self, args);
       }
-      return Promise.resolve();
     };
     return descriptor;
   }
@@ -192,23 +192,24 @@ export default class Suite extends Resource implements Runnable {
     return obj;
   }
 
-  public run(email_users: number[] = [], variables: Record<string, string> = {}): Promise<string> {
+  public async run(email_users: number[] = [], variables: Record<string, string> = {}): Promise<string> {
     const resourceID = this.getResourceID();
     if (resourceID === undefined) {
-      return Promise.reject(new Error("Suites can only be run once they have been saved."));
+      throw new Error("Suites can only be run once they have been saved.");
     } else {
-      return _run(email_users, variables, Suite.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
+      try {
+        const jobID = await _run(email_users, variables, Suite.resourceTypeRun, resourceID, Resource.client, Resource.config);
         this.jobID = jobID;
         return jobID;
-      }).catch(() => {
+      } catch (e) {
         throw new Error(`Failed to run suite ${this.getResourceID()}`);
-      });
+      }
     }
   }
 
-  public progress(): Promise<JobStatus> {
+  public async progress(): Promise<JobStatus> {
     if (this.jobID === undefined) {
-      return Promise.reject(new Error("You must run the suite before fetching progress."));
+      throw new Error("You must run the suite before fetching progress.");
     }
     return _progress(this.jobID, Resource.client, Resource.config);
   }

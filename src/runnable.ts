@@ -59,7 +59,7 @@ export default interface Runnable {
  * @param config config
  * @returns Promise of the job_id
  */
-export function _run(
+export async function _run(
   email_users: number[] = [],
   variables: Record<string, string>,
   resourceTypeRun: string,
@@ -73,7 +73,7 @@ export function _run(
     `test_runs?api_key=${config.accountToken}`,
   ].join("/");
 
-  return client.makeRequest(uri, "post", {
+  const response = await client.makeRequest(uri, "post", {
     body: JSON.stringify({
       "test_run": {
         "test_class": resourceTypeRun,
@@ -82,12 +82,13 @@ export function _run(
       },
       variables: variables,
     }),
-  }).then(response => {
-    if (response.status >= 400) {
-      throw response;
-    }
-    return JSON.parse(response.body)["job_id"];
   });
+
+  if (response.status >= 400) {
+    throw response;
+  }
+
+  return JSON.parse(response.body)["job_id"];
 }
 
 /**
@@ -99,7 +100,7 @@ export function _run(
  * @param config config
  * @returns Promise of the job status
  */
-export function _progress(
+export async function _progress(
   jobID: string,
   client: HTTPClient,
   config: Config
@@ -112,10 +113,10 @@ export function _progress(
     `${jobID}?api_key=${config.accountToken}`,
   ].join("/");
 
-  return client.makeRequest(uri, "get", {}).then(response => {
-    if (response.status >= 400) {
-      throw response;
-    }
-    return JSON.parse(response.body);
-  });
+  const response = await client.makeRequest(uri, "get", {});
+  if (response.status >= 400) {
+    throw response;
+  }
+
+  return JSON.parse(response.body);
 }

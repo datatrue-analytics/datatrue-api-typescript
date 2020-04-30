@@ -62,10 +62,9 @@ export default class TagValidation extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number): Promise<TagValidation> {
-    return super.getResource(id, TagValidation.resourceType).then(resource => {
-      return TagValidation.fromJSON(JSON.parse(resource));
-    });
+  public static async fromID(id: number): Promise<TagValidation> {
+    const resource = await super.getResource(id, TagValidation.resourceType);
+    return TagValidation.fromJSON(JSON.parse(resource));
   }
 
   public static fromJSON(
