@@ -85,7 +85,7 @@ export async function _run(
   });
 
   if (response.status >= 400) {
-    throw response;
+    throw new Error(response.body);
   }
 
   return JSON.parse(response.body)["job_id"];
@@ -115,7 +115,7 @@ export async function _progress(
 
   const response = await client.makeRequest(uri, "get", {});
   if (response.status >= 400) {
-    throw response;
+    throw new Error(response.body);
   }
 
   return JSON.parse(response.body);

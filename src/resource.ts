@@ -232,7 +232,7 @@ export default abstract class Resource {
     });
 
     if (response.status >= 400) {
-      throw response;
+      throw new Error(response.body);
     }
 
     const responseObj = JSON.parse(response.body);
@@ -270,7 +270,7 @@ export default abstract class Resource {
     });
 
     if (response.status >= 400) {
-      throw response;
+      throw new Error(response.body);
     }
     const promises = (this.constructor as typeof Resource).childTypes.flatMap((childType: string) => {
       return (this as Record<string, any>)[childType].map((child: Resource) => {

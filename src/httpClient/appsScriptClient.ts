@@ -20,7 +20,7 @@ export default class AppsScriptClient implements HTTPClient {
       const response = UrlFetchApp.fetch(url, opts);
       return Promise.resolve({
         status: response.getResponseCode(),
-        body: response.getContentText()
+        body: response.getContentText(),
       });
     } catch (e) {
       return Promise.reject(new Error(e.message));
