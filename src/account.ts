@@ -34,16 +34,15 @@ export default class Account extends Resource {
     account.stepsUsed = steps_used;
 
     if (suites !== undefined) {
-      suites.forEach((suiteObj: Record<string, any>) => {
+      account.suites = [];
+      suites.forEach((suiteObj: Record<string, any>, index: number) => {
         const suite = Suite.fromJSON(suiteObj);
         suite.setContextID(id);
         if (copy) {
           suite.setResourceID(undefined);
         }
-        account.insertSuite(suite)
-          .catch(() => {
-            throw new Error("Unable to insert suite");
-          });
+        suite.setOptions({ position: index + 1 });
+        account.suites?.push(suite);
       });
     }
 

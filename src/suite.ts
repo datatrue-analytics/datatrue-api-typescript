@@ -89,16 +89,15 @@ export default class Suite extends Resource implements Runnable {
     suite.setOptions(options, true);
 
     if (tests !== undefined) {
-      tests.forEach((testObj: Record<string, any>) => {
+      suite.tests = [];
+      tests.forEach((testObj: Record<string, any>, index: number) => {
         const test = Test.fromJSON(testObj);
         test.setContextID(id);
         if (copy) {
           test.setResourceID(undefined);
         }
-        suite.insertTest(test)
-          .catch(() => {
-            throw new Error("Unable to insert test");
-          });
+        test.setOptions({ position: index + 1 });
+        suite.tests?.push(test);
       });
     }
 
