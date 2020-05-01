@@ -1,11 +1,11 @@
-interface Filter<T>{
+interface Filter<T> {
   field: T,
   operator: string,
   exclude: boolean,
   value: Value,
 }
 
-interface FilterClause<T>{
+interface FilterClause<T> {
   operator?: "AND" | "OR",
   filters: Filter<T>[],
 }
@@ -15,11 +15,11 @@ interface Order {
   direction: "ASC" | "DESC",
 }
 
-interface Field<Field> {
-  name: Field,
+interface Field<T> {
+  name: T,
 }
 
-type Value = string | number | string[] | number[] | null;
+export type Value = string | number | string[] | number[] | null;
 
 interface Request<Dimension, Metric> {
   account_id: number,
@@ -34,11 +34,11 @@ interface Request<Dimension, Metric> {
   },
 }
 
-export type Op = "===" | ">" | ">=" | "<" | "<=" | "=~" | "in";
+export type Op = "==" | ">" | ">=" | "<" | "<=" | "=~" | "in";
 export type Operator = "EQUALS" | "GREATER_THAN" | "GREATER_THAN_OR_EQUALS" | "LESS_THAN" | "LESS_THAN_OR_EQUALS" | "REGEX_MATCH" | "INCLUDES";
 
 const OpToOperator: Record<Op, Operator> = {
-  "===": "EQUALS",
+  "==": "EQUALS",
   ">": "GREATER_THAN",
   ">=": "GREATER_THAN_OR_EQUALS",
   "<": "LESS_THAN",
@@ -47,7 +47,10 @@ const OpToOperator: Record<Op, Operator> = {
   "in": "INCLUDES",
 };
 
-export abstract class ResultSummaries<Dimension, Metric> {
+export abstract class ResultSummaries<
+  Dimension extends string,
+  Metric extends string
+> {
   protected static dimensions: readonly string[];
   protected static metrics: readonly string[];
 
@@ -61,15 +64,19 @@ export abstract class ResultSummaries<Dimension, Metric> {
 
   public constructor(private accountId: number) { }
 
-  public select(...fields: (Dimension | Metric)[]): ResultSummaries<Dimension, Metric> {
+  public select(
+    ...fields: (Dimension | Metric)[]
+  ): ResultSummaries<Dimension, Metric> {
+    const dimensions = (this.constructor as typeof ResultSummaries).dimensions;
+    const metrics = (this.constructor as typeof ResultSummaries).metrics;
     fields.forEach(field => {
-      if ((this.constructor as typeof ResultSummaries).dimensions.includes(field as unknown as string)) {
+      if (dimensions.includes(field)) {
         this.dimensions.push({
-          name: field as unknown as Dimension,
+          name: field as Dimension,
         });
-      } else if ((this.constructor as typeof ResultSummaries).metrics.includes(field as unknown as string)) {
+      } else if (metrics.includes(field)) {
         this.metrics.push({
-          name: field as unknown as Metric,
+          name: field as Metric,
         });
       }
     });
@@ -83,14 +90,17 @@ export abstract class ResultSummaries<Dimension, Metric> {
     value: Value,
     exclude: boolean = false
   ): ResultSummaries<Dimension, Metric> {
-    if ((this.constructor as typeof ResultSummaries).dimensions.includes(field as unknown as string)) {
+    const dimensions = (this.constructor as typeof ResultSummaries).dimensions;
+    const metrics = (this.constructor as typeof ResultSummaries).metrics;
+
+    if (dimensions.includes(field)) {
       this.dimensionFilters.push({
         field: field as Dimension,
         exclude: exclude,
         operator: OpToOperator[operator],
         value: value,
       });
-    } else if ((this.constructor as typeof ResultSummaries).metrics.includes(field as unknown as string)) {
+    } else if (metrics.includes(field)) {
       this.metricFilters.push({
         field: field as Metric,
         exclude: exclude,
@@ -112,7 +122,7 @@ export abstract class ResultSummaries<Dimension, Metric> {
   public rows(
     page: number = 0,
     pageLength: number = 1000
-  ): Record<string, any>[] {
+  ): Record<Dimension | Metric, string | number>[] {
     const request: Request<Dimension, Metric> = {
       account_id: this.accountId,
       dimensions: this.dimensions,
