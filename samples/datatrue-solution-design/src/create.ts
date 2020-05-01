@@ -18,8 +18,10 @@ export async function create(): Promise<void> {
   const useMockPage: boolean = sheet.getRange("B11").getValue();
   const tagManagerUrl: string = sheet.getRange("B12").getDisplayValue();
 
-  const hostname = url.match(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/)[1];
-  let path = url.match(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/)[2];
+  const urlRegex = RegExp(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/);
+
+  const hostname = urlRegex.exec(url)[1];
+  let path = urlRegex.exec(url)[2];
   path = path === "" ? ".*" : path;
 
   if (accountID === "") {
@@ -142,7 +144,7 @@ export async function create(): Promise<void> {
           value: row[i + 3],
           use_json_path: false,
         };
-        if (queryValidation.value.indexOf("regex://") === 0) {
+        if (queryValidation.value.startsWith("regex://")) {
           queryValidation.value = queryValidation.value.replace("regex://", "");
           queryValidation.regex = true;
         }
