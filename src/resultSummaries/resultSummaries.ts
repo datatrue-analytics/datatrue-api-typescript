@@ -1,7 +1,7 @@
 interface Filter<T> {
   field: T,
   operator: string,
-  exclude: boolean,
+  exclude?: boolean,
   value: Value,
 }
 
@@ -10,9 +10,11 @@ interface FilterClause<T> {
   filters: Filter<T>[],
 }
 
+type Direction = "ASC" | "DESC";
+
 interface Order {
   field: string,
-  direction: "ASC" | "DESC",
+  direction?: Direction,
 }
 
 interface Field<T> {
@@ -65,8 +67,8 @@ export abstract class ResultSummaries<
   private dimensions: Field<Dimension>[] = [];
   private metrics: Field<Metric>[] = [];
 
-  private dimensionFilters: Filter<Dimension>[] = [];
-  private metricFilters: Filter<Metric>[] = [];
+  private dimensionFilterClauses: FilterClause<Dimension>[] = [];
+  private metricFilterClauses: FilterClause<Metric>[] = [];
 
   private orders: Order[] = [];
 
@@ -96,32 +98,57 @@ export abstract class ResultSummaries<
     field: Dimension | Metric,
     operator: Op,
     value: Value,
-    exclude: boolean = false
-  ): ResultSummaries<Dimension, Metric> {
+    exclude?: boolean
+  ): ResultSummaries<Dimension, Metric>;
+
+  public where(
+    ...args: [Dimension | Metric, Op, Value, boolean?][]
+  ): ResultSummaries<Dimension, Metric>;
+
+  public where(...args: any): ResultSummaries<Dimension, Metric> {
     const dimensions = (this.constructor as typeof ResultSummaries).dimensions;
     const metrics = (this.constructor as typeof ResultSummaries).metrics;
 
-    if (dimensions.includes(field)) {
-      this.dimensionFilters.push({
-        field: field as Dimension,
-        exclude: exclude,
-        operator: OpToOperator[operator],
-        value: value,
-      });
-    } else if (metrics.includes(field)) {
-      this.metricFilters.push({
-        field: field as Metric,
-        exclude: exclude,
-        operator: OpToOperator[operator],
-        value: value,
-      });
+    let filters: [Dimension | Metric, Op, Value, boolean?][];
+
+    if (Array.isArray(args[0])) {
+      filters = args;
+    } else {
+      filters = [args];
     }
+
+    filters.forEach(([field, operator, value, exclude]) => {
+      if (dimensions.includes(field)) {
+        this.dimensionFilterClauses.push({
+          filters: [
+            {
+              field: field as Dimension,
+              exclude: exclude === undefined ? false : exclude,
+              operator: OpToOperator[operator],
+              value: value,
+            },
+          ],
+        });
+      } else if (metrics.includes(field)) {
+        this.metricFilterClauses.push({
+          filters: [
+            {
+              field: field as Metric,
+              exclude: exclude === undefined ? false : exclude,
+              operator: OpToOperator[operator],
+              value: value,
+            },
+          ],
+        });
+      }
+    });
+
     return this;
   }
 
   public order(
     field: string,
-    direction: "ASC" | "DESC" = "ASC"
+    direction: Direction = "ASC"
   ): ResultSummaries<Dimension, Metric> {
     this.orders.push({ field: field, direction: direction });
     return this;
@@ -135,18 +162,8 @@ export abstract class ResultSummaries<
       account_id: this.accountId,
       dimensions: this.dimensions,
       metrics: this.metrics,
-      dimension_filter_clauses: [
-        {
-          operator: "AND",
-          filters: this.dimensionFilters,
-        },
-      ],
-      metric_filter_clauses: [
-        {
-          operator: "AND",
-          filters: this.metricFilters,
-        },
-      ],
+      dimension_filter_clauses: this.dimensionFilterClauses,
+      metric_filter_clauses: this.metricFilterClauses,
       settings: {
         sort: this.orders,
         page: page,
