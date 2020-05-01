@@ -147,10 +147,30 @@ export abstract class ResultSummaries<
   }
 
   public order(
-    field: string,
-    direction: Direction = "ASC"
-  ): ResultSummaries<Dimension, Metric> {
-    this.orders.push({ field: field, direction: direction });
+    field: Dimension | Metric,
+    direction?: Direction
+  ): ResultSummaries<Dimension, Metric>;
+
+  public order(
+    ...args: [string, Direction?][]
+  ): ResultSummaries<Dimension, Metric>;
+
+  public order(...args: any): ResultSummaries<Dimension, Metric> {
+    let orders: [Dimension | Metric, Direction?][];
+
+    if (Array.isArray(args[0])) {
+      orders = args;
+    } else {
+      orders = [args];
+    }
+
+    orders.forEach(([field, direction]) => {
+      this.orders.push({
+        field: field,
+        direction: direction === undefined ? "ASC" : direction,
+      });
+    });
+
     return this;
   }
 
