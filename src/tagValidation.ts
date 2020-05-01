@@ -130,6 +130,9 @@ export default class TagValidation extends Resource {
       tag_definition: this.tagDefinition,
       query_validation: this.queryValidations,
       ...this.options,
+      interception: {
+        ...this.options.interception,
+      },
     };
 
     if (obj.do_validation !== undefined) {
