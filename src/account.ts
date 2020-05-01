@@ -83,33 +83,38 @@ export default class Account extends Resource {
       const self: Account = this as unknown as Account;
 
       if (self.suites === undefined) {
-        const uri = [
-          Resource.config.apiEndpoint,
-          "management_api/v1",
-          "accounts",
-          self.getResourceID(),
-          "suites",
-        ].join("/");
+        const resourceID = self.getResourceID();
+        if (resourceID !== undefined) {
+          const uri = [
+            Resource.config.apiEndpoint,
+            "management_api/v1",
+            "accounts",
+            resourceID,
+            "suites",
+          ].join("/");
 
-        const response = await Resource.client.makeRequest(uri, "get", {
-          "headers": {
-            "authorization": "Token " + Resource.config.userToken,
-          },
-        });
+          const response = await Resource.client.makeRequest(uri, "get", {
+            "headers": {
+              "authorization": "Token " + Resource.config.userToken,
+            },
+          });
 
-        if (response.status >= 400) {
-          throw new Error("Failed to retrieve suites");
+          if (response.status >= 400) {
+            throw new Error("Failed to retrieve suites");
+          }
+
+          const suiteDTOs: SuiteDTO[] = JSON.parse(response.body);
+
+          self.suites = suiteDTOs.map((suiteObj: SuiteDTO) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
+            return Suite.fromDTO(suiteObj);
+          });
+
+          self.suites.forEach(suite => suite.setContextID(resourceID));
+        } else {
+          self.suites = [];
         }
-
-        const suiteDTOs: SuiteDTO[] = JSON.parse(response.body);
-
-        self.suites = suiteDTOs.map((suiteObj: SuiteDTO) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-          // @ts-ignore
-          return Suite.fromDTO(suiteObj);
-        });
-
-        self.suites.forEach(suite => suite.setContextID(self.getResourceID()));
       }
 
       if (method !== undefined) {
