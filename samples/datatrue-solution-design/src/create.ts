@@ -18,7 +18,7 @@ export async function create(): Promise<void> {
   const useMockPage: boolean = sheet.getRange("B11").getValue();
   const tagManagerUrl: string = sheet.getRange("B12").getDisplayValue();
 
-  const urlRegex = RegExp(/^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/);
+  const urlRegex = /^(?:https?:\/\/)?(?:[-a-zA-Z0-9]+:[-a-zA-Z0-9]+@)?((?:[-a-zA-Z0-9]{1,63}\.)+(?:[a-z]{1,63}))(?::\d{1,5})?((?:(?:\/|#)+[-a-zA-Z0-9:@%\-._~!$&'()*+,;=]*)*)(?:\?[-a-zA-Z0-9@:%_+.,~#?&/=]*)?$/;
 
   const hostname = urlRegex.exec(url)[1];
   let path = urlRegex.exec(url)[2];
