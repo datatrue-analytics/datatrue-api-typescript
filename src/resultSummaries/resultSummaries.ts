@@ -153,7 +153,7 @@ export abstract class ResultSummaries<
   ): ResultSummaries<Dimension, Metric>;
 
   public order(
-    ...args: [string, Direction?][]
+    ...args: ArrayOneOrMore<[string, Direction?]>
   ): ResultSummaries<Dimension, Metric>;
 
   public order(...args: any): ResultSummaries<Dimension, Metric> {
