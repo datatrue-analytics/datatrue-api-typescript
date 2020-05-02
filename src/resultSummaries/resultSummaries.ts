@@ -182,6 +182,10 @@ export abstract class ResultSummaries<
     page: number = 0,
     pageLength: number = 1000
   ): Record<Dimension | Metric, string | number | null>[] {
+    if (!this.dimensions.length) {
+      throw new Error("At least one dimension must be specified");
+    }
+
     const request: Request<Dimension, Metric> = {
       account_id: this.accountId,
       dimensions: this.dimensions,
