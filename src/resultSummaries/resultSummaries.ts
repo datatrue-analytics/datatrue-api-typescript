@@ -1,11 +1,11 @@
-interface Filter<T> {
+interface Filter<T extends string> {
   field: T,
   operator: string,
   exclude?: boolean,
   value: Value,
 }
 
-interface FilterClause<T> {
+interface FilterClause<T extends string> {
   operator?: "AND" | "OR",
   filters: Filter<T>[],
 }
@@ -21,9 +21,13 @@ interface Field<T> {
   name: T,
 }
 
+type ArrayOneOrMore<T> = {
+  0: T,
+} & T[];
+
 export type Value = string | number | string[] | number[] | null;
 
-interface Request<Dimension, Metric> {
+interface Request<Dimension extends string, Metric extends string> {
   account_id: number,
   dimensions: Field<Dimension>[],
   metrics: Field<Metric>[],
@@ -101,15 +105,21 @@ export abstract class ResultSummaries<
     exclude?: boolean
   ): ResultSummaries<Dimension, Metric>;
 
-  public where(
-    ...args: [Dimension | Metric, Op, Value, boolean?][]
+  public where<T extends Dimension>(
+    ...args: ArrayOneOrMore<[T, Op, Value, boolean?]>
   ): ResultSummaries<Dimension, Metric>;
 
-  public where(...args: any): ResultSummaries<Dimension, Metric> {
+  public where<T extends Metric>(
+    ...args: ArrayOneOrMore<[T, Op, Value, boolean?]>
+  ): ResultSummaries<Dimension, Metric>
+
+  public where<T extends Dimension | Metric>(...args: any): ResultSummaries<Dimension, Metric> {
     const dimensions = (this.constructor as typeof ResultSummaries).dimensions;
     const metrics = (this.constructor as typeof ResultSummaries).metrics;
 
-    let filters: [Dimension | Metric, Op, Value, boolean?][];
+    const filterClause: FilterClause<T> = { filters: [] };
+
+    let filters: [T, Op, Value, boolean?][];
 
     if (Array.isArray(args[0])) {
       filters = args;
@@ -118,30 +128,21 @@ export abstract class ResultSummaries<
     }
 
     filters.forEach(([field, operator, value, exclude]) => {
-      if (dimensions.includes(field)) {
-        this.dimensionFilterClauses.push({
-          filters: [
-            {
-              field: field as Dimension,
-              exclude: exclude === undefined ? false : exclude,
-              operator: OpToOperator[operator],
-              value: value,
-            },
-          ],
-        });
-      } else if (metrics.includes(field)) {
-        this.metricFilterClauses.push({
-          filters: [
-            {
-              field: field as Metric,
-              exclude: exclude === undefined ? false : exclude,
-              operator: OpToOperator[operator],
-              value: value,
-            },
-          ],
-        });
-      }
+      filterClause.filters.push({
+        field: field,
+        exclude: exclude === undefined ? false : exclude,
+        operator: OpToOperator[operator],
+        value: value,
+      });
     });
+
+    if (filterClause.filters.length) {
+      if (dimensions.includes(filterClause.filters[0].field)) {
+        this.dimensionFilterClauses.push(filterClause as FilterClause<Dimension>);
+      } else if (metrics.includes(filterClause.filters[0].field)) {
+        this.metricFilterClauses.push(filterClause as FilterClause<Metric>);
+      }
+    }
 
     return this;
   }
