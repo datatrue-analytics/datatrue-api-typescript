@@ -40,15 +40,16 @@ interface Request<Dimension extends string, Metric extends string> {
   },
 }
 
-export type Op = "==" | ">" | ">=" | "<" | "<=" | "=~" | "in";
-export type Operator = (
+export type Op = "==" | ">" | ">=" | "<" | "<=" | "=~" | "*=";
+type Operator = (
   "EQUALS" |
   "GREATER_THAN" |
   "GREATER_THAN_OR_EQUALS" |
   "LESS_THAN" |
   "LESS_THAN_OR_EQUALS" |
   "REGEX_MATCH" |
-  "INCLUDES"
+  "CONTAINS" |
+  "BETWEEN"
 );
 
 const OpToOperator: Record<Op, Operator> = {
@@ -58,7 +59,7 @@ const OpToOperator: Record<Op, Operator> = {
   "<": "LESS_THAN",
   "<=": "LESS_THAN_OR_EQUALS",
   "=~": "REGEX_MATCH",
-  "in": "INCLUDES",
+  "*=": "CONTAINS",
 };
 
 export abstract class ResultSummaries<
@@ -113,7 +114,9 @@ export abstract class ResultSummaries<
     ...args: ArrayOneOrMore<[T, Op, Value, boolean?]>
   ): ResultSummaries<Dimension, Metric>
 
-  public where<T extends Dimension | Metric>(...args: any): ResultSummaries<Dimension, Metric> {
+  public where<T extends Dimension | Metric>(
+    ...args: any
+  ): ResultSummaries<Dimension, Metric> {
     const dimensions = (this.constructor as typeof ResultSummaries).dimensions;
     const metrics = (this.constructor as typeof ResultSummaries).metrics;
 
@@ -178,7 +181,7 @@ export abstract class ResultSummaries<
   public rows(
     page: number = 0,
     pageLength: number = 1000
-  ): Record<Dimension | Metric, string | number>[] {
+  ): Record<Dimension | Metric, string | number | null>[] {
     const request: Request<Dimension, Metric> = {
       account_id: this.accountId,
       dimensions: this.dimensions,
