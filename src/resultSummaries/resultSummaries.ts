@@ -1,3 +1,8 @@
+import config from "../config";
+
+/**
+ * @hidden
+ */
 interface Filter<T extends string> {
   field: T,
   operator: string,
@@ -5,18 +10,27 @@ interface Filter<T extends string> {
   value: Value,
 }
 
+/**
+ * @hidden
+ */
 interface FilterClause<T extends string> {
   operator?: "AND" | "OR",
   filters: Filter<T>[],
 }
 
-type Direction = "ASC" | "DESC";
+export type Direction = "ASC" | "DESC";
 
+/**
+ * @hidden
+ */
 interface Order {
   field: string,
   direction?: Direction,
 }
 
+/**
+ * @hidden
+ */
 interface Field<T> {
   name: T,
 }
@@ -27,6 +41,9 @@ type ArrayOneOrMore<T> = {
 
 export type Value = string | number | string[] | number[] | null;
 
+/**
+ * @hidden
+ */
 interface Request<Dimension extends string, Metric extends string> {
   account_id: number,
   dimensions: Field<Dimension>[],
@@ -41,6 +58,10 @@ interface Request<Dimension extends string, Metric extends string> {
 }
 
 export type Op = "==" | ">" | ">=" | "<" | "<=" | "=~" | "*=";
+
+/**
+ * @hidden
+ */
 type Operator = (
   "EQUALS" |
   "GREATER_THAN" |
@@ -52,6 +73,9 @@ type Operator = (
   "BETWEEN"
 );
 
+/**
+ * @hidden
+ */
 const OpToOperator: Record<Op, Operator> = {
   "==": "EQUALS",
   ">": "GREATER_THAN",
@@ -68,6 +92,7 @@ export abstract class ResultSummaries<
 > {
   protected static dimensions: readonly string[];
   protected static metrics: readonly string[];
+  protected static endpoint: string;
 
   private dimensions: Field<Dimension>[] = [];
   private metrics: Field<Metric>[] = [];
@@ -178,10 +203,10 @@ export abstract class ResultSummaries<
     return this;
   }
 
-  public rows(
+  public async rows(
     page: number = 0,
     pageLength: number = 1000
-  ): Record<Dimension | Metric, string | number | null>[] {
+  ): Promise<Record<Dimension | Metric, string | number | null>[]> {
     if (!this.dimensions.length) {
       throw new Error("At least one dimension must be specified");
     }
@@ -201,6 +226,31 @@ export abstract class ResultSummaries<
 
     const body = JSON.stringify(request);
 
-    return [];
+    const response = await config.httpClient.makeRequest(
+      `${config.apiEndpoint}/reporting_api/v1/${(this.constructor as typeof ResultSummaries).endpoint}`,
+      "post",
+      {
+        body: body,
+        headers: {
+          "authorization": `Token ${config.userToken}`,
+        },
+      },
+    );
+
+    let responseBody: any;
+
+    try {
+      responseBody = JSON.parse(response.body);
+    } catch {
+      throw new Error("Unable to parse response");
+    }
+
+    if (response.status === 401) {
+      throw new Error(responseBody.message);
+    } else if (response.status >= 400) {
+      throw new Error("Unable to fetch rows");
+    }
+
+    return responseBody.rows;
   }
 }
