@@ -11,5 +11,9 @@ export interface Response {
 export type Method = "get" | "delete" | "patch" | "post" | "put";
 
 export default interface HTTPClient {
-  makeRequest: (url: string, method: Method, options: HTTPOptions) => Promise<Response>,
+  makeRequest: (
+    url: string,
+    method: Method,
+    options: HTTPOptions
+  ) => Promise<Response>,
 }

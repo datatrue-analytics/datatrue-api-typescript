@@ -17,7 +17,9 @@ export async function run(): Promise<void> {
   var base = SpreadsheetApp.getActive().getActiveRange().getRow();
 
   // Get table dimensions
-  for (var width = 0; SpreadsheetApp.getActive().getRange("R" + base + "C" + (width + 1)).getBackground() !== "#ffffff" && width < 20; width++);
+  for (var width = 0; SpreadsheetApp.getActive().getRange("R" + base + "C" + (width + 1)).getBackground() !== "#ffffff" && width < 20; width++) {
+    // do nothing
+  }
 
   var suiteIds: string[] = SpreadsheetApp.getActive().getRange("R" + (base + 2) + "C3:R" + (base + 2) + "C" + width).getValues().pop();
   var runStatus = SpreadsheetApp.getActive().getRange("R" + (base + 4) + "C3:R" + (base + 4) + "C" + width);

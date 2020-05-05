@@ -1,12 +1,11 @@
 import Resource from "./resource";
-import Suite from "./suite";
-import Test from "./test";
+import Suite, { SuiteDTO } from "./suite";
 
 export default class Account extends Resource {
   public static readonly resourceType: string = "account";
   public static readonly childTypes: readonly string[] = ["suites"];
 
-  private suites: Suite[] = [];
+  private suites?: Suite[];
 
   public readonly contextType: string = "";
   public stepsTotal?: number;
@@ -16,40 +15,9 @@ export default class Account extends Resource {
     super(name);
   }
 
-  public static fromID(id: number): Promise<Account> {
-    return super.getResource(id, Account.resourceType).then(resource => {
-      const uri = [
-        Resource.config.apiEndpoint,
-        "management_api/v1",
-        "accounts",
-        id,
-        "suites",
-      ].join("/");
-
-      return Resource.client.makeRequest(uri, "get", {
-        "headers": {
-          "authorization": "Token " + Resource.config.userToken,
-        },
-      }).then(response => {
-        if (response.status >= 400) {
-          throw new Error("Failed to retrieve suites");
-        }
-
-        const suitePromises: Promise<Suite>[] = JSON.parse(response.body).map((suiteObj: Record<string, any>) => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-          // @ts-ignore
-          return Suite.fromDTJSON(suiteObj);
-        });
-
-        return Promise.all(suitePromises).then(suites => {
-          const account = Account.fromJSON(JSON.parse(resource));
-          suites.forEach(suite => {
-            account.insertSuite(suite);
-          });
-          return account;
-        });
-      });
-    });
+  public static async fromID(id: number): Promise<Account> {
+    const resource = await super.getResource(id, Account.resourceType);
+    return Account.fromJSON(JSON.parse(resource));
   }
 
   public static fromJSON(
@@ -66,69 +34,138 @@ export default class Account extends Resource {
     account.stepsUsed = steps_used;
 
     if (suites !== undefined) {
-      suites.forEach((suiteObj: Record<string, any>) => {
+      account.suites = [];
+      suites.forEach((suiteObj: Record<string, any>, index: number) => {
         const suite = Suite.fromJSON(suiteObj);
         suite.setContextID(id);
         if (copy) {
           suite.setResourceID(undefined);
         }
-        account.insertSuite(suite);
+        suite.setOptions({ position: index + 1 });
+        account.suites?.push(suite);
       });
     }
 
     return account;
   }
 
-  public static getAccounts(): Promise<Account[]> {
+  public static async getAccounts(): Promise<Account[]> {
     const uri = [
       Resource.config.apiEndpoint,
       "management_api/v1",
       "accounts",
     ].join("/");
 
-    return Resource.client.makeRequest(uri, "get", {
+    const response = await Resource.client.makeRequest(uri, "get", {
       "headers": {
         "authorization": "Token " + Resource.config.userToken,
       },
-    }).then(response => {
-      if (response.status >= 400) {
-        throw new Error("Failed to retrieve accounts");
-      }
-      return JSON.parse(response.body).map((accountObj: Record<string, any>) => {
-        return Account.fromJSON(accountObj);
-      });
+    });
+
+    if (response.status >= 400) {
+      throw new Error("Failed to retrieve accounts");
+    }
+
+    return JSON.parse(response.body).map((accountObj: Record<string, any>) => {
+      return Account.fromJSON(accountObj);
     });
   }
 
-  public save(): Promise<void> {
-    return Promise.all(this.suites.map(suite => {
+  private static hydrateSuites<T extends TypedPropertyDescriptor<(...args: any[]) => Promise<any>>>(
+    _target: Account,
+    _propertyKey: string | symbol,
+    descriptor: T
+  ): T {
+    const method = descriptor.value;
+
+    descriptor.value = async function (...args: any[]) {
+      const self: Account = this as unknown as Account;
+
+      if (self.suites === undefined) {
+        const resourceID = self.getResourceID();
+        if (resourceID !== undefined) {
+          const uri = [
+            Resource.config.apiEndpoint,
+            "management_api/v1",
+            "accounts",
+            resourceID,
+            "suites",
+          ].join("/");
+
+          const response = await Resource.client.makeRequest(uri, "get", {
+            "headers": {
+              "authorization": "Token " + Resource.config.userToken,
+            },
+          });
+
+          if (response.status >= 400) {
+            throw new Error("Failed to retrieve suites");
+          }
+
+          const suiteDTOs: SuiteDTO[] = JSON.parse(response.body);
+
+          self.suites = suiteDTOs.map((suiteObj: SuiteDTO) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
+            return Suite.fromDTO(suiteObj);
+          });
+
+          self.suites.forEach(suite => suite.setContextID(resourceID));
+        } else {
+          self.suites = [];
+        }
+      }
+
+      if (method !== undefined) {
+        return method.apply(self, args);
+      }
+    };
+
+    return descriptor;
+  }
+
+  @Account.hydrateSuites
+  public async save(): Promise<void> {
+    await Promise.all((this.suites as Suite[]).map(suite => {
       return suite.save();
-    })).then();
+    }));
   }
 
-  public delete(): Promise<void> {
-    return Promise.all(this.suites.map(suite => {
+  @Account.hydrateSuites
+  public async delete(): Promise<void> {
+    await Promise.all((this.suites as Suite[]).map(suite => {
       return suite.delete();
-    })).then();
+    }));
   }
 
-  public insertSuite(suite: Suite, index: number = this.suites.length): void {
+  @Account.hydrateSuites
+  public insertSuite(
+    suite: Suite,
+    index: number = (this.suites as Suite[]).length
+  ): Promise<void> {
     super.insertChild(suite, index, "suites");
+    return Promise.resolve();
   }
 
-  public getSuites(): readonly Suite[] {
-    return this.suites;
+  @Account.hydrateSuites
+  public getSuites(): Promise<readonly Suite[]> {
+    return Promise.resolve((this.suites as Suite[]).slice());
   }
 
-  public toJSON(): Record<string, any> {
+  public async toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
       name: this.name,
       steps_total: this.stepsTotal,
       steps_used: this.stepsUsed,
     };
 
-    if (this.suites.length) {
-      obj["suites"] = this.suites.map(suite => suite.toJSON());
+    const suites = await this.getSuites();
+
+    if (suites.length) {
+      obj.suites = [];
+      for (const suite of suites) {
+        obj.suites.push(await suite.toJSON());
+      }
     }
 
     return obj;
