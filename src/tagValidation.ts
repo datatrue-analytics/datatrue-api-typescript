@@ -62,10 +62,9 @@ export default class TagValidation extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number): Promise<TagValidation> {
-    return super.getResource(id, TagValidation.resourceType).then(resource => {
-      return TagValidation.fromJSON(JSON.parse(resource));
-    });
+  public static async fromID(id: number): Promise<TagValidation> {
+    const resource = await super.getResource(id, TagValidation.resourceType);
+    return TagValidation.fromJSON(JSON.parse(resource));
   }
 
   public static fromJSON(
@@ -83,7 +82,12 @@ export default class TagValidation extends Resource {
       options.interception.intercept = options.interception.intercept === "1" ? true : false;
     }
 
-    const tagValidation = new TagValidation(name, tag_definition.key, contextType);
+    const tagValidation = new TagValidation(
+      name,
+      tag_definition.key,
+      contextType
+    );
+
     if (!copy) {
       tagValidation.setResourceID(id);
     }
@@ -120,12 +124,15 @@ export default class TagValidation extends Resource {
     super.setOptions(options, override);
   }
 
-  public toJSON(): Record<string, any> {
+  public toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
       name: this.name,
       tag_definition: this.tagDefinition,
       query_validation: this.queryValidations,
       ...this.options,
+      interception: {
+        ...this.options.interception,
+      },
     };
 
     if (obj.do_validation !== undefined) {
@@ -136,6 +143,6 @@ export default class TagValidation extends Resource {
       obj.interception.intercept = obj.interception.intercept ? "1" : "0";
     }
 
-    return obj;
+    return Promise.resolve(obj);
   }
 }

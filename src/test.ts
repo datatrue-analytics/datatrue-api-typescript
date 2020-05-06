@@ -27,10 +27,22 @@ export interface Variables {
   },
 }
 
+export interface TestDTO {
+  id: number,
+  name: string,
+  description: string,
+  created_at: number,
+  updated_at: number,
+  test_type: number,
+}
+
 export default class Test extends Resource implements Runnable {
   public static readonly resourceType: string = "test";
   public static readonly resourceTypeRun: string = "TestScenario";
-  public static readonly childTypes: readonly string[] = ["steps", "tagValidations"];
+  public static readonly childTypes: readonly string[] = [
+    "steps",
+    "tagValidations",
+  ];
 
   private steps: Step[] = [];
   private tagValidations: TagValidation[] = [];
@@ -49,10 +61,9 @@ export default class Test extends Resource implements Runnable {
     this.setOptions(options);
   }
 
-  public static fromID(id: number): Promise<Test> {
-    return super.getResource(id, Test.resourceType).then(resource => {
-      return Test.fromJSON(JSON.parse(resource));
-    });
+  public static async fromID(id: number): Promise<Test> {
+    const resource = await super.getResource(id, Test.resourceType);
+    return Test.fromJSON(JSON.parse(resource));
   }
 
   public static fromJSON(
@@ -133,7 +144,7 @@ export default class Test extends Resource implements Runnable {
     super.setOptions(options, override);
   }
 
-  public toJSON(): Record<string, any> {
+  public async toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
       name: this.name,
       test_type: this.testType,
@@ -141,33 +152,53 @@ export default class Test extends Resource implements Runnable {
     };
 
     if (this.steps.length) {
-      obj["steps"] = this.steps.map(step => JSON.parse(step.toString()));
+      obj.steps = [];
+
+      for (const step of this.steps) {
+        obj.steps.push(await step.toJSON());
+      }
     }
 
     if (this.tagValidations.length) {
-      obj["tag_validations"] = this.tagValidations.map(tagValidation => tagValidation.toJSON());
+      obj.tag_validations = [];
+
+      for (const tagValidation of this.tagValidations) {
+        obj.tag_validations.push(await tagValidation.toJSON());
+      }
     }
 
     return obj;
   }
 
-  public run(email_users: number[] = [], variables: Record<string, string> = {}): Promise<string> {
+  public async run(
+    email_users: number[] = [],
+    variables: Record<string, string> = {}
+  ): Promise<string> {
     const resourceID = this.getResourceID();
     if (resourceID === undefined) {
-      return Promise.reject(new Error("Tests can only be run once they have been saved."));
+      throw new Error("Tests can only be run once they have been saved.");
     } else {
-      return _run(email_users, variables, Test.resourceTypeRun, resourceID, Resource.client, Resource.config).then(jobID => {
+      try {
+        const jobID = await _run(
+          email_users,
+          variables,
+          Test.resourceTypeRun,
+          resourceID,
+          Resource.client,
+          Resource.config
+        );
+
         this.jobID = jobID;
         return jobID;
-      }).catch(() => {
+      } catch (e) {
         throw new Error(`Failed to run test ${this.getResourceID()}`);
-      });
+      }
     }
   }
 
-  public progress(): Promise<JobStatus> {
+  public async progress(): Promise<JobStatus> {
     if (this.jobID === undefined) {
-      return Promise.reject(new Error("You must run the test before fetching progress."));
+      throw new Error("You must run the test before fetching progress.");
     }
     return _progress(this.jobID, Resource.client, Resource.config);
   }

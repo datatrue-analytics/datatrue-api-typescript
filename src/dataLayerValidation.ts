@@ -41,10 +41,13 @@ export default class DataLayerValidation extends Resource {
     this.setOptions(options);
   }
 
-  public static fromID(id: number): Promise<DataLayerValidation> {
-    return super.getResource(id, DataLayerValidation.resourceType).then(resource => {
-      return DataLayerValidation.fromJSON(JSON.parse(resource));
-    });
+  public static async fromID(id: number): Promise<DataLayerValidation> {
+    const resource = await super.getResource(
+      id,
+      DataLayerValidation.resourceType
+    );
+
+    return DataLayerValidation.fromJSON(JSON.parse(resource));
   }
 
   public static fromJSON(
@@ -99,7 +102,7 @@ export default class DataLayerValidation extends Resource {
     super.setOptions(options, override);
   }
 
-  public toJSON(): Record<string, any> {
+  public toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
       name: this.name,
       property_validations: this.propertyValidations.map(propertyValidation => {
@@ -117,6 +120,6 @@ export default class DataLayerValidation extends Resource {
       ...this.options,
     };
 
-    return obj;
+    return Promise.resolve(obj);
   }
 }
