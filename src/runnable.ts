@@ -1,5 +1,4 @@
-import HTTPClient from "./httpClient/httpClient";
-import { Config } from "./resource";
+import config from "./config";
 
 export interface JobStatus {
   status: string,
@@ -55,8 +54,6 @@ export default interface Runnable {
  * @param variables variables to set for the test run
  * @param resourceTypeRun the type of the resource being run
  * @param resourceID the ID of the resource to run
- * @param client client to make the HTTP request
- * @param config config
  * @returns Promise of the job_id
  */
 export async function _run(
@@ -64,16 +61,14 @@ export async function _run(
   variables: Record<string, string>,
   resourceTypeRun: string,
   resourceID: number,
-  client: HTTPClient,
-  config: Config
 ): Promise<string> {
   const uri = [
     config.apiEndpoint,
     "ci_api",
-    `test_runs?api_key=${config.accountToken}`,
+    `test_runs?api_key=${config.userToken}`,
   ].join("/");
 
-  const response = await client.makeRequest(uri, "post", {
+  const response = await config.httpClient.makeRequest(uri, "post", {
     body: JSON.stringify({
       "test_run": {
         "test_class": resourceTypeRun,
@@ -96,24 +91,20 @@ export async function _run(
  *
  * @hidden
  * @param jobID ID of the job to fetch progress for
- * @param client client to make the HTTP request
- * @param config config
  * @returns Promise of the job status
  */
 export async function _progress(
   jobID: string,
-  client: HTTPClient,
-  config: Config
 ): Promise<JobStatus> {
   const uri = [
     config.apiEndpoint,
     "ci_api",
     "test_runs",
     "progress",
-    `${jobID}?api_key=${config.accountToken}`,
+    `${jobID}?api_key=${config.userToken}`,
   ].join("/");
 
-  const response = await client.makeRequest(uri, "get", {});
+  const response = await config.httpClient.makeRequest(uri, "get", {});
   if (response.status >= 400) {
     throw new Error(response.body);
   }

@@ -183,9 +183,7 @@ export default class Test extends Resource implements Runnable {
           email_users,
           variables,
           Test.resourceTypeRun,
-          resourceID,
-          Resource.client,
-          Resource.config
+          resourceID
         );
 
         this.jobID = jobID;
@@ -200,6 +198,6 @@ export default class Test extends Resource implements Runnable {
     if (this.jobID === undefined) {
       throw new Error("You must run the test before fetching progress.");
     }
-    return _progress(this.jobID, Resource.client, Resource.config);
+    return _progress(this.jobID);
   }
 }

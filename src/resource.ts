@@ -1,4 +1,4 @@
-import HTTPClient from "./httpClient/httpClient";
+import config from "./config";
 
 /**
  * @hidden
@@ -20,15 +20,6 @@ export interface ResourceOptions {
 }
 
 /**
- * @hidden
- */
-export interface Config {
-  apiEndpoint: string,
-  userToken: string,
-  accountToken: string,
-}
-
-/**
  * Base class for all DataTrue resource types
  */
 export default abstract class Resource {
@@ -39,9 +30,6 @@ export default abstract class Resource {
   protected toDelete: Resource[] = [];
   protected resourceID?: number;
   protected contextID?: number;
-
-  protected static client: HTTPClient;
-  protected static config: Config;
 
   public abstract readonly contextType: string;
   public options: ResourceOptions = {};
@@ -157,14 +145,14 @@ export default abstract class Resource {
     resourceType: string
   ): Promise<string> {
     const uri = [
-      Resource.config.apiEndpoint,
+      config.apiEndpoint,
       "management_api/v1",
       resourceType + "s",
       id].join("/");
 
-    const response = await Resource.client.makeRequest(uri, "get", {
+    const response = await config.httpClient.makeRequest(uri, "get", {
       "headers": {
-        "authorization": "Token " + Resource.config.userToken,
+        "authorization": "Token " + config.userToken,
       },
     });
 
@@ -216,7 +204,7 @@ export default abstract class Resource {
     const resourceType: string = (this.constructor as typeof Resource).resourceType;
 
     const uri = [
-      Resource.config.apiEndpoint,
+      config.apiEndpoint,
       "management_api/v1",
       this.contextType + "s",
       this.contextID,
@@ -224,10 +212,10 @@ export default abstract class Resource {
 
     const payload = await this.toJSON();
 
-    const response = await Resource.client.makeRequest(uri, "post", {
+    const response = await config.httpClient.makeRequest(uri, "post", {
       body: JSON.stringify(this.beforeSave(payload)),
       headers: {
-        "authorization": "Token " + Resource.config.userToken,
+        "authorization": "Token " + config.userToken,
       },
     });
 
@@ -255,17 +243,17 @@ export default abstract class Resource {
    */
   protected async update(): Promise<void> {
     const uri = [
-      Resource.config.apiEndpoint,
+      config.apiEndpoint,
       "management_api/v1",
       (this.constructor as typeof Resource).resourceType + "s",
       this.resourceID].join("/");
 
     const payload = await this.toJSON();
 
-    const response = await Resource.client.makeRequest(uri, "put", {
+    const response = await config.httpClient.makeRequest(uri, "put", {
       body: JSON.stringify(this.beforeUpdate(payload)),
       headers: {
-        "authorization": "Token " + Resource.config.userToken,
+        "authorization": "Token " + config.userToken,
       },
     });
 
@@ -359,14 +347,14 @@ export default abstract class Resource {
    */
   public async delete(): Promise<void> {
     const uri = [
-      Resource.config.apiEndpoint,
+      config.apiEndpoint,
       "management_api/v1",
       (this.constructor as typeof Resource).resourceType + "s",
       this.resourceID].join("/");
 
-    const response = await Resource.client.makeRequest(uri, "delete", {
+    const response = await config.httpClient.makeRequest(uri, "delete", {
       headers: {
-        "authorization": "Token " + Resource.config.userToken,
+        "authorization": "Token " + config.userToken,
       },
     });
 

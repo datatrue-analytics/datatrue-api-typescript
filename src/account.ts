@@ -1,3 +1,4 @@
+import config from "./config";
 import Resource from "./resource";
 import Suite, { SuiteDTO } from "./suite";
 
@@ -51,14 +52,14 @@ export default class Account extends Resource {
 
   public static async getAccounts(): Promise<Account[]> {
     const uri = [
-      Resource.config.apiEndpoint,
+      config.apiEndpoint,
       "management_api/v1",
       "accounts",
     ].join("/");
 
-    const response = await Resource.client.makeRequest(uri, "get", {
+    const response = await config.httpClient.makeRequest(uri, "get", {
       "headers": {
-        "authorization": "Token " + Resource.config.userToken,
+        "authorization": "Token " + config.userToken,
       },
     });
 
@@ -85,16 +86,16 @@ export default class Account extends Resource {
         const resourceID = self.getResourceID();
         if (resourceID !== undefined) {
           const uri = [
-            Resource.config.apiEndpoint,
+            config.apiEndpoint,
             "management_api/v1",
             "accounts",
             resourceID,
             "suites",
           ].join("/");
 
-          const response = await Resource.client.makeRequest(uri, "get", {
+          const response = await config.httpClient.makeRequest(uri, "get", {
             "headers": {
-              "authorization": "Token " + Resource.config.userToken,
+              "authorization": "Token " + config.userToken,
             },
           });
 
