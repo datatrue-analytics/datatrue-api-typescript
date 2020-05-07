@@ -1,5 +1,5 @@
 import Resource, { ResourceOptions } from "./resource";
-import Runnable, { JobStatus, _progress, _run } from "./runnable";
+import Runnable, { JobStatus, _progress, _run } from "../runnable";
 import Test, { TestDTO, Variables, VariableTypes } from "./test";
 
 export interface SuiteOptions extends ResourceOptions {
@@ -118,7 +118,9 @@ export default class Suite extends Resource implements Runnable {
     super.setOptions(options, override);
   }
 
-  private static hydrateTests<T extends TypedPropertyDescriptor<(...args: any[]) => Promise<any>>>(
+  private static hydrateTests<
+    T extends TypedPropertyDescriptor<(...args: any[]) => Promise<any>>
+  >(
     _target: Suite,
     _propertyKey: string | symbol,
     descriptor: T

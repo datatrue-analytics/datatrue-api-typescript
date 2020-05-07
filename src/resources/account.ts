@@ -1,4 +1,4 @@
-import config from "./config";
+import config from "../config";
 import Resource from "./resource";
 import Suite, { SuiteDTO } from "./suite";
 
@@ -72,7 +72,9 @@ export default class Account extends Resource {
     });
   }
 
-  private static hydrateSuites<T extends TypedPropertyDescriptor<(...args: any[]) => Promise<any>>>(
+  private static hydrateSuites<
+    T extends TypedPropertyDescriptor<(...args: any[]) => Promise<any>>
+  >(
     _target: Account,
     _propertyKey: string | symbol,
     descriptor: T
