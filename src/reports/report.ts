@@ -57,7 +57,7 @@ interface Request<Dimension extends string, Metric extends string> {
   },
 }
 
-export type Op = "==" | ">" | ">=" | "<" | "<=" | "=~" | "*=";
+export type Op = "==" | ">" | ">=" | "<" | "<=" | "=~" | "*=" | "BETWEEN";
 
 /**
  * @hidden
@@ -84,9 +84,10 @@ const OpToOperator: Record<Op, Operator> = {
   "<=": "LESS_THAN_OR_EQUALS",
   "=~": "REGEX_MATCH",
   "*=": "CONTAINS",
+  "BETWEEN": "BETWEEN",
 };
 
-export abstract class ResultSummaries<
+export abstract class Report<
   Dimension extends string,
   Metric extends string
 > {
@@ -106,9 +107,9 @@ export abstract class ResultSummaries<
 
   public select(
     ...fields: (Dimension | Metric)[]
-  ): ResultSummaries<Dimension, Metric> {
-    const dimensions = (this.constructor as typeof ResultSummaries).dimensions;
-    const metrics = (this.constructor as typeof ResultSummaries).metrics;
+  ): Report<Dimension, Metric> {
+    const dimensions = (this.constructor as typeof Report).dimensions;
+    const metrics = (this.constructor as typeof Report).metrics;
     fields.forEach(field => {
       if (dimensions.includes(field)) {
         this.dimensions.push({
@@ -129,21 +130,21 @@ export abstract class ResultSummaries<
     operator: Op,
     value: Value,
     exclude?: boolean
-  ): ResultSummaries<Dimension, Metric>;
+  ): Report<Dimension, Metric>;
 
   public where<T extends Dimension>(
     ...args: ArrayOneOrMore<[T, Op, Value, boolean?]>
-  ): ResultSummaries<Dimension, Metric>;
+  ): Report<Dimension, Metric>;
 
   public where<T extends Metric>(
     ...args: ArrayOneOrMore<[T, Op, Value, boolean?]>
-  ): ResultSummaries<Dimension, Metric>
+  ): Report<Dimension, Metric>
 
   public where<T extends Dimension | Metric>(
     ...args: any
-  ): ResultSummaries<Dimension, Metric> {
-    const dimensions = (this.constructor as typeof ResultSummaries).dimensions;
-    const metrics = (this.constructor as typeof ResultSummaries).metrics;
+  ): Report<Dimension, Metric> {
+    const dimensions = (this.constructor as typeof Report).dimensions;
+    const metrics = (this.constructor as typeof Report).metrics;
 
     const filterClause: FilterClause<T> = { filters: [] };
 
@@ -166,7 +167,9 @@ export abstract class ResultSummaries<
 
     if (filterClause.filters.length) {
       if (dimensions.includes(filterClause.filters[0].field)) {
-        this.dimensionFilterClauses.push(filterClause as FilterClause<Dimension>);
+        this.dimensionFilterClauses.push(
+          filterClause as FilterClause<Dimension>
+        );
       } else if (metrics.includes(filterClause.filters[0].field)) {
         this.metricFilterClauses.push(filterClause as FilterClause<Metric>);
       }
@@ -178,13 +181,13 @@ export abstract class ResultSummaries<
   public order(
     field: Dimension | Metric,
     direction?: Direction
-  ): ResultSummaries<Dimension, Metric>;
+  ): Report<Dimension, Metric>;
 
   public order(
     ...args: ArrayOneOrMore<[Dimension | Metric, Direction?]>
-  ): ResultSummaries<Dimension, Metric>;
+  ): Report<Dimension, Metric>;
 
-  public order(...args: any): ResultSummaries<Dimension, Metric> {
+  public order(...args: any): Report<Dimension, Metric> {
     let orders: [Dimension | Metric, Direction?][];
 
     if (Array.isArray(args[0])) {
@@ -223,7 +226,11 @@ export abstract class ResultSummaries<
     const body = JSON.stringify(request);
 
     const response = await config.httpClient.makeRequest(
-      `${config.apiEndpoint}/reporting_api/v1/${(this.constructor as typeof ResultSummaries).endpoint}`,
+      `${
+        config.apiEndpoint
+      }/reporting_api/v1/${
+        (this.constructor as typeof Report).endpoint
+      }`,
       "post",
       {
         body: body,

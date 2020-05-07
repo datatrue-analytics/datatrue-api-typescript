@@ -1,4 +1,4 @@
-import { TestResultSummaries } from "../resultSummaries/testResultSummaries";
+import { TestResultReport } from "../reports/testResultReport";
 import Runnable, { JobStatus, _progress, _run } from "../runnable";
 import Resource, { ResourceOptions } from "./resource";
 import Step from "./step";
@@ -202,12 +202,13 @@ export default class Test extends Resource implements Runnable {
     return _progress(this.jobID);
   }
 
-  public summaries(accountId: number): TestResultSummaries {
+  public resultReport(accountId: number): TestResultReport {
     const id = this.getResourceID();
     if (id === undefined) {
       throw new Error("Resource ID must be set");
     }
-    return new TestResultSummaries(accountId)
+    // TODO: get account ID from parent when parent IDs are being returned
+    return new TestResultReport(accountId)
       .where("test_scenario_id", "==", id);
   }
 }
