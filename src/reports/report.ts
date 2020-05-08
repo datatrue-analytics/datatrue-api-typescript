@@ -3,6 +3,11 @@ import config from "../config";
 /**
  * @hidden
  */
+export type ExtractSetGeneric<Type> = Type extends Set<infer X> ? X : never;
+
+/**
+ * @hidden
+ */
 interface Filter<T extends string> {
   field: T,
   operator: string,
@@ -91,8 +96,8 @@ export abstract class Report<
   Dimension extends string,
   Metric extends string
 > {
-  protected static dimensions: readonly string[];
-  protected static metrics: readonly string[];
+  protected static dimensions: Set<string>;
+  protected static metrics: Set<string>;
   protected static endpoint: string;
 
   private dimensions: Field<Dimension>[] = [];
@@ -111,11 +116,11 @@ export abstract class Report<
     const dimensions = (this.constructor as typeof Report).dimensions;
     const metrics = (this.constructor as typeof Report).metrics;
     fields.forEach(field => {
-      if (dimensions.includes(field)) {
+      if (dimensions.has(field)) {
         this.dimensions.push({
           name: field as Dimension,
         });
-      } else if (metrics.includes(field)) {
+      } else if (metrics.has(field)) {
         this.metrics.push({
           name: field as Metric,
         });
@@ -166,11 +171,11 @@ export abstract class Report<
     });
 
     if (filterClause.filters.length) {
-      if (dimensions.includes(filterClause.filters[0].field)) {
+      if (dimensions.has(filterClause.filters[0].field)) {
         this.dimensionFilterClauses.push(
           filterClause as FilterClause<Dimension>
         );
-      } else if (metrics.includes(filterClause.filters[0].field)) {
+      } else if (metrics.has(filterClause.filters[0].field)) {
         this.metricFilterClauses.push(filterClause as FilterClause<Metric>);
       }
     }

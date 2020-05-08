@@ -1,6 +1,6 @@
-import { Report } from "./report";
+import { ExtractSetGeneric, Report } from "./report";
 
-export const testResultDimensions = [
+export const testResultDimensions = new Set([
   "test_result_id",
   "test_run_id",
   "user_id",
@@ -30,10 +30,12 @@ export const testResultDimensions = [
   "test_run_type",
   "test_scenario_name",
   "test_type",
-] as const;
-export type TestResultDimension = typeof testResultDimensions[number];
+] as const);
+export type TestResultDimension = ExtractSetGeneric<
+  typeof testResultDimensions
+>;
 
-export const testResultMetrics = [
+export const testResultMetrics = new Set([
   "run_duration",
   "avg_run_duration",
   "steps_used",
@@ -91,11 +93,11 @@ export const testResultMetrics = [
   "sensitive_data_exposures",
   "avg_sensitive_data_exposures",
   "tests_executed",
-] as const;
-export type TestResultMetric = typeof testResultMetrics[number];
+] as const);
+export type TestResultMetric = ExtractSetGeneric<typeof testResultMetrics>;
 
 export class TestResultReport extends Report<TestResultDimension, TestResultMetric> {
-  protected static dimensions: readonly string[] = testResultDimensions;
-  protected static metrics: readonly string[] = testResultMetrics;
+  protected static dimensions: Set<string> = testResultDimensions;
+  protected static metrics: Set<string> = testResultMetrics;
   protected static endpoint: string = "test_results";
 }
