@@ -149,7 +149,6 @@ export abstract class Report<
     ...args: any
   ): Report<Dimension, Metric> {
     const dimensions = (this.constructor as typeof Report).dimensions;
-    const metrics = (this.constructor as typeof Report).metrics;
 
     const filterClause: FilterClause<T> = { filters: [] };
 
@@ -161,7 +160,18 @@ export abstract class Report<
       filters = [args];
     }
 
+    let dimension: boolean | null = null;
+
     filters.forEach(([field, operator, value, exclude]) => {
+      if (dimension === null) {
+        dimension = dimensions.has(field);
+      } else if (dimension !== dimensions.has(field)) {
+        throw new Error(
+          "Only Metrics or Dimensions can be specified in a single call to " +
+          "where"
+        );
+      }
+
       filterClause.filters.push({
         field: field,
         exclude: exclude === undefined ? false : exclude,
@@ -171,11 +181,11 @@ export abstract class Report<
     });
 
     if (filterClause.filters.length) {
-      if (dimensions.has(filterClause.filters[0].field)) {
+      if (dimension === true) {
         this.dimensionFilterClauses.push(
           filterClause as FilterClause<Dimension>
         );
-      } else if (metrics.has(filterClause.filters[0].field)) {
+      } else {
         this.metricFilterClauses.push(filterClause as FilterClause<Metric>);
       }
     }
