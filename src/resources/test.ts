@@ -1,5 +1,6 @@
+import { TestResultReport } from "../reports/testResultReport";
+import Runnable, { JobStatus, _progress, _run } from "../runnable";
 import Resource, { ResourceOptions } from "./resource";
-import Runnable, { JobStatus, _progress, _run } from "./runnable";
 import Step from "./step";
 import TagValidation from "./tagValidation";
 
@@ -183,9 +184,7 @@ export default class Test extends Resource implements Runnable {
           email_users,
           variables,
           Test.resourceTypeRun,
-          resourceID,
-          Resource.client,
-          Resource.config
+          resourceID
         );
 
         this.jobID = jobID;
@@ -200,6 +199,16 @@ export default class Test extends Resource implements Runnable {
     if (this.jobID === undefined) {
       throw new Error("You must run the test before fetching progress.");
     }
-    return _progress(this.jobID, Resource.client, Resource.config);
+    return _progress(this.jobID);
+  }
+
+  public resultReport(accountId: number): TestResultReport {
+    const id = this.getResourceID();
+    if (id === undefined) {
+      throw new Error("Resource ID must be set");
+    }
+    // TODO: get account ID from parent when parent IDs are being returned
+    return new TestResultReport(accountId)
+      .where("test_scenario_id", "==", id);
   }
 }

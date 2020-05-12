@@ -132,14 +132,18 @@ export default class Step extends Resource {
     }
 
     if (data_layer_validations !== undefined) {
-      data_layer_validations.forEach((dataLayerValidationObj: Record<string, any>) => {
-        const dataLayerValidation = DataLayerValidation.fromJSON(dataLayerValidationObj);
-        dataLayerValidation.setContextID(id);
-        if (copy) {
-          dataLayerValidation.setContextID(undefined);
+      data_layer_validations.forEach(
+        (dataLayerValidationObj: Record<string, any>) => {
+          const dataLayerValidation = DataLayerValidation.fromJSON(
+            dataLayerValidationObj
+          );
+          dataLayerValidation.setContextID(id);
+          if (copy) {
+            dataLayerValidation.setContextID(undefined);
+          }
+          step.insertDataLayerValidation(dataLayerValidation);
         }
-        step.insertDataLayerValidation(dataLayerValidation);
-      });
+      );
     }
 
     return step;

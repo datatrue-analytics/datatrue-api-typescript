@@ -1,22 +1,12 @@
-import Account from "./account";
-import DataLayerValidation, { DataLayerValidationOptions, PropertyValidation } from "./dataLayerValidation";
-import Resource from "./resource";
+import Account from "./resources/account";
+import config from "./config";
+import DataLayerValidation, { DataLayerValidationOptions, PropertyValidation } from "./resources/dataLayerValidation";
+import Resource from "./resources/resource";
 import Runnable, { JobStatus } from "./runnable";
-import Step, { IframeSelectorTypes, MobileSelectorTypes, SelectorTypes, StepActions, StepOptions, StepSettings, WebSelectorTypes } from "./step";
-import Suite, { SuiteOptions, SuiteTypes } from "./suite";
-import TagValidation, { QueryValidation, TagDefinition, TagValidationContexts, TagValidationOptions } from "./tagValidation";
-import Test, { TestOptions, TestTypes, Variables, VariableTypes } from "./test";
-
-/**
- * @hidden
- */
-const config = {
-  apiEndpoint: "https://datatrue.com",
-  userToken: "",
-  accountToken: "",
-};
-
-Resource["config"] = config;
+import Step, { IframeSelectorTypes, MobileSelectorTypes, SelectorTypes, StepActions, StepOptions, StepSettings, WebSelectorTypes } from "./resources/step";
+import Suite, { SuiteOptions, SuiteTypes } from "./resources/suite";
+import TagValidation, { QueryValidation, TagDefinition, TagValidationContexts, TagValidationOptions } from "./resources/tagValidation";
+import Test, { TestOptions, TestTypes, Variables, VariableTypes } from "./resources/test";
 
 export {
   Resource,

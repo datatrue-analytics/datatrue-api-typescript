@@ -63,18 +63,20 @@ export default class DataLayerValidation extends Resource {
     dataLayerValidation.setOptions(options, true);
 
     if (property_validations !== undefined) {
-      property_validations.forEach((propertyValidationObj: Record<string, any>) => {
-        const obj: PropertyValidation = {
-          name: propertyValidationObj.name,
-          value: propertyValidationObj.value,
-        };
+      property_validations.forEach(
+        (propertyValidationObj: Record<string, any>) => {
+          const obj: PropertyValidation = {
+            name: propertyValidationObj.name,
+            value: propertyValidationObj.value,
+          };
 
-        if (propertyValidationObj.regex !== undefined) {
-          obj.regex = propertyValidationObj.regex === "1" ? true : false;
+          if (propertyValidationObj.regex !== undefined) {
+            obj.regex = propertyValidationObj.regex === "1" ? true : false;
+          }
+
+          dataLayerValidation.insertPropertyValidation(obj);
         }
-
-        dataLayerValidation.insertPropertyValidation(obj);
-      });
+      );
     }
 
     return dataLayerValidation;
