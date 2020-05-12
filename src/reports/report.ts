@@ -3,11 +3,6 @@ import config from "../config";
 /**
  * @hidden
  */
-export type ExtractSetGeneric<Type> = Type extends Set<infer X> ? X : never;
-
-/**
- * @hidden
- */
 interface Filter<T extends string> {
   field: T,
   operator: string,
