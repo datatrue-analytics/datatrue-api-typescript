@@ -176,7 +176,7 @@ export abstract class Report<
     });
 
     if (filterClause.filters.length) {
-      if (dimension === true) {
+      if (dimension) {
         this.dimensionFilterClauses.push(
           filterClause as FilterClause<Dimension>
         );
