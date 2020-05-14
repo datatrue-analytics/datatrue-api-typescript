@@ -188,7 +188,9 @@ export default abstract class Resource {
         return after();
       } catch (e) {
         throw new Error(
-          `Failed to save ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID()}`
+          `Failed to save ${
+            (this.constructor as typeof Resource).resourceType
+          } ${this.getResourceID()}`
         );
       }
     } else {
@@ -209,7 +211,9 @@ export default abstract class Resource {
    * @returns Promise
    */
   protected async create(): Promise<void> {
-    const resourceType: string = (this.constructor as typeof Resource).resourceType;
+    const resourceType: string = (
+      this.constructor as typeof Resource
+    ).resourceType;
 
     const uri = [
       config.apiEndpoint,
@@ -235,17 +239,19 @@ export default abstract class Resource {
     this.setResourceID(responseObj[resourceType]["id"]);
 
     // Sets resource IDs for all children that were created
-    (this.constructor as typeof Resource).childTypes.forEach((childType: string) => {
-      if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
-        responseObj[resourceType][resourceTypes[childType]].forEach(
-          (childObj: Record<string, any>, index: number) => {
-            (this as Record<string, any>)[childType][index].setResourceID(
-              childObj["id"]
-            );
-          }
-        );
+    (this.constructor as typeof Resource).childTypes.forEach(
+      (childType: string) => {
+        if (responseObj[resourceType][resourceTypes[childType]] !== undefined) {
+          responseObj[resourceType][resourceTypes[childType]].forEach(
+            (childObj: Record<string, any>, index: number) => {
+              (this as Record<string, any>)[childType][index].setResourceID(
+                childObj["id"]
+              );
+            }
+          );
+        }
       }
-    });
+    );
   }
 
   /**
@@ -344,7 +350,9 @@ export default abstract class Resource {
    */
   private beforeUpdate(obj: Record<string, any>): Record<string, any> {
     for (const childType of (this.constructor as typeof Resource).childTypes) {
-      if (obj[(this.constructor as typeof Resource).resourceType] !== undefined) {
+      if (
+        obj[(this.constructor as typeof Resource).resourceType] !== undefined
+      ) {
         delete obj[(this.constructor as typeof Resource).resourceType][resourceTypes[childType]];
       } else {
         delete obj[resourceTypes[childType]];
@@ -380,7 +388,9 @@ export default abstract class Resource {
 
     if (response.status >= 400) {
       throw new Error(
-        `Failed to delete ${(this.constructor as typeof Resource).resourceType} ${this.getResourceID()}`
+        `Failed to delete ${
+          (this.constructor as typeof Resource).resourceType
+        } ${this.getResourceID()}`
       );
     }
   }
