@@ -71,9 +71,17 @@ export default class Test extends Resource implements Runnable {
     obj: Record<string, any>,
     copy: boolean = false
   ): Test {
-    const { name, id, test_type, steps, tag_validations, ...options } = obj;
+    const {
+      name,
+      id,
+      suite_id,
+      test_type,
+      steps,
+      tag_validations,
+      ...options
+    } = obj;
 
-    const test = new Test(name, test_type);
+    const test = new Test(name, test_type, suite_id);
     if (!copy) {
       test.setResourceID(id);
     }

@@ -80,9 +80,9 @@ export default class Suite extends Resource implements Runnable {
     obj: Record<string, any>,
     copy: boolean = false
   ): Suite {
-    const { name, id, tests, ...options } = obj;
+    const { name, id, account_id, tests, ...options } = obj;
 
-    const suite = new Suite(name);
+    const suite = new Suite(name, account_id);
     if (!copy) {
       suite.setResourceID(id);
     }

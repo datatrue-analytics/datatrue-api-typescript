@@ -69,10 +69,17 @@ export default class TagValidation extends Resource {
 
   public static fromJSON(
     obj: Record<string, any>,
-    copy: boolean = false,
-    contextType: TagValidationContexts = TagValidationContexts.STEP
+    copy: boolean = false
   ): TagValidation {
-    const { name, id, tag_definition, query_validation, ...options } = obj;
+    const {
+      name,
+      id,
+      test_id,
+      step_id,
+      tag_definition,
+      query_validation,
+      ...options
+    } = obj;
 
     if (options.do_validation !== undefined) {
       options.do_validation = options.do_validation === "1" ? true : false;
@@ -82,10 +89,22 @@ export default class TagValidation extends Resource {
       options.interception.intercept = options.interception.intercept === "1" ? true : false;
     }
 
+    let contextID: number | undefined = undefined;
+    let contextType: TagValidationContexts | undefined = undefined;
+
+    if (test_id !== undefined) {
+      contextID = test_id;
+      contextType = TagValidationContexts.TEST;
+    } else if (step_id !== undefined) {
+      contextID = step_id;
+      contextType = TagValidationContexts.STEP;
+    }
+
     const tagValidation = new TagValidation(
       name,
       tag_definition.key,
-      contextType
+      contextType,
+      contextID
     );
 
     if (!copy) {

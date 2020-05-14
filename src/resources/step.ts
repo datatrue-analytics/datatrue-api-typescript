@@ -108,13 +108,14 @@ export default class Step extends Resource {
     const {
       name,
       id,
+      test_id,
       action,
       tag_validations,
       data_layer_validations,
       ...options
     } = obj;
 
-    const step = new Step(name, action);
+    const step = new Step(name, action, test_id);
     if (!copy) {
       step.setResourceID(id);
     }

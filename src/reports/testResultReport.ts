@@ -1,6 +1,6 @@
 import { Report } from "./report";
 
-const dimensions = [
+export const dimensions = [
   "test_result_id",
   "test_run_id",
   "user_id",

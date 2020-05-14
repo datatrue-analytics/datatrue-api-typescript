@@ -54,9 +54,9 @@ export default class DataLayerValidation extends Resource {
     obj: Record<string, any>,
     copy: boolean = false
   ): DataLayerValidation {
-    const { name, id, property_validations, ...options } = obj;
+    const { name, id, step_id, property_validations, ...options } = obj;
 
-    const dataLayerValidation = new DataLayerValidation(name);
+    const dataLayerValidation = new DataLayerValidation(name, step_id);
     if (!copy) {
       dataLayerValidation.setResourceID(id);
     }
