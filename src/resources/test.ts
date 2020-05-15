@@ -3,6 +3,7 @@ import Runnable, { JobStatus, _progress, _run } from "../runnable";
 import Resource, { ResourceOptions } from "./resource";
 import Step from "./step";
 import TagValidation from "./tagValidation";
+import Suite from "./suite";
 
 export interface TestOptions extends ResourceOptions {
   variables?: Variables,
@@ -210,13 +211,25 @@ export default class Test extends Resource implements Runnable {
     return _progress(this.jobID);
   }
 
-  public resultReport(accountId: number): TestResultReport {
+  public async resultReport(): Promise<TestResultReport> {
     const id = this.getResourceID();
+    const contextID = this.getContextID();
     if (id === undefined) {
       throw new Error("Resource ID must be set");
     }
+
+    if (contextID === undefined) {
+      throw new Error("Context ID must be set");
+    }
+
+    const accountID = (await Suite.fromID(contextID)).getContextID();
+
+    if (accountID === undefined) {
+      throw new Error("Failed to retrieve account ID");
+    }
+
     // TODO: get account ID from parent when parent IDs are being returned
-    return new TestResultReport(accountId)
+    return new TestResultReport(accountID)
       .where("test_scenario_id", "==", id);
   }
 }
