@@ -228,7 +228,6 @@ export default class Test extends Resource implements Runnable {
       throw new Error("Failed to retrieve account ID");
     }
 
-    // TODO: get account ID from parent when parent IDs are being returned
     return new TestResultReport(accountID)
       .where("test_scenario_id", "==", id);
   }
