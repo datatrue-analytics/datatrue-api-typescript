@@ -6,7 +6,6 @@ export async function create(): Promise<void> {
 
   const userProperties = PropertiesService.getUserProperties();
   DataTrue.config.userToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
-  DataTrue.config.accountToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
 
   var base = SpreadsheetApp.getActive().getActiveRange().getRow();
   var column = SpreadsheetApp.getActive().getActiveRange().getColumn();

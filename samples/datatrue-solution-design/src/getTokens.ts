@@ -8,17 +8,13 @@ export function getTokens(): void {
   const userProperties = PropertiesService.getUserProperties();
 
   let userToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
-  let accountToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
 
-  if (userToken === null || accountToken === null) {
+  if (userToken === null) {
     setTokens();
-
     userToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
-    accountToken = userProperties.getProperty("DATATRUE_ACCOUNT_TOKEN");
   }
 
   DataTrue.config.userToken = userToken;
-  DataTrue.config.accountToken = accountToken;
 
   namedRanges.some(namedRange => {
     if (namedRange.getName() === "api_endpoint") {
