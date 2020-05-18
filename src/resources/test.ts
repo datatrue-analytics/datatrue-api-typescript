@@ -2,8 +2,8 @@ import { TestResultReport } from "../reports/testResultReport";
 import Runnable, { JobStatus, _progress, _run } from "../runnable";
 import Resource, { ResourceOptions } from "./resource";
 import Step from "./step";
-import TagValidation from "./tagValidation";
 import Suite from "./suite";
+import TagValidation from "./tagValidation";
 
 export interface TestOptions extends ResourceOptions {
   variables?: Variables,
@@ -222,10 +222,12 @@ export default class Test extends Resource implements Runnable {
       throw new Error("Context ID must be set");
     }
 
-    const accountID = (await Suite.fromID(contextID)).getContextID();
+    let accountID: number;
 
-    if (accountID === undefined) {
-      throw new Error("Failed to retrieve account ID");
+    try {
+      accountID = (await Suite.fromID(contextID)).getContextID() as number;
+    } catch {
+      throw new Error("Failed to determine account ID");
     }
 
     return new TestResultReport(accountID)
