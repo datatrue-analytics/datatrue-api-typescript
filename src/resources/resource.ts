@@ -31,7 +31,7 @@ export default abstract class Resource {
   protected resourceID?: number;
   protected contextID?: number;
 
-  public abstract readonly contextType: string;
+  protected abstract readonly contextType: string;
   public options: ResourceOptions = {};
 
   public constructor(public name: string) { }
@@ -89,6 +89,15 @@ export default abstract class Resource {
    */
   public getContextID(): number | undefined {
     return this.contextID;
+  }
+
+  /**
+   * Gets the contextType of a resource
+   *
+   * @returns contextType of the resource
+   */
+  public getContextType(): string {
+    return this.contextType;
   }
 
   /**

@@ -51,7 +51,7 @@ export default class TagValidation extends Resource {
   public constructor(
     name: string,
     key: string,
-    public readonly contextType: TagValidationContexts = TagValidationContexts.STEP,
+    protected contextType: TagValidationContexts = TagValidationContexts.STEP,
     public contextID?: number,
     options: TagValidationOptions = {}
   ) {
@@ -141,6 +141,10 @@ export default class TagValidation extends Resource {
     override: boolean = false
   ): void {
     super.setOptions(options, override);
+  }
+
+  public setContextType(contextType: TagValidationContexts): void {
+    this.contextType = contextType;
   }
 
   public toJSON(): Promise<Record<string, any>> {
