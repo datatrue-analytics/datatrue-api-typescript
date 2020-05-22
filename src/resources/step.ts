@@ -67,10 +67,15 @@ export enum StepStrategies {
 }
 
 export interface StepSettings {
-  strategy?: StepStrategies,
-  obey_robots?: boolean,
-  template_detection?: boolean,
   use_common_tag_validations?: boolean,
+  strategy?: StepStrategies,
+  page_depth?: number,
+  page_limit?: number,
+  obey_robots?: boolean,
+  include_filter?: string,
+  exclude_filter?: string,
+  template_detection?: boolean,
+  include_url_hash?: boolean,
 }
 
 export default class Step extends Resource {
