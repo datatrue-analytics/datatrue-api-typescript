@@ -15,6 +15,6 @@
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "datatrue-api": "github:Lens10/datatrue-api-typescript#master",
-    "eslint": "^7.0.0"
+    "eslint": "^7.1.0"
   }
 }
