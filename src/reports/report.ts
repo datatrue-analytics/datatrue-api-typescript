@@ -76,7 +76,7 @@ type Operator = (
 /**
  * @hidden
  */
-const OpToOperator: Record<Op, Operator> = {
+const opToOperator: Record<Op, Operator> = {
   "==": "EQUALS",
   ">": "GREATER_THAN",
   ">=": "GREATER_THAN_OR_EQUALS",
@@ -141,7 +141,7 @@ export abstract class Report<
   ): Report<Dimension, Metric>
 
   public where<T extends Dimension | Metric>(
-    ...args: any
+    ...args: [T, Op, Value, boolean?] | ArrayOneOrMore<[T, Op, Value, boolean?]>
   ): Report<Dimension, Metric> {
     const dimensions = (this.constructor as typeof Report).dimensions;
 
@@ -150,9 +150,9 @@ export abstract class Report<
     let filters: [T, Op, Value, boolean?][];
 
     if (Array.isArray(args[0])) {
-      filters = args;
+      filters = args as [T, Op, Value, boolean?][];
     } else {
-      filters = [args];
+      filters = [args as [T, Op, Value, boolean?]];
     }
 
     let dimension: boolean | null = null;
@@ -170,7 +170,7 @@ export abstract class Report<
       filterClause.filters.push({
         field: field,
         exclude: exclude === undefined ? false : exclude,
-        operator: OpToOperator[operator],
+        operator: opToOperator[operator],
         value: value,
       });
     });
@@ -197,13 +197,15 @@ export abstract class Report<
     ...args: ArrayOneOrMore<[Dimension | Metric, Direction?]>
   ): Report<Dimension, Metric>;
 
-  public order(...args: any): Report<Dimension, Metric> {
+  public order(
+    ...args: [Dimension | Metric, Direction?] | ArrayOneOrMore<[Dimension | Metric, Direction?]>
+  ): Report<Dimension, Metric> {
     let orders: [Dimension | Metric, Direction?][];
 
     if (Array.isArray(args[0])) {
-      orders = args;
+      orders = args as [Dimension | Metric, Direction?][];
     } else {
-      orders = [args];
+      orders = [args as [Dimension | Metric, Direction?]];
     }
 
     orders.forEach(([field, direction]) => {
