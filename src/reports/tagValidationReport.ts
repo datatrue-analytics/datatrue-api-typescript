@@ -19,7 +19,7 @@ const dimensions = [
 export type TagValidationDimension = typeof dimensions[number];
 export const tagValidationDimensions = new Set(dimensions);
 
-const metrics = ["count_tag_validations"] as const;
+const metrics = ["tag_validations_processed"] as const;
 export type TagValidationMetric = typeof metrics[number];
 export const tagValidationMetrics = new Set(metrics);
 
