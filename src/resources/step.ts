@@ -113,21 +113,21 @@ export default class Step extends Resource {
     const {
       name,
       id,
-      test_id,
+      test_id: testId,
       action,
-      tag_validations,
-      data_layer_validations,
+      tag_validations: tagValidations,
+      data_layer_validations: dataLayerValidations,
       ...options
     } = obj;
 
-    const step = new Step(name, action, test_id);
+    const step = new Step(name, action, testId);
     if (!copy) {
       step.setResourceID(id);
     }
     step.setOptions(options, true);
 
-    if (tag_validations !== undefined) {
-      tag_validations.forEach((tagValidationObj: Record<string, any>) => {
+    if (tagValidations !== undefined) {
+      tagValidations.forEach((tagValidationObj: Record<string, any>) => {
         const tagValidation = TagValidation.fromJSON(tagValidationObj);
         tagValidation.setContextID(id);
         if (copy) {
@@ -137,8 +137,8 @@ export default class Step extends Resource {
       });
     }
 
-    if (data_layer_validations !== undefined) {
-      data_layer_validations.forEach(
+    if (dataLayerValidations !== undefined) {
+      dataLayerValidations.forEach(
         (dataLayerValidationObj: Record<string, any>) => {
           const dataLayerValidation = DataLayerValidation.fromJSON(
             dataLayerValidationObj

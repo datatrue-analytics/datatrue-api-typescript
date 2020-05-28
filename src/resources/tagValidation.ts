@@ -74,10 +74,10 @@ export default class TagValidation extends Resource {
     const {
       name,
       id,
-      test_id,
-      step_id,
-      tag_definition,
-      query_validation,
+      test_id: testId,
+      step_id: stepId,
+      tag_definition: tagDefinition,
+      query_validation: queryValidation,
       ...options
     } = obj;
 
@@ -92,17 +92,17 @@ export default class TagValidation extends Resource {
     let contextID: number | undefined = undefined;
     let contextType: TagValidationContexts | undefined = undefined;
 
-    if (test_id !== undefined) {
-      contextID = test_id;
+    if (testId !== undefined) {
+      contextID = testId;
       contextType = TagValidationContexts.TEST;
-    } else if (step_id !== undefined) {
-      contextID = step_id;
+    } else if (stepId !== undefined) {
+      contextID = stepId;
       contextType = TagValidationContexts.STEP;
     }
 
     const tagValidation = new TagValidation(
       name,
-      tag_definition.key,
+      tagDefinition.key,
       contextType,
       contextID
     );
@@ -112,8 +112,8 @@ export default class TagValidation extends Resource {
     }
     tagValidation.setOptions(options, true);
 
-    if (query_validation !== undefined) {
-      query_validation.forEach((queryValidationObj: QueryValidation) => {
+    if (queryValidation !== undefined) {
+      queryValidation.forEach((queryValidationObj: QueryValidation) => {
         tagValidation.insertQueryValidation(queryValidationObj);
       });
     }

@@ -25,14 +25,20 @@ export default class Account extends Resource {
     obj: Record<string, any>,
     copy: boolean = false
   ): Account {
-    const { name, id, steps_total, steps_used, suites } = obj;
+    const {
+      name,
+      id,
+      steps_total: stepsTotal,
+      steps_used: stepsUsed,
+      suites,
+    } = obj;
 
     const account = new Account(name);
     if (!copy) {
       account.setResourceID(id);
     }
-    account.stepsTotal = steps_total;
-    account.stepsUsed = steps_used;
+    account.stepsTotal = stepsTotal;
+    account.stepsUsed = stepsUsed;
 
     if (suites !== undefined) {
       account.suites = [];
