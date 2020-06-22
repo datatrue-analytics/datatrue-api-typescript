@@ -30,22 +30,22 @@
   "devDependencies": {
     "@google/clasp": "^2.3.0",
     "@types/google-apps-script": "^1.0.14",
-    "@types/node": "^12.12.42",
-    "@types/webpack": "^4.41.13",
+    "@types/node": "^12.12.47",
+    "@types/webpack": "^4.41.17",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "clean-webpack-plugin": "^3.0.0",
     "create-file-webpack": "^1.0.2",
-    "eslint": "^7.1.0",
+    "eslint": "^7.3.0",
     "eslint-plugin-jsdoc": "^28.0.0",
     "ts-loader": "^7.0.5",
-    "ts-node": "^8.10.1",
+    "ts-node": "^8.10.2",
     "typedoc": "^0.17.7",
-    "typescript": "^3.9.3",
+    "typescript": "^3.9.5",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "cross-fetch": "^3.0.4"
+    "cross-fetch": "^3.0.5"
   }
 }
