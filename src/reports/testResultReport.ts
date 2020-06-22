@@ -4,7 +4,7 @@ export const dimensions = [
   "test_result_id",
   "test_run_id",
   "user_id",
-  "test_scenario_id",
+  "test_id",
   "suite_id",
   "start_time",
   "start_date",
@@ -28,7 +28,7 @@ export const dimensions = [
   "suite_type",
   "test_run_mode",
   "test_run_type",
-  "test_scenario_name",
+  "test_name",
   "test_type",
 ] as const;
 export type TestResultDimension = typeof dimensions[number];

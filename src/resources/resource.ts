@@ -164,7 +164,7 @@ export default abstract class Resource {
       id].join("/");
 
     const response = await config.httpClient.makeRequest(uri, "get", {
-      "headers": {
+      headers: {
         "authorization": "Token " + config.userToken,
       },
     });

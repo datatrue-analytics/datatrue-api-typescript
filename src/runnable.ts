@@ -65,10 +65,13 @@ export async function _run(
   const uri = [
     config.apiEndpoint,
     "ci_api",
-    `test_runs?api_key=${config.userToken}`,
+    "test_runs",
   ].join("/");
 
   const response = await config.httpClient.makeRequest(uri, "post", {
+    headers: {
+      "authorization": "Token " + config.userToken,
+    },
     body: JSON.stringify({
       "test_run": {
         "test_class": resourceTypeRun,
@@ -101,10 +104,15 @@ export async function _progress(
     "ci_api",
     "test_runs",
     "progress",
-    `${jobID}?api_key=${config.userToken}`,
+    jobID,
   ].join("/");
 
-  const response = await config.httpClient.makeRequest(uri, "get", {});
+  const response = await config.httpClient.makeRequest(uri, "get", {
+    headers: {
+      "authorization": "Token " + config.apiEndpoint,
+    },
+  });
+
   if (response.status >= 400) {
     throw new Error(response.body);
   }
