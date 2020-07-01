@@ -1,5 +1,5 @@
-import Resource, { ResourceOptions } from "./resource";
 import Runnable, { JobStatus, _progress, _run } from "../runnable";
+import Resource, { ResourceOptions } from "./resource";
 import Test, { TestDTO, Variables, VariableTypes } from "./test";
 
 export interface SuiteOptions extends ResourceOptions {
