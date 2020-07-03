@@ -9,7 +9,7 @@ export async function create(): Promise<void> {
 
   var base = SpreadsheetApp.getActive().getActiveRange().getRow();
   var column = SpreadsheetApp.getActive().getActiveRange().getColumn();
-  var suite = SpreadsheetApp.getActive().getRange("A" + (base + 2)).getValue();
+  var suite = SpreadsheetApp.getActive().getRange("A" + (base + 2)).getDisplayValue();
 
   if (suite === "Suite ID" && column === 1) {
     // Get table dimensions
@@ -21,10 +21,10 @@ export async function create(): Promise<void> {
     }
 
     // Get replication details
-    const accountId: string = SpreadsheetApp.getActive().getRange("B" + (base + 1)).getValue();
-    const suiteId: string = SpreadsheetApp.getActive().getRange("B" + (base + 2)).getValue();
-    const names: string[] = SpreadsheetApp.getActive().getRange("R" + base + "C3" + ":R" + base + "C" + width).getValues().pop();
-    var rawVariables: string[][] = SpreadsheetApp.getActive().getRange("R" + (base + 5) + "C1" + ":R" + (base + height) + "C" + width).getValues();
+    const accountId = SpreadsheetApp.getActive().getRange("B" + (base + 1)).getDisplayValue();
+    const suiteId = SpreadsheetApp.getActive().getRange("B" + (base + 2)).getDisplayValue();
+    const names = SpreadsheetApp.getActive().getRange("R" + base + "C3" + ":R" + base + "C" + width).getDisplayValues().pop();
+    var rawVariables = SpreadsheetApp.getActive().getRange("R" + (base + 5) + "C1" + ":R" + (base + height) + "C" + width).getDisplayValues();
 
     // Get cell ranges to update results of replication in sheet
     var results = names.map(function (_name, index) {
@@ -42,7 +42,7 @@ export async function create(): Promise<void> {
     const originalSuite = await DataTrue.Suite.fromID(parseInt(suiteId));
 
     for (const [i, name] of names.entries()) {
-      if (results[i].getValues()[2][0] === "y") {
+      if (results[i].getDisplayValues()[2][0] === "y") {
         continue;
       }
 
