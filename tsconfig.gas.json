@@ -9,7 +9,6 @@
   "extends": "./tsconfig.json",
   "exclude": [
     "node_modules",
-    "src/indexNode.ts",
     "src/httpClient/nodeClient.ts"
   ]
 }

@@ -21,7 +21,7 @@ export async function run(): Promise<void> {
     // do nothing
   }
 
-  var suiteIds: string[] = SpreadsheetApp.getActive().getRange("R" + (base + 2) + "C3:R" + (base + 2) + "C" + width).getValues().pop();
+  var suiteIds: string[] = SpreadsheetApp.getActive().getRange("R" + (base + 2) + "C3:R" + (base + 2) + "C" + width).getDisplayValues().pop();
   var runStatus = SpreadsheetApp.getActive().getRange("R" + (base + 4) + "C3:R" + (base + 4) + "C" + width);
 
   const suites: DataTrue.Suite[] = [];

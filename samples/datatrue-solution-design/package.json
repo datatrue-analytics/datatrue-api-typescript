@@ -8,13 +8,13 @@
   "author": "Omja Das",
   "dependencies": {
     "@types/google-apps-script": "1.0.14",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.6"
   },
   "devDependencies": {
     "@google/clasp": "^2.3.0",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "datatrue-api": "github:Lens10/datatrue-api-typescript#master",
-    "eslint": "^7.3.0"
+    "eslint": "^7.3.1"
   }
 }
