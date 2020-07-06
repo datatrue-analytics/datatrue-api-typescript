@@ -256,7 +256,7 @@ export abstract class Report<
 
     try {
       responseBody = JSON.parse(response.body);
-    } catch {
+    } catch (e) {
       throw new Error("Unable to parse response");
     }
 
