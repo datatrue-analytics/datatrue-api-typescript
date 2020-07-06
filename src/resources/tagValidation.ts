@@ -1,4 +1,8 @@
+import { Suite } from "..";
+import { TagValidationReport } from "../reports/tagValidationReport";
 import Resource, { ResourceOptions } from "./resource";
+import Step from "./step";
+import Test from "./test";
 
 export interface QueryValidation {
   key: string,
@@ -167,5 +171,38 @@ export default class TagValidation extends Resource {
     }
 
     return Promise.resolve(obj);
+  }
+
+  public async report(): Promise<TagValidationReport> {
+    const id = this.getResourceID();
+    const contextID = this.getContextID();
+
+    if (id === undefined) {
+      throw new Error("Resource ID must be set");
+    }
+
+    if (contextID === undefined) {
+      throw new Error("Context ID must be set");
+    }
+
+    let accountID: number;
+
+    try {
+      let test: Test;
+
+      if (this.getContextType() === TagValidationContexts.STEP) {
+        const step = await Step.fromID(contextID);
+        test = await Test.fromID(step.getContextID()!);
+      } else {
+        test = await Test.fromID(contextID);
+      }
+
+      accountID = (await Suite.fromID(test.getContextID()!)).getContextID()!;
+    } catch (e) {
+      throw new Error("Failed to determine account ID");
+    }
+
+    return new TagValidationReport(accountID)
+      .where("tag_validation_id", "==", id);
   }
 }

@@ -211,9 +211,10 @@ export default class Test extends Resource implements Runnable {
     return _progress(this.jobID);
   }
 
-  public async resultReport(): Promise<TestResultReport> {
+  public async report(): Promise<TestResultReport> {
     const id = this.getResourceID();
     const contextID = this.getContextID();
+
     if (id === undefined) {
       throw new Error("Resource ID must be set");
     }
@@ -225,8 +226,8 @@ export default class Test extends Resource implements Runnable {
     let accountID: number;
 
     try {
-      accountID = (await Suite.fromID(contextID)).getContextID() as number;
-    } catch {
+      accountID = (await Suite.fromID(contextID)).getContextID()!;
+    } catch (e) {
       throw new Error("Failed to determine account ID");
     }
 
