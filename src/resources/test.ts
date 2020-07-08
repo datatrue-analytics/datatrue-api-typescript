@@ -232,6 +232,6 @@ export default class Test extends Resource implements Runnable {
     }
 
     return new TestResultReport(accountID)
-      .where("test_scenario_id", "==", id);
+      .where("test_id", "==", id);
   }
 }
