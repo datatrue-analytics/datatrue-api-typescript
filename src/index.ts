@@ -1,4 +1,7 @@
 import config from "./config";
+import { Report } from "./reports/report";
+import { TagValidationDimension, TagValidationMetric, TagValidationReport } from "./reports/tagValidationReport";
+import { TestResultDimension, TestResultMetric, TestResultReport } from "./reports/testResultReport";
 import Account from "./resources/account";
 import DataLayerValidation, { DataLayerValidationOptions, PropertyValidation } from "./resources/dataLayerValidation";
 import Resource from "./resources/resource";
@@ -44,6 +47,16 @@ export {
   TestTypes,
   VariableTypes,
   Variables,
+
+  Report,
+
+  TestResultReport,
+  TestResultDimension,
+  TestResultMetric,
+
+  TagValidationReport,
+  TagValidationDimension,
+  TagValidationMetric,
 
   config,
 };
