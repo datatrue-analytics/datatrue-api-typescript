@@ -109,7 +109,7 @@ export async function _progress(
 
   const response = await config.httpClient.makeRequest(uri, "get", {
     headers: {
-      "authorization": "Token " + config.apiEndpoint,
+      "authorization": "Token " + config.userToken,
     },
   });
 
