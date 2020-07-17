@@ -46,14 +46,15 @@ export type Value = string | number | string[] | number[] | null;
  */
 interface Request<Dimension extends string, Metric extends string> {
   account_id: number,
-  dimensions: Field<Dimension>[],
-  metrics: Field<Metric>[],
-  dimension_filter_clauses: FilterClause<Dimension>[],
-  metric_filter_clauses: FilterClause<Metric>[],
-  settings: {
-    sort: Order[],
-    page: number,
-    page_length: number,
+  dimensions?: Field<Dimension>[],
+  metrics?: Field<Metric>[],
+  dimension_filter_clauses?: FilterClause<Dimension>[],
+  metric_filter_clauses?: FilterClause<Metric>[],
+  settings?: {
+    sort?: Order[],
+    utc_offset?: string,
+    page?: number,
+    page_length?: number,
   },
 }
 
@@ -220,7 +221,8 @@ export abstract class Report<
 
   public async rows(
     page: number = 0,
-    pageLength: number = 1000
+    pageLength: number = 1000,
+    utcOffset: string = "+00:00"
   ): Promise<Record<Dimension | Metric, string | number | null>[]> {
     const request: Request<Dimension, Metric> = {
       account_id: this.accountId,
@@ -230,6 +232,7 @@ export abstract class Report<
       metric_filter_clauses: this.metricFilterClauses,
       settings: {
         sort: this.orders,
+        utc_offset: utcOffset,
         page: page,
         page_length: pageLength,
       },
