@@ -3,7 +3,7 @@ import { Report } from "./reports/report";
 import { TagValidationDimension, TagValidationMetric, TagValidationReport } from "./reports/tagValidationReport";
 import { TestResultDimension, TestResultMetric, TestResultReport } from "./reports/testResultReport";
 import Account from "./resources/account";
-import DataLayerValidation, { DataLayerValidationOptions, PropertyValidation } from "./resources/dataLayerValidation";
+import DataLayerValidation, { DataLayerValidationOptions, DataLayerValidationSource, PropertyValidation } from "./resources/dataLayerValidation";
 import Resource from "./resources/resource";
 import Step, { IframeSelectorTypes, MobileSelectorTypes, SelectorTypes, StepActions, StepOptions, StepSettings, WebSelectorTypes } from "./resources/step";
 import Suite, { SuiteOptions, SuiteTypes } from "./resources/suite";
@@ -18,6 +18,7 @@ export {
 
   DataLayerValidation,
   DataLayerValidationOptions,
+  DataLayerValidationSource,
   PropertyValidation,
 
   Runnable,

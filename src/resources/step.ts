@@ -25,7 +25,7 @@ export enum StepActions {
   HIDE_KEYBOARD = 19,
   SWIPE = 20,
   MOBILE_SELECT_LIST = 21,
-  PRESS_BACK = 22
+  PRESS_BACK = 22,
 }
 
 export enum WebSelectorTypes {
@@ -39,7 +39,7 @@ export enum MobileSelectorTypes {
   ELEMENT_ID = "id",
   XPATH = "xpath",
   ACCESSIBILITY_ID = "accessibility_id",
-  ACTIVE_ELEMENT = "active_element"
+  ACTIVE_ELEMENT = "active_element",
 }
 
 export type SelectorTypes = WebSelectorTypes | MobileSelectorTypes;

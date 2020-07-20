@@ -1,9 +1,17 @@
 import Resource, { ResourceOptions } from "./resource";
 import { IframeSelectorTypes, WebSelectorTypes } from "./step";
 
+export enum DataLayerValidationSource {
+  DOM = "dom",
+  URL = "url",
+  COOKIE = "cookie",
+  JS_VARIABLE = "js_variable",
+  CUSTOM_JS = "custom_js",
+}
+
 export interface DataLayerValidationOptions extends ResourceOptions {
   enabled?: boolean,
-  source?: string,
+  source?: DataLayerValidationSource,
   selector?: string,
   selector_type?: WebSelectorTypes,
   iframe_selector?: string,
