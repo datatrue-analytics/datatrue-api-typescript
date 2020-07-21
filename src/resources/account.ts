@@ -11,6 +11,7 @@ export default class Account extends Resource {
   public readonly contextType: string = "";
   public stepsTotal?: number;
   public stepsUsed?: number;
+  public allowanceResetAt?: Date;
 
   public constructor(name: string) {
     super(name);
@@ -30,6 +31,7 @@ export default class Account extends Resource {
       id,
       steps_total: stepsTotal,
       steps_used: stepsUsed,
+      allowance_reset_at: allowanceResetAt,
       suites,
     } = obj;
 
@@ -39,6 +41,10 @@ export default class Account extends Resource {
     }
     account.stepsTotal = stepsTotal;
     account.stepsUsed = stepsUsed;
+
+    if (allowanceResetAt !== undefined) {
+      account.allowanceResetAt = new Date(allowanceResetAt);
+    }
 
     if (suites !== undefined) {
       account.suites = [];
