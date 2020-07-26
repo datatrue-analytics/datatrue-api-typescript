@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SensitiveDataSettings | datatrue-api</title>
+	<title>DataLayerValidationSource | datatrue-api</title>
 	<meta name="description" content="Documentation for datatrue-api">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="sensitivedatasettings.html">SensitiveDataSettings</a>
+					<a href="datalayervalidationsource.html">DataLayerValidationSource</a>
 				</li>
 			</ul>
-			<h1>Enumeration SensitiveDataSettings</h1>
+			<h1>Enumeration DataLayerValidationSource</h1>
 		</div>
 	</div>
 </header>
@@ -71,9 +71,11 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="sensitivedatasettings.html#disabled" class="tsd-kind-icon">DISABLED</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="sensitivedatasettings.html#fail_when_detected" class="tsd-kind-icon">FAIL_<wbr>WHEN_<wbr>DETECTED</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="sensitivedatasettings.html#pass_when_detected" class="tsd-kind-icon">PASS_<wbr>WHEN_<wbr>DETECTED</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="datalayervalidationsource.html#cookie" class="tsd-kind-icon">COOKIE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="datalayervalidationsource.html#custom_js" class="tsd-kind-icon">CUSTOM_<wbr>JS</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="datalayervalidationsource.html#dom" class="tsd-kind-icon">DOM</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="datalayervalidationsource.html#js_variable" class="tsd-kind-icon">JS_<wbr>VARIABLE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="datalayervalidationsource.html#url" class="tsd-kind-icon">URL</a></li>
 							</ul>
 						</section>
 					</div>
@@ -82,32 +84,52 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="disabled" class="tsd-anchor"></a>
-					<h3>DISABLED</h3>
-					<div class="tsd-signature tsd-kind-icon">DISABLED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;disabled&quot;</span></div>
+					<a name="cookie" class="tsd-anchor"></a>
+					<h3>COOKIE</h3>
+					<div class="tsd-signature tsd-kind-icon">COOKIE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;cookie&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/5633b67/src/resources/suite.ts#L20">resources/suite.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/5633b67/src/resources/dataLayerValidation.ts#L7">resources/dataLayerValidation.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="fail_when_detected" class="tsd-anchor"></a>
-					<h3>FAIL_<wbr>WHEN_<wbr>DETECTED</h3>
-					<div class="tsd-signature tsd-kind-icon">FAIL_<wbr>WHEN_<wbr>DETECTED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;fail_when_detected&quot;</span></div>
+					<a name="custom_js" class="tsd-anchor"></a>
+					<h3>CUSTOM_<wbr>JS</h3>
+					<div class="tsd-signature tsd-kind-icon">CUSTOM_<wbr>JS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;custom_js&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/5633b67/src/resources/suite.ts#L21">resources/suite.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/5633b67/src/resources/dataLayerValidation.ts#L9">resources/dataLayerValidation.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="pass_when_detected" class="tsd-anchor"></a>
-					<h3>PASS_<wbr>WHEN_<wbr>DETECTED</h3>
-					<div class="tsd-signature tsd-kind-icon">PASS_<wbr>WHEN_<wbr>DETECTED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;pass_when_detected&quot;</span></div>
+					<a name="dom" class="tsd-anchor"></a>
+					<h3>DOM</h3>
+					<div class="tsd-signature tsd-kind-icon">DOM<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;dom&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/5633b67/src/resources/suite.ts#L22">resources/suite.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/5633b67/src/resources/dataLayerValidation.ts#L5">resources/dataLayerValidation.ts:5</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="js_variable" class="tsd-anchor"></a>
+					<h3>JS_<wbr>VARIABLE</h3>
+					<div class="tsd-signature tsd-kind-icon">JS_<wbr>VARIABLE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;js_variable&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/5633b67/src/resources/dataLayerValidation.ts#L8">resources/dataLayerValidation.ts:8</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="url" class="tsd-anchor"></a>
+					<h3>URL</h3>
+					<div class="tsd-signature tsd-kind-icon">URL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;url&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Lens10/datatrue-api-typescript/blob/5633b67/src/resources/dataLayerValidation.ts#L6">resources/dataLayerValidation.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -126,16 +148,22 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-enum">
-						<a href="sensitivedatasettings.html" class="tsd-kind-icon">Sensitive<wbr>Data<wbr>Settings</a>
+						<a href="datalayervalidationsource.html" class="tsd-kind-icon">Data<wbr>Layer<wbr>Validation<wbr>Source</a>
 						<ul>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="sensitivedatasettings.html#disabled" class="tsd-kind-icon">DISABLED</a>
+								<a href="datalayervalidationsource.html#cookie" class="tsd-kind-icon">COOKIE</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="sensitivedatasettings.html#fail_when_detected" class="tsd-kind-icon">FAIL_<wbr>WHEN_<wbr>DETECTED</a>
+								<a href="datalayervalidationsource.html#custom_js" class="tsd-kind-icon">CUSTOM_<wbr>JS</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="sensitivedatasettings.html#pass_when_detected" class="tsd-kind-icon">PASS_<wbr>WHEN_<wbr>DETECTED</a>
+								<a href="datalayervalidationsource.html#dom" class="tsd-kind-icon">DOM</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="datalayervalidationsource.html#js_variable" class="tsd-kind-icon">JS_<wbr>VARIABLE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="datalayervalidationsource.html#url" class="tsd-kind-icon">URL</a>
 							</li>
 						</ul>
 					</li>
