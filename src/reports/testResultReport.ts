@@ -1,5 +1,6 @@
 import { Report } from "./report";
 
+/** @hidden */
 export const dimensions = [
   "test_result_id",
   "test_run_id",
@@ -32,8 +33,10 @@ export const dimensions = [
   "test_type",
 ] as const;
 export type TestResultDimension = typeof dimensions[number];
+/** @hidden */
 export const testResultDimensions = new Set(dimensions);
 
+/** @hidden */
 const metrics = [
   "run_duration",
   "avg_run_duration",
@@ -94,6 +97,7 @@ const metrics = [
   "tests_executed",
 ] as const;
 export type TestResultMetric = typeof metrics[number];
+/** @hidden */
 export const testResultMetrics = new Set(metrics);
 
 export class TestResultReport extends Report<TestResultDimension, TestResultMetric> {

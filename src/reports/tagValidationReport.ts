@@ -1,6 +1,7 @@
 import { Report } from "./report";
 import { dimensions as testResultDimensions } from "./testResultReport";
 
+/** @hidden */
 const dimensions = [
   ...[
     "process_time",
@@ -19,10 +20,13 @@ const dimensions = [
   ...testResultDimensions,
 ];
 export type TagValidationDimension = typeof dimensions[number];
+/** @hidden */
 export const tagValidationDimensions = new Set(dimensions);
 
+/** @hidden */
 const metrics = ["tag_validations_processed"] as const;
 export type TagValidationMetric = typeof metrics[number];
+/** @hidden */
 export const tagValidationMetrics = new Set(metrics);
 
 export class TagValidationReport extends Report<TagValidationDimension, TagValidationMetric> {
