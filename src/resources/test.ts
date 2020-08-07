@@ -56,7 +56,7 @@ export default class Test extends Resource implements Runnable {
   public constructor(
     name: string,
     public testType: TestTypes = TestTypes.SIMULATION,
-    public contextID?: number,
+    protected contextID?: number,
     options: TestOptions = {}
   ) {
     super(name);

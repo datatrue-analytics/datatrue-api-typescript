@@ -94,7 +94,7 @@ export default class Step extends Resource {
   public constructor(
     name: string,
     public action: StepActions,
-    public contextID?: number,
+    protected contextID?: number,
     options: StepOptions = {}
   ) {
     super(name);

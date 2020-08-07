@@ -56,7 +56,7 @@ export default class TagValidation extends Resource {
     name: string,
     key: string,
     protected contextType: TagValidationContexts = TagValidationContexts.STEP,
-    public contextID?: number,
+    protected contextID?: number,
     options: TagValidationOptions = {}
   ) {
     super(name);

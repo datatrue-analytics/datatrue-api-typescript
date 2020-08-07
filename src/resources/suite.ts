@@ -51,7 +51,7 @@ export default class Suite extends Resource implements Runnable {
 
   public constructor(
     name: string,
-    public contextID?: number,
+    protected contextID?: number,
     options: SuiteOptions = {}
   ) {
     super(name);

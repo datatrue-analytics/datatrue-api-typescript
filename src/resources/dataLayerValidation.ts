@@ -32,7 +32,7 @@ export interface PropertyValidation {
 }
 
 export default class DataLayerValidation extends Resource {
-  public static readonly resourceType: string = "data_layer_validations";
+  public static readonly resourceType: string = "data_layer_validation";
   public static readonly childTypes: readonly string[] = [];
 
   private propertyValidations: PropertyValidation[] = [];
@@ -42,7 +42,7 @@ export default class DataLayerValidation extends Resource {
 
   public constructor(
     name: string,
-    public contextID?: number,
+    protected contextID?: number,
     options: DataLayerValidationOptions = {}
   ) {
     super(name);
