@@ -383,6 +383,10 @@ export default abstract class Resource {
    * @returns Promise
    */
   public async delete(): Promise<void> {
+    if (this.resourceID === undefined) {
+      return;
+    }
+
     const uri = [
       config.apiEndpoint,
       "management_api/v1",
