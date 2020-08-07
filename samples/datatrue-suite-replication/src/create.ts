@@ -1,4 +1,5 @@
 import * as DataTrue from "datatrue-api";
+import fm from "front-matter";
 import { getTokens } from "./getTokens";
 
 export async function create(): Promise<void> {
@@ -7,28 +8,30 @@ export async function create(): Promise<void> {
   const userProperties = PropertiesService.getUserProperties();
   DataTrue.config.userToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
 
-  var base = SpreadsheetApp.getActive().getActiveRange().getRow();
-  var column = SpreadsheetApp.getActive().getActiveRange().getColumn();
-  var suite = SpreadsheetApp.getActive().getRange("A" + (base + 2)).getDisplayValue();
+  const base = SpreadsheetApp.getActive().getActiveRange().getRow();
+  const column = SpreadsheetApp.getActive().getActiveRange().getColumn();
+  const suite = SpreadsheetApp.getActive().getRange(`A${base + 2}`).getDisplayValue();
 
   if (suite === "Suite ID" && column === 1) {
     // Get table dimensions
-    for (var height = 0; SpreadsheetApp.getActive().getRange("A" + (base + height + 1)).getBackground() !== "#ffffff" && height < 20; height++) {
+    for (var height = 0; SpreadsheetApp.getActive().getRange(`A${base + height + 1}`).getBackground() !== "#ffffff" && height < 20; height++) {
       // do nothing
     }
-    for (var width = 0; SpreadsheetApp.getActive().getRange("R" + base + "C" + (width + 1)).getBackground() !== "#ffffff" && width < 20; width++) {
+    for (var width = 0; SpreadsheetApp.getActive().getRange(`R${base}C${width + 1}`).getBackground() !== "#ffffff" && width < 20; width++) {
       // do nothing
     }
 
     // Get replication details
-    const accountId = SpreadsheetApp.getActive().getRange("B" + (base + 1)).getDisplayValue();
-    const suiteId = SpreadsheetApp.getActive().getRange("B" + (base + 2)).getDisplayValue();
-    const names = SpreadsheetApp.getActive().getRange("R" + base + "C3" + ":R" + base + "C" + width).getDisplayValues().pop();
-    var rawVariables = SpreadsheetApp.getActive().getRange("R" + (base + 5) + "C1" + ":R" + (base + height) + "C" + width).getDisplayValues();
+    const accountId = SpreadsheetApp.getActive().getRange(`B${base + 1}`).getDisplayValue();
+    const suiteId = SpreadsheetApp.getActive().getRange(`B${base + 2}`).getDisplayValue();
+    const names = SpreadsheetApp.getActive().getRange(`R${base}C3:R${base}C${width}`).getDisplayValues()[0];
+    const includeTags = SpreadsheetApp.getActive().getRange(`R${base + 5}C3:R${base + 5}C${width}`).getDisplayValues()[0];
+    const excludeTags = SpreadsheetApp.getActive().getRange(`R${base + 6}C3:R${base + 6}C${width}`).getDisplayValues()[0];
+    const rawVariables = SpreadsheetApp.getActive().getRange(`R${base + 7}C3:R${base + height}C${width}`).getDisplayValues();
 
     // Get cell ranges to update results of replication in sheet
-    var results = names.map(function (_name, index) {
-      return (SpreadsheetApp.getActive().getRange("R" + (base + 1) + "C" + (index + 3) + ":R" + (base + 3) + "C" + (index + 3)));
+    const results = names.map(function (_name, index) {
+      return (SpreadsheetApp.getActive().getRange(`R${base + 1}C${index + 3}:R${base + 3}C${index + 3}`));
     });
 
     const variables = rawVariables.map(function (variable) {
@@ -46,13 +49,44 @@ export async function create(): Promise<void> {
         continue;
       }
 
+      const include = includeTags[i].split(",").filter(tag => tag !== "");
+      const exclude = excludeTags[i].split(",").filter(tag => tag !== "");
+
       const id = results[i].getValues()[1][0];
       let newSuite: DataTrue.Suite;
 
       if (id === "") {
-        newSuite = DataTrue.Suite.fromJSON(originalSuite.toJSON(), true);
+        newSuite = DataTrue.Suite.fromJSON(await originalSuite.toJSON(), true);
       } else {
         newSuite = await DataTrue.Suite.fromID(id);
+      }
+
+      const tests = await newSuite.getTests();
+
+      for (var j = tests.length - 1; j >= 0; j--) {
+        const description = tests[j].options.description ?? "";
+        const content = fm(description);
+        // @ts-ignore
+        const tags: string[] = content.attributes.tags ?? [];
+
+        if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
+          await newSuite.deleteTest(j);
+          Logger.log("excluding test");
+          continue;
+        }
+
+        const steps = tests[j].getSteps();
+
+        for (var k = steps.length - 1; k >= 0; k--) {
+          const description = steps[k].options.description ?? "";
+          const content = fm(description);
+          // @ts-ignore
+          const tags: string = content.attributes.tags ?? [];
+
+          if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
+            tests[j].deleteStep(k);
+          }
+        }
       }
 
       newSuite.name = name;
