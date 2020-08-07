@@ -1,9 +1,9 @@
-import path from "path";
-import webpack from "webpack";
-import { CleanWebpackPlugin } from "clean-webpack-plugin";
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
+import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import CreateFileWebpack from "create-file-webpack";
+import path from "path";
+import webpack from "webpack";
 
 const src = path.resolve(__dirname, "src");
 const destination = path.resolve(__dirname, "dist");
