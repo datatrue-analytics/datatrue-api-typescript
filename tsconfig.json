@@ -1,26 +1,25 @@
 {
   "compilerOptions": {
     "lib": [
-      "esnext",
-      "DOM"
+      "esnext"
     ],
     "declaration": true,
     "experimentalDecorators": true,
     "outDir": "dist",
     "esModuleInterop": true,
     "module": "commonjs",
-    "types": [
-      "node"
-    ],
     "strict": true,
-    "target": "ES2018"
+    "skipLibCheck": true,
+    "target": "ES2018",
+    "types": [
+      "google-apps-script"
+    ]
   },
   "include": [
     "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "src/indexGAS.ts",
-    "src/httpClient/appsScriptClient.ts"
+    "src/indexGAS.ts"
   ]
 }

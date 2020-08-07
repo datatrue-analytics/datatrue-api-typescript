@@ -1,4 +1,5 @@
 import config from "./config";
+import AppsScriptClient from "./httpClient/appsScriptClient";
 import { Report } from "./reports/report";
 import { TagValidationDimension, TagValidationMetric, TagValidationReport } from "./reports/tagValidationReport";
 import { TestResultDimension, TestResultMetric, TestResultReport } from "./reports/testResultReport";
@@ -10,6 +11,10 @@ import Suite, { SuiteOptions, SuiteTypes } from "./resources/suite";
 import TagValidation, { QueryValidation, TagDefinition, TagValidationContexts, TagValidationOptions } from "./resources/tagValidation";
 import Test, { TestOptions, TestTypes, Variables, VariableTypes } from "./resources/test";
 import Runnable, { JobStatus } from "./runnable";
+
+if (typeof UrlFetchApp !== "undefined") {
+  config.httpClient = new AppsScriptClient();
+}
 
 export {
   Resource,
