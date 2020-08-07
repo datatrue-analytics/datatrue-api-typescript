@@ -63,28 +63,67 @@ export async function create(): Promise<void> {
 
       const tests = await newSuite.getTests();
 
-      for (var j = tests.length - 1; j >= 0; j--) {
-        const description = tests[j].options.description ?? "";
+      for (var t = 0; t < tests.length; t++) {
+        const description = tests[t].options.description ?? "";
         const content = fm(description);
         // @ts-ignore
         const tags: string[] = content.attributes.tags ?? [];
 
         if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
-          await newSuite.deleteTest(j);
-          Logger.log("excluding test");
+          await newSuite.deleteTest(t);
           continue;
         }
 
-        const steps = tests[j].getSteps();
+        const steps = tests[t].getSteps();
 
-        for (var k = steps.length - 1; k >= 0; k--) {
-          const description = steps[k].options.description ?? "";
+        for (var s = 0; s < steps.length; s++) {
+          const description = steps[s].options.description ?? "";
           const content = fm(description);
           // @ts-ignore
-          const tags: string = content.attributes.tags ?? [];
+          const tags: string[] = content.attributes.tags ?? [];
 
           if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
-            tests[j].deleteStep(k);
+            tests[t].deleteStep(s);
+            continue;
+          }
+
+          const tagValidations = steps[s].getTagValidations();
+
+          for (var tv = 0; tv < tagValidations.length; tv++) {
+            const description = tagValidations[tv].options.description ?? "";
+            const content = fm(description);
+            // @ts-ignore
+            const tags: string[] = content.attributes.tags ?? [];
+
+            if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
+              steps[s].deleteTagValidation(tv);
+            }
+          }
+
+          const dataLayerValidations = steps[s].getDataLayerValidations();
+
+          for (var dlv = 0; dlv < dataLayerValidations.length; dlv++) {
+            const description = dataLayerValidations[dlv].options.description ?? "";
+            const content = fm(description);
+            // @ts-ignore
+            const tags: string[] = content.attributes.tags ?? [];
+
+            if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
+              steps[s].deleteDataLayerValidation(dlv);
+            }
+          }
+        }
+
+        const tagValidations = tests[t].getTagValidations();
+
+        for (var tv = 0; tv < tagValidations.length; tv++) {
+          const description = tagValidations[tv].options.description ?? "";
+          const content = fm(description);
+          // @ts-ignore
+          const tags: string[] = content.attributes.tags ?? [];
+
+          if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
+            tests[t].deleteTagValidation(tv);
           }
         }
       }
