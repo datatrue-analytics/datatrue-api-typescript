@@ -32,7 +32,10 @@ export async function run(): Promise<void> {
     suites.push(suite);
   }
 
-  const status = [];
+  const status: {
+    state: string,
+    background: string
+  }[] = [];
 
   suites.forEach(() => {
     status.push({

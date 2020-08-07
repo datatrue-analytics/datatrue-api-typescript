@@ -11,7 +11,7 @@
     "target": "ES2019",
     "types": [
       "google-apps-script"
-    ],
+    ]
   },
   "include": [
     "src/**/*"
