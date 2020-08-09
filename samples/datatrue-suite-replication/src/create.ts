@@ -63,7 +63,7 @@ export async function create(): Promise<void> {
 
       const tests = await newSuite.getTests();
 
-      for (var t = 0; t < tests.length; t++) {
+      for (var t = tests.length - 1; t >= 0; t--) {
         const description = tests[t].options.description ?? "";
         const content = fm(description);
         // @ts-ignore
@@ -76,7 +76,7 @@ export async function create(): Promise<void> {
 
         const steps = tests[t].getSteps();
 
-        for (var s = 0; s < steps.length; s++) {
+        for (var s = steps.length - 1; s >= 0; s--) {
           const description = steps[s].options.description ?? "";
           const content = fm(description);
           // @ts-ignore
@@ -89,7 +89,7 @@ export async function create(): Promise<void> {
 
           const tagValidations = steps[s].getTagValidations();
 
-          for (var tv = 0; tv < tagValidations.length; tv++) {
+          for (var tv = tagValidations.length - 1; tv >= 0; tv--) {
             const description = tagValidations[tv].options.description ?? "";
             const content = fm(description);
             // @ts-ignore
@@ -102,7 +102,7 @@ export async function create(): Promise<void> {
 
           const dataLayerValidations = steps[s].getDataLayerValidations();
 
-          for (var dlv = 0; dlv < dataLayerValidations.length; dlv++) {
+          for (var dlv = dataLayerValidations.length - 1; dlv >= 0; dlv--) {
             const description = dataLayerValidations[dlv].options.description ?? "";
             const content = fm(description);
             // @ts-ignore
@@ -116,7 +116,7 @@ export async function create(): Promise<void> {
 
         const tagValidations = tests[t].getTagValidations();
 
-        for (var tv = 0; tv < tagValidations.length; tv++) {
+        for (var tv = tagValidations.length - 1; tv >= 0; tv--) {
           const description = tagValidations[tv].options.description ?? "";
           const content = fm(description);
           // @ts-ignore
