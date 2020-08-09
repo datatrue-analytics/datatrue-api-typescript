@@ -234,7 +234,7 @@ export default abstract class Resource {
     const payload = await this.toJSON();
 
     const response = await config.httpClient.makeRequest(uri, "post", {
-      body: JSON.stringify(this.beforeSave(payload)),
+      body: JSON.stringify(this.beforeCreate(payload)),
       headers: {
         "authorization": "Token " + config.userToken,
       },
@@ -336,19 +336,15 @@ export default abstract class Resource {
   }
 
   /**
-   * Format the object to the required specifications to save
+   * Format the object to the required specifications to create
    *
-   * @param obj object to save
+   * @param obj object to create
    * @returns object in correct format for DataTrue
    */
-  private beforeSave(obj: Record<string, any>): Record<string, any> {
-    if ((this.constructor as typeof Resource).resourceType === "test") {
-      return {
-        test: obj,
-      };
-    } else {
-      return obj;
-    }
+  private beforeCreate(obj: Record<string, any>): Record<string, any> {
+    return {
+      [(this.constructor as typeof Resource).resourceType]: obj,
+    };
   }
 
   /**
