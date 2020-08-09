@@ -25,20 +25,34 @@ export async function create(): Promise<void> {
   path = path === "" ? ".*" : path;
 
   if (accountID === "") {
-    accountID = ui.prompt("Please enter your DataTrue Account ID", "", ui.ButtonSet.OK).getResponseText();
+    accountID = ui.prompt(
+      "Please enter your DataTrue Account ID",
+      "",
+      ui.ButtonSet.OK
+    ).getResponseText();
     if (accountID === "") {
       throw new Error("Account ID must be provided");
     }
   }
 
-  sheet.getRange("B5").setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites", "${accountID}")`);
+  sheet
+    .getRange("B5")
+    .setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites", "${accountID}")`);
   SpreadsheetApp.flush();
 
   if (suiteID === "") {
-    suiteID = ui.prompt("Please enter your Suite ID", "Leave empty to create a new suite", ui.ButtonSet.OK).getResponseText();
+    suiteID = ui.prompt(
+      "Please enter your Suite ID",
+      "Leave empty to create a new suite",
+      ui.ButtonSet.OK
+    ).getResponseText();
 
     if (suiteID === "") {
-      const suiteName = ui.prompt("Please enter a name for your Suite", "", ui.ButtonSet.OK).getResponseText();
+      const suiteName = ui.prompt(
+        "Please enter a name for your Suite",
+        "",
+        ui.ButtonSet.OK
+      ).getResponseText();
 
       if (suiteName === "") {
         throw new Error("Suite name must be provided");
@@ -50,51 +64,74 @@ export async function create(): Promise<void> {
     }
   }
 
-  sheet.getRange("B6").setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
+  sheet
+    .getRange("B6")
+    .setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
   SpreadsheetApp.flush();
 
   let test: DataTrue.Test;
 
   if (testID) {
     // test = DataTrue.Test.fromID(parseInt(testID));
-    test = new DataTrue.Test(testName, DataTrue.TestTypes.SIMULATION, parseInt(suiteID), { description: testDescription });
+    test = new DataTrue.Test(
+      testName,
+      DataTrue.TestTypes.SIMULATION,
+      parseInt(suiteID),
+      { description: testDescription }
+    );
   } else {
-    test = new DataTrue.Test(testName, DataTrue.TestTypes.SIMULATION, parseInt(suiteID), { description: testDescription });
+    test = new DataTrue.Test(
+      testName,
+      DataTrue.TestTypes.SIMULATION,
+      parseInt(suiteID),
+      { description: testDescription }
+    );
   }
 
   const currentSteps = test.getSteps();
   const steps: DataTrue.Step[] = [];
 
   if (currentSteps.length === 0) {
-    const initialStep = new DataTrue.Step(`Go To ${url}`, DataTrue.StepActions.GOTO_URL, undefined, { target: url });
+    const initialStep = new DataTrue.Step(
+      `Go To ${url}`,
+      DataTrue.StepActions.GOTO_URL,
+      undefined,
+      { target: url }
+    );
 
     if (useMockPage) {
-      const intercept = new DataTrue.TagValidation("Mock Page", "Custom Tag", DataTrue.TagValidationContexts.STEP, undefined, {
-        hostname_validation: hostname,
-        pathname_validation: path,
-        hostname_detection: hostname,
-        pathname_detection: path,
-        do_validation: true,
-        interception: {
-          intercept: true,
-          intercept_status: "200",
-          intercept_body: `
-          <html>
-            <head>
-              <script src=${tagManagerUrl} async></script>
-            </head>
-            <body>
-              <h1>
-                ${testName}
-              </h1>
-              <h2>
-                DataLayer test for ${url}<br />
-                Using Tag Manager from ${tagManagerUrl}
-              </h2>
-            </body>
-          </html>`,
-        },
-      });
+      const intercept = new DataTrue.TagValidation(
+        "Mock Page",
+        "Custom Tag",
+        DataTrue.TagValidationContexts.STEP,
+        undefined,
+        {
+          hostname_validation: hostname,
+          pathname_validation: path,
+          hostname_detection: hostname,
+          pathname_detection: path,
+          do_validation: true,
+          interception: {
+            intercept: true,
+            intercept_status: "200",
+            intercept_body: `
+            <html>
+              <head>
+                <script src=${tagManagerUrl} async></script>
+              </head>
+              <body>
+                <h1>
+                  ${testName}
+                </h1>
+                <h2>
+                  DataLayer test for ${url}<br />
+                  Using Tag Manager from ${tagManagerUrl}
+                </h2>
+              </body>
+            </html>`,
+          },
+        }
+      );
       initialStep.insertTagValidation(intercept);
     }
 
@@ -112,10 +149,26 @@ export async function create(): Promise<void> {
     }
 
     let step: DataTrue.Step;
-    if (stepRows.getCell(index + 1, 1).getNote() !== "" && test.getSteps().filter(step => step.getResourceID() === parseInt(stepRows.getCell(index + 1, 1).getNote())).length) {
-      step = currentSteps.filter(step => step.getResourceID() === parseInt(row[0]))[0];
+    if (
+      stepRows
+        .getCell(index + 1, 1)
+        .getNote() !== "" &&
+      test
+        .getSteps()
+        .filter(
+          step => step.getResourceID() === parseInt(stepRows.getCell(index + 1, 1).getNote())
+        ).length
+    ) {
+      step = currentSteps.filter(
+        step => step.getResourceID() === parseInt(row[0])
+      )[0];
     } else {
-      step = new DataTrue.Step(row[0], DataTrue.StepActions.RUN_SCRIPT, undefined, { description: row[1], js_code: row[2] });
+      step = new DataTrue.Step(
+        row[0],
+        DataTrue.StepActions.RUN_SCRIPT,
+        undefined,
+        { description: row[1], js_code: row[2] }
+      );
     }
 
     let tagValidation: DataTrue.TagValidation;
@@ -179,5 +232,7 @@ export async function create(): Promise<void> {
     }
   }
 
-  sheet.getRange("B7").setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/tests/${test.getResourceID()}", "${test.getResourceID()}")`);
+  sheet
+    .getRange("B7")
+    .setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/tests/${test.getResourceID()}", "${test.getResourceID()}")`);
 }
