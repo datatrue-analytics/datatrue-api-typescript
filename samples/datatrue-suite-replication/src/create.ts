@@ -25,9 +25,8 @@ export async function create(): Promise<void> {
     const accountId = SpreadsheetApp.getActive().getRange(`B${base + 1}`).getDisplayValue();
     const suiteId = SpreadsheetApp.getActive().getRange(`B${base + 2}`).getDisplayValue();
     const names = SpreadsheetApp.getActive().getRange(`R${base}C3:R${base}C${width}`).getDisplayValues()[0];
-    const includeTags = SpreadsheetApp.getActive().getRange(`R${base + 5}C3:R${base + 5}C${width}`).getDisplayValues()[0];
-    const excludeTags = SpreadsheetApp.getActive().getRange(`R${base + 6}C3:R${base + 6}C${width}`).getDisplayValues()[0];
-    const rawVariables = SpreadsheetApp.getActive().getRange(`R${base + 7}C3:R${base + height}C${width}`).getDisplayValues();
+    const excludeTags = SpreadsheetApp.getActive().getRange(`R${base + 5}C3:R${base + 5}C${width}`).getDisplayValues()[0];
+    const rawVariables = SpreadsheetApp.getActive().getRange(`R${base + 6}C3:R${base + height}C${width}`).getDisplayValues();
 
     // Get cell ranges to update results of replication in sheet
     const results = names.map(function (_name, index) {
@@ -49,7 +48,6 @@ export async function create(): Promise<void> {
         continue;
       }
 
-      const include = includeTags[i].split(",").filter(tag => tag !== "");
       const exclude = excludeTags[i].split(",").filter(tag => tag !== "");
 
       const id = results[i].getValues()[1][0];
@@ -69,7 +67,7 @@ export async function create(): Promise<void> {
         // @ts-ignore
         const tags: string[] = content.attributes.tags ?? [];
 
-        if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
+        if (exclude.some(tag => tags.includes(tag))) {
           await newSuite.deleteTest(t);
           continue;
         }
@@ -82,7 +80,7 @@ export async function create(): Promise<void> {
           // @ts-ignore
           const tags: string[] = content.attributes.tags ?? [];
 
-          if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
+          if (exclude.some(tag => tags.includes(tag))) {
             tests[t].deleteStep(s);
             continue;
           }
@@ -95,7 +93,7 @@ export async function create(): Promise<void> {
             // @ts-ignore
             const tags: string[] = content.attributes.tags ?? [];
 
-            if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
+            if (exclude.some(tag => tags.includes(tag))) {
               steps[s].deleteTagValidation(tv);
             }
           }
@@ -108,7 +106,7 @@ export async function create(): Promise<void> {
             // @ts-ignore
             const tags: string[] = content.attributes.tags ?? [];
 
-            if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
+            if (exclude.some(tag => tags.includes(tag))) {
               steps[s].deleteDataLayerValidation(dlv);
             }
           }
@@ -122,7 +120,7 @@ export async function create(): Promise<void> {
           // @ts-ignore
           const tags: string[] = content.attributes.tags ?? [];
 
-          if (!include.every(tag => tags.includes(tag)) || exclude.some(tag => tags.includes(tag))) {
+          if (exclude.some(tag => tags.includes(tag))) {
             tests[t].deleteTagValidation(tv);
           }
         }
