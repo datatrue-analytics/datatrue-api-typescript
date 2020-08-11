@@ -25,12 +25,14 @@ export async function create(): Promise<void> {
     const accountId = SpreadsheetApp.getActive().getRange(`B${base + 1}`).getDisplayValue();
     const suiteId = SpreadsheetApp.getActive().getRange(`B${base + 2}`).getDisplayValue();
     const names = SpreadsheetApp.getActive().getRange(`R${base}C3:R${base}C${width}`).getDisplayValues()[0];
-    const excludeTags = SpreadsheetApp.getActive().getRange(`R${base + 5}C3:R${base + 5}C${width}`).getDisplayValues()[0];
+    const excludeLabels = SpreadsheetApp.getActive().getRange(`R${base + 5}C3:R${base + 5}C${width}`).getDisplayValues()[0];
     const rawVariables = SpreadsheetApp.getActive().getRange(`R${base + 6}C1:R${base + height}C${width}`).getDisplayValues();
 
     // Get cell ranges to update results of replication in sheet
     const results = names.map(function (_name, index) {
-      return (SpreadsheetApp.getActive().getRange(`R${base + 1}C${index + 3}:R${base + 3}C${index + 3}`));
+      return SpreadsheetApp
+        .getActive()
+        .getRange(`R${base + 1}C${index + 3}:R${base + 3}C${index + 3}`);
     });
 
     const variables = rawVariables.map(function (variable) {
@@ -48,7 +50,7 @@ export async function create(): Promise<void> {
         continue;
       }
 
-      const exclude = excludeTags[i].split(",").filter(tag => tag !== "");
+      const exclude = excludeLabels[i].split(",").filter(label => label !== "");
 
       const id = results[i].getValues()[1][0];
       let newSuite: DataTrue.Suite;
@@ -65,9 +67,9 @@ export async function create(): Promise<void> {
         const description = tests[t].options.description ?? "";
         const content = fm(description);
         // @ts-ignore
-        const tags: string[] = content.attributes.tags ?? [];
+        const labels: string[] = content.attributes.labels ?? [];
 
-        if (exclude.some(tag => tags.includes(tag))) {
+        if (exclude.some(label => labels.includes(label))) {
           await newSuite.deleteTest(t);
           continue;
         }
@@ -78,9 +80,9 @@ export async function create(): Promise<void> {
           const description = steps[s].options.description ?? "";
           const content = fm(description);
           // @ts-ignore
-          const tags: string[] = content.attributes.tags ?? [];
+          const labels: string[] = content.attributes.labels ?? [];
 
-          if (exclude.some(tag => tags.includes(tag))) {
+          if (exclude.some(label => labels.includes(label))) {
             tests[t].deleteStep(s);
             continue;
           }
@@ -91,9 +93,9 @@ export async function create(): Promise<void> {
             const description = tagValidations[tv].options.description ?? "";
             const content = fm(description);
             // @ts-ignore
-            const tags: string[] = content.attributes.tags ?? [];
+            const labels: string[] = content.attributes.labels ?? [];
 
-            if (exclude.some(tag => tags.includes(tag))) {
+            if (exclude.some(label => labels.includes(label))) {
               steps[s].deleteTagValidation(tv);
             }
           }
@@ -104,9 +106,9 @@ export async function create(): Promise<void> {
             const description = dataLayerValidations[dlv].options.description ?? "";
             const content = fm(description);
             // @ts-ignore
-            const tags: string[] = content.attributes.tags ?? [];
+            const labels: string[] = content.attributes.labels ?? [];
 
-            if (exclude.some(tag => tags.includes(tag))) {
+            if (exclude.some(label => labels.includes(label))) {
               steps[s].deleteDataLayerValidation(dlv);
             }
           }
@@ -118,9 +120,9 @@ export async function create(): Promise<void> {
           const description = tagValidations[tv].options.description ?? "";
           const content = fm(description);
           // @ts-ignore
-          const tags: string[] = content.attributes.tags ?? [];
+          const labels: string[] = content.attributes.labels ?? [];
 
-          if (exclude.some(tag => tags.includes(tag))) {
+          if (exclude.some(label => labels.includes(label))) {
             tests[t].deleteTagValidation(tv);
           }
         }
@@ -130,7 +132,11 @@ export async function create(): Promise<void> {
       newSuite.setContextID(parseInt(accountId));
 
       variables.forEach(variable => {
-        newSuite.setVariable(variable.name, DataTrue.VariableTypes.PRESET, variable.values[i]);
+        newSuite.setVariable(
+          variable.name,
+          DataTrue.VariableTypes.PRESET,
+          variable.values[i]
+        );
       });
 
       await newSuite.save();
@@ -144,6 +150,11 @@ export async function create(): Promise<void> {
       );
     }
   } else {
-    SpreadsheetApp.getUi().alert("Test suite configuration table was not found. Please select the cell containing the name of the test you wish to replicate.");
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        "Test suite configuration table was not found. Please select the cell" +
+        "containing the name of the test you wish to replicate."
+      );
   }
 }

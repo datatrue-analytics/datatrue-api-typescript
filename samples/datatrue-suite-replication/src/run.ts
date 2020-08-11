@@ -1,7 +1,10 @@
 import * as DataTrue from "datatrue-api";
 import { getTokens } from "./getTokens";
 
-async function asyncEvery(arr: any[], callback: (value: any, index: number, array: any[]) => unknown): Promise<boolean> {
+async function asyncEvery(
+  arr: any[],
+  callback: (value: any, index: number, array: any[]) => unknown
+): Promise<boolean> {
   for (const [i, v] of arr.entries()) {
     if (!await callback(v, i, arr)) {
       return false;
@@ -17,12 +20,12 @@ export async function run(): Promise<void> {
   var base = SpreadsheetApp.getActive().getActiveRange().getRow();
 
   // Get table dimensions
-  for (var width = 0; SpreadsheetApp.getActive().getRange("R" + base + "C" + (width + 1)).getBackground() !== "#ffffff" && width < 20; width++) {
+  for (var width = 0; SpreadsheetApp.getActive().getRange(`R${base}C${width + 1}`).getBackground() !== "#ffffff" && width < 20; width++) {
     // do nothing
   }
 
-  var suiteIds: string[] = SpreadsheetApp.getActive().getRange("R" + (base + 2) + "C3:R" + (base + 2) + "C" + width).getDisplayValues().pop();
-  var runStatus = SpreadsheetApp.getActive().getRange("R" + (base + 4) + "C3:R" + (base + 4) + "C" + width);
+  var suiteIds: string[] = SpreadsheetApp.getActive().getRange(`R${base + 2}C3:R${base + 2}C${width}`).getDisplayValues()[0];
+  var runStatus = SpreadsheetApp.getActive().getRange(`R${base + 4}C3:R${base + 4}C${width}`);
 
   const suites: DataTrue.Suite[] = [];
 
