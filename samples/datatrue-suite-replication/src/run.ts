@@ -1,4 +1,4 @@
-import * as DataTrue from "datatrue-api";
+import * as DataTrue from "@datatrue/api";
 import { getTokens } from "./getTokens";
 
 async function asyncEvery(

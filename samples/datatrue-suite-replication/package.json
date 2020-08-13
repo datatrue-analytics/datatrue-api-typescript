@@ -16,7 +16,7 @@
     "@typescript-eslint/parser": "^2.34.0",
     "clean-webpack-plugin": "^3.0.0",
     "create-file-webpack": "^1.0.2",
-    "datatrue-api": "github:Lens10/datatrue-api-typescript#master",
+    "@datatrue/api": "github:Lens10/datatrue-api-typescript#master",
     "eslint": "^7.6.0",
     "front-matter": "^4.0.2",
     "typescript": "^3.9.7",

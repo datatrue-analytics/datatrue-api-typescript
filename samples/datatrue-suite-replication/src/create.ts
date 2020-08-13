@@ -1,4 +1,4 @@
-import * as DataTrue from "datatrue-api";
+import * as DataTrue from "@datatrue/api";
 import fm from "front-matter";
 import { getTokens } from "./getTokens";
 

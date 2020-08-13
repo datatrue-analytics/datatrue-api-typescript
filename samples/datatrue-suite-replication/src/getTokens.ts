@@ -1,4 +1,4 @@
-import * as DataTrue from "datatrue-api";
+import * as DataTrue from "@datatrue/api";
 import { setTokens } from "./setTokens";
 
 export function getTokens(): void {
