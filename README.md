@@ -9,7 +9,7 @@ This wrapper can be used in Node.js and Google Apps Script environments.
 To use with Node.js install the `datatrue-api` package.
 
 ```bash
-npm install --save datatrue-api # not published yet
+npm install --save @datatrue/api # not published yet
 ```
 
 ## Google Apps Script
@@ -17,5 +17,5 @@ npm install --save datatrue-api # not published yet
 To add the wrapper to your Google Apps Script project add `MMg9RodswIUGjlkpEy1JVJUBOq5sxVIsY` to the dependencies of your `appsscript.json` file. If you are developing using typescript you may wish to install using npm in order to gain access to type declarations.
 
 ```bash
-npm install --save-dev datatrue-api # not published yet
+npm install --save-dev @datatrue/api # not published yet
 ```
