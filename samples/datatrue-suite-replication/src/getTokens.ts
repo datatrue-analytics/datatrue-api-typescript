@@ -17,8 +17,10 @@ export function getTokens(): void {
   DataTrue.config.userToken = userToken;
 
   namedRanges.some(namedRange => {
-    if (namedRange.getName() === "api_endpoint") {
-      DataTrue.config.apiEndpoint = namedRange.getRange().getDisplayValue();
+    const name = namedRange.getName();
+    const displayValue = namedRange.getRange().getDisplayValue();
+    if (name === "api_endpoint" && displayValue !== "") {
+      DataTrue.config.apiEndpoint = displayValue;
       return;
     }
   });
