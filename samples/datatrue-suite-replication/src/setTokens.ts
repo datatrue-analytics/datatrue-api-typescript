@@ -3,7 +3,8 @@ export function setTokens(): void {
   const ui = SpreadsheetApp.getUi();
 
   const userTokenPrompt = ui.prompt(
-    "Please enter your API tokens", "User API Key (for creating tests)",
+    "Please enter your API token",
+    "User API Key",
     ui.ButtonSet.OK
   );
 

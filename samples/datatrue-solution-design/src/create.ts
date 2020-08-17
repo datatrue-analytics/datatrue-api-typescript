@@ -37,7 +37,9 @@ export async function create(): Promise<void> {
 
   sheet
     .getRange("B5")
-    .setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites", "${accountID}")`);
+    .setValue(
+      `=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites", "${accountID}")`
+    );
   SpreadsheetApp.flush();
 
   if (suiteID === "") {
@@ -66,7 +68,9 @@ export async function create(): Promise<void> {
 
   sheet
     .getRange("B6")
-    .setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`);
+    .setValue(
+      `=HYPERLINK("${DataTrue.config.apiEndpoint}/accounts/${accountID}/suites/${suiteID}", "${suiteID}")`
+    );
   SpreadsheetApp.flush();
 
   let test: DataTrue.Test;
@@ -156,7 +160,11 @@ export async function create(): Promise<void> {
       test
         .getSteps()
         .filter(
-          step => step.getResourceID() === parseInt(stepRows.getCell(index + 1, 1).getNote())
+          step => {
+            return step.getResourceID() === parseInt(
+              stepRows.getCell(index + 1, 1).getNote()
+            )
+          }
         ).length
     ) {
       step = currentSteps.filter(
@@ -178,11 +186,12 @@ export async function create(): Promise<void> {
       tagValidation.tagDefinition = {
         key: tagType,
       };
-      tagValidation.getQueryValidations().forEach((queryValidation, index) => {
-        tagValidation.deleteQueryValidation(index);
-      });
 
-      for (let i = 1; i < step.getTagValidations().length; i++) {
+      for (let i = tagValidation.getQueryValidations().length - 1; i >= 0; i--) {
+        tagValidation.deleteQueryValidation(i);
+      }
+
+      for (let i = step.getTagValidations().length - 1; i >= 0; i--) {
         step.deleteTagValidation(i);
       }
     } else {
@@ -234,5 +243,7 @@ export async function create(): Promise<void> {
 
   sheet
     .getRange("B7")
-    .setValue(`=HYPERLINK("${DataTrue.config.apiEndpoint}/tests/${test.getResourceID()}", "${test.getResourceID()}")`);
+    .setValue(
+      `=HYPERLINK("${DataTrue.config.apiEndpoint}/tests/${test.getResourceID()}", "${test.getResourceID()}")`
+    );
 }
