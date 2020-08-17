@@ -6,6 +6,7 @@ import Suite from "./suite";
 import TagValidation from "./tagValidation";
 
 export interface TestOptions extends ResourceOptions {
+  persona_id?: number,
   variables?: Variables,
 }
 
