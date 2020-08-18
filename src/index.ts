@@ -7,7 +7,7 @@ import Account from "./resources/account";
 import DataLayerValidation, { DataLayerValidationOptions, DataLayerValidationSource, PropertyValidation } from "./resources/dataLayerValidation";
 import Resource from "./resources/resource";
 import Step, { IframeSelectorTypes, MobileSelectorTypes, SelectorTypes, StepActions, StepOptions, StepSettings, WebSelectorTypes } from "./resources/step";
-import Suite, { SuiteOptions, SuiteTypes } from "./resources/suite";
+import Suite, { SensitiveDataSettings, SuiteOptions, SuiteTypes } from "./resources/suite";
 import TagValidation, { QueryValidation, TagDefinition, TagValidationContexts, TagValidationOptions } from "./resources/tagValidation";
 import Test, { TestOptions, TestTypes, Variables, VariableTypes } from "./resources/test";
 import Runnable, { JobStatus } from "./runnable";
@@ -39,6 +39,7 @@ export {
   StepSettings,
 
   Suite,
+  SensitiveDataSettings,
   SuiteOptions,
   SuiteTypes,
 
