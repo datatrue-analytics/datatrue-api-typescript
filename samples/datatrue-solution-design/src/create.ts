@@ -1,5 +1,5 @@
 import * as DataTrue from "@datatrue/api";
-import { getTokens } from "./getTokens";
+import { getTokens } from "../../common/src/getTokens";
 
 export async function create(): Promise<void> {
   const ss = SpreadsheetApp.getActive();
