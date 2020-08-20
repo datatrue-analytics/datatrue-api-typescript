@@ -50,7 +50,10 @@ export async function create(): Promise<void> {
         continue;
       }
 
-      const exclude = excludeLabels[i].split(",").filter(label => label !== "");
+      const exclude = excludeLabels[i]
+        .split(",")
+        .filter(label => label !== "")
+        .map(label => label.trim());
 
       const id = results[i].getValues()[1][0];
       let newSuite: DataTrue.Suite;
