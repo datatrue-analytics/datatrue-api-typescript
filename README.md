@@ -6,7 +6,7 @@ This wrapper can be used in Node.js and Google Apps Script environments.
 
 ## Node.js
 
-To use with Node.js install the `datatrue-api` package.
+To use with Node.js install the `@datatrue/api` package.
 
 ```bash
 npm install --save @datatrue/api # not published yet
