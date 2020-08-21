@@ -17,6 +17,7 @@ const config: webpack.Configuration = {
   },
   resolve: {
     extensions: [".ts", ".js"],
+    symlinks: false,
   },
   module: {
     rules: [

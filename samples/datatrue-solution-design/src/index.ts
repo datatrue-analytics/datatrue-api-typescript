@@ -1,8 +1,8 @@
-import { deleteTokens } from "../../common/src/deleteTokens";
-import { setTokens } from "../../common/src/setTokens";
 import { create } from "./create";
+import { deleteTokens } from "./deleteTokens";
 import { onOpen } from "./menu";
 import { run } from "./run";
+import { setTokens } from "./setTokens";
 
 // @ts-ignore
 global.create = create;

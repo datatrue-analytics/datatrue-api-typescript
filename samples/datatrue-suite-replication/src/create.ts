@@ -1,6 +1,6 @@
 import * as DataTrue from "@datatrue/api";
 import fm from "front-matter";
-import { getTokens } from "../../common/src/getTokens";
+import { getTokens } from "./getTokens";
 
 export async function create(): Promise<void> {
   getTokens();
