@@ -47,18 +47,14 @@ export async function run(): Promise<void> {
     });
   });
 
-  while (
-    !await asyncEvery(suites, async suite => {
-      const progress = await suite.progress();
-      return progress.status === "completed" || progress.status === "aborted";
-    })
-  ) {
-    for (const [index, suite] of suites.entries()) {
-      const response = await suite.progress();
-      if (response.status !== "completed") {
-        status[index].state = response.progress ? (response.progress.percentage + "%") : response.status;
+  while (true) {
+    const progresses = await Promise.all(suites.map(suite => suite.progress()));
+
+    for (const [index, progress] of progresses.entries()) {
+      if (progress.status !== "completed") {
+        status[index].state = progress.progress ? (progress.progress.percentage + "%") : progress.status;
       } else {
-        if (response.progress.tests.every(t => {
+        if (progress.progress.tests.every(t => {
           return (t.state === "validated" || t.state === "success");
         })) {
           status[index].state = "Validated";
@@ -80,6 +76,13 @@ export async function run(): Promise<void> {
     })]);
 
     SpreadsheetApp.flush();
-    Utilities.sleep(500);
+
+    if (progresses.every(progress => {
+      return (progress.status === "completed" || progress.status === "aborted");
+    })) {
+      break;
+    }
+
+    Utilities.sleep(1000);
   }
 }
