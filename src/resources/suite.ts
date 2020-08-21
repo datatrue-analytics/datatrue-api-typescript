@@ -34,7 +34,7 @@ export interface SuiteDTO {
   created_at: number,
   updated_at: number,
   variables: Record<string, Record<string, string>>,
-  tests: TestDTO[],
+  tests?: TestDTO[],
 }
 
 export default class Suite extends Resource implements Runnable {
