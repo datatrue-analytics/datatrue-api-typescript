@@ -168,10 +168,10 @@ export default class Suite extends Resource implements Runnable {
   @Suite.hydrateTests
   protected async create(): Promise<void> {
     await super.create();
-    const promises = (this.tests as Test[]).map(test => {
-      return test.save();
-    });
-    await Promise.all(promises);
+
+    for (const test of this.tests as Test[]) {
+      await test.save();
+    }
   }
 
   public async toJSON(): Promise<Record<string, any>> {
