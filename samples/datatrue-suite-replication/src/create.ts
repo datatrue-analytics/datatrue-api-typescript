@@ -1,6 +1,17 @@
 import * as DataTrue from "@datatrue/api";
 import fm from "front-matter";
 import { getTokens } from "./getTokens";
+import yaml from "js-yaml";
+
+function getDescription(description: string, id: number): string {
+  const content = fm(description ?? "");
+  const attributes = content.attributes ?? {};
+  // @ts-ignore
+  attributes.copiedFrom = id;
+  return `---
+${yaml.safeDump(attributes)}---
+${content.body ?? ""}`;
+}
 
 export async function create(): Promise<void> {
   getTokens();
@@ -44,6 +55,34 @@ export async function create(): Promise<void> {
     });
 
     const originalSuite = await DataTrue.Suite.fromID(parseInt(suiteId));
+    const originalTests: Record<number, any> = {};
+    const json = await originalSuite.toJSON();
+
+    json.tests?.forEach(test => {
+      originalTests[test.id] = test;
+      test.description = getDescription(test.description, test.id);
+      test.steps?.forEach(step => {
+        step.description = getDescription(step.description, step.id);
+        step.tag_validations?.forEach(tagValidation => {
+          tagValidation.description = getDescription(
+            tagValidation.description,
+            tagValidation.id
+          );
+        });
+        step.data_layer_validations?.forEach(dataLayerValidation => {
+          dataLayerValidation.description = getDescription(
+            dataLayerValidation.description,
+            dataLayerValidation.id
+          );
+        });
+      });
+      test.tag_validations?.forEach(tagValidation => {
+        tagValidation.description = getDescription(
+          tagValidation.description,
+          tagValidation.id
+        );
+      });
+    });
 
     for (const [i, name] of names.entries()) {
       if (results[i].getDisplayValues()[2][0] === "y") {
@@ -59,7 +98,7 @@ export async function create(): Promise<void> {
       let newSuite: DataTrue.Suite;
 
       if (id === "") {
-        newSuite = DataTrue.Suite.fromJSON(await originalSuite.toJSON(), true);
+        newSuite = DataTrue.Suite.fromJSON(json, true);
       } else {
         newSuite = await DataTrue.Suite.fromID(id);
       }
@@ -71,8 +110,16 @@ export async function create(): Promise<void> {
         const content = fm(description);
         // @ts-ignore
         const labels: string[] = content.attributes.labels ?? [];
+        // @ts-ignore
+        const copiedFrom = content.attributes.copiedFrom;
 
-        if (exclude.some(label => labels.includes(label))) {
+        if (
+          exclude.some(label => labels.includes(label)) ||
+            (
+              copiedFrom !== undefined &&
+              originalTests[copiedFrom] === undefined
+            )
+        ) {
           await newSuite.deleteTest(t);
           continue;
         }
