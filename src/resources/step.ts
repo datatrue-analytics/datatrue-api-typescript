@@ -128,7 +128,7 @@ export default class Step extends Resource {
 
     if (tagValidations !== undefined) {
       tagValidations.forEach((tagValidationObj: Record<string, any>) => {
-        const tagValidation = TagValidation.fromJSON(tagValidationObj);
+        const tagValidation = TagValidation.fromJSON(tagValidationObj, copy);
         tagValidation.setContextID(id);
         if (copy) {
           tagValidation.setResourceID(undefined);
@@ -141,7 +141,8 @@ export default class Step extends Resource {
       dataLayerValidations.forEach(
         (dataLayerValidationObj: Record<string, any>) => {
           const dataLayerValidation = DataLayerValidation.fromJSON(
-            dataLayerValidationObj
+            dataLayerValidationObj,
+            copy
           );
           dataLayerValidation.setContextID(id);
           if (copy) {

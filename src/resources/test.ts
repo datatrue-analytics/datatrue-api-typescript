@@ -91,7 +91,7 @@ export default class Test extends Resource implements Runnable {
 
     if (steps !== undefined) {
       steps.forEach((stepObj: Record<string, any>) => {
-        const step = Step.fromJSON(stepObj);
+        const step = Step.fromJSON(stepObj, copy);
         step.setContextID(id);
         if (copy) {
           step.setResourceID(undefined);
