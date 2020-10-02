@@ -191,6 +191,7 @@ export default class Step extends Resource {
 
   public async toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
+      id: this.resourceID,
       name: this.name,
       action: this.action,
       ...this.options,

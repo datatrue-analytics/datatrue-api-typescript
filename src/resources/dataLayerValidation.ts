@@ -120,6 +120,7 @@ export default class DataLayerValidation extends Resource {
 
   public toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
+      id: this.resourceID,
       name: this.name,
       property_validations: this.propertyValidations.map(propertyValidation => {
         const obj: Record<string, any> = {

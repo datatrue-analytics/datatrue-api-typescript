@@ -169,6 +169,7 @@ export default class Account extends Resource {
 
   public async toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
+      id: this.resourceID,
       name: this.name,
       steps_total: this.stepsTotal,
       steps_used: this.stepsUsed,

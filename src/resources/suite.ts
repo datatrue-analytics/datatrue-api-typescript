@@ -176,6 +176,7 @@ export default class Suite extends Resource implements Runnable {
 
   public async toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
+      id: this.resourceID,
       name: this.name,
       ...this.options,
     };

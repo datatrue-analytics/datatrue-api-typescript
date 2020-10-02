@@ -157,6 +157,7 @@ export default class Test extends Resource implements Runnable {
 
   public async toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
+      id: this.resourceID,
       name: this.name,
       test_type: this.testType,
       ...this.options,

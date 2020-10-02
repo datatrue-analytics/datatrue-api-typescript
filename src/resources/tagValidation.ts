@@ -153,6 +153,7 @@ export default class TagValidation extends Resource {
 
   public toJSON(): Promise<Record<string, any>> {
     const obj: Record<string, any> = {
+      id: this.resourceID,
       name: this.name,
       tag_definition: this.tagDefinition,
       query_validation: this.queryValidations,
