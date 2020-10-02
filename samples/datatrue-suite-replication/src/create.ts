@@ -3,6 +3,11 @@ import fm from "front-matter";
 import { getTokens } from "./getTokens";
 import yaml from "js-yaml";
 
+interface MetaData {
+  labels?: string[],
+  copiedFrom?: number,
+}
+
 function getDescription(description: string, id: number): string {
   const content = fm(description ?? "");
   const attributes = content.attributes ?? {};
@@ -56,20 +61,26 @@ export async function create(): Promise<void> {
 
     const originalSuite = await DataTrue.Suite.fromID(parseInt(suiteId));
     const originalTests: Record<number, any> = {};
+    const originalSteps: Record<number, any> = {};
+    const originalTagValidations: Record<number, any> = {};
+    const originalDataLayerValidations: Record<number, any> = {};
     const json = await originalSuite.toJSON();
 
     json.tests?.forEach(test => {
       originalTests[test.id] = test;
       test.description = getDescription(test.description, test.id);
       test.steps?.forEach(step => {
+        originalSteps[step.id] = step;
         step.description = getDescription(step.description, step.id);
         step.tag_validations?.forEach(tagValidation => {
+          originalTagValidations[tagValidation.id] = tagValidation;
           tagValidation.description = getDescription(
             tagValidation.description,
             tagValidation.id
           );
         });
         step.data_layer_validations?.forEach(dataLayerValidation => {
+          originalDataLayerValidations[dataLayerValidation.id] = dataLayerValidation;
           dataLayerValidation.description = getDescription(
             dataLayerValidation.description,
             dataLayerValidation.id
@@ -77,6 +88,7 @@ export async function create(): Promise<void> {
         });
       });
       test.tag_validations?.forEach(tagValidation => {
+        originalTagValidations[tagValidation.id] = tagValidation;
         tagValidation.description = getDescription(
           tagValidation.description,
           tagValidation.id
@@ -107,18 +119,16 @@ export async function create(): Promise<void> {
 
       for (var t = tests.length - 1; t >= 0; t--) {
         const description = tests[t].options.description ?? "";
-        const content = fm(description);
-        // @ts-ignore
-        const labels: string[] = content.attributes.labels ?? [];
-        // @ts-ignore
+        const content = fm<MetaData>(description);
+        const labels = content.attributes.labels ?? [];
         const copiedFrom = content.attributes.copiedFrom;
 
         if (
           exclude.some(label => labels.includes(label)) ||
-            (
-              copiedFrom !== undefined &&
-              originalTests[copiedFrom] === undefined
-            )
+          (
+            copiedFrom !== undefined &&
+            originalTests[copiedFrom] === undefined
+          )
         ) {
           await newSuite.deleteTest(t);
           continue;
@@ -128,11 +138,17 @@ export async function create(): Promise<void> {
 
         for (var s = steps.length - 1; s >= 0; s--) {
           const description = steps[s].options.description ?? "";
-          const content = fm(description);
-          // @ts-ignore
-          const labels: string[] = content.attributes.labels ?? [];
+          const content = fm<MetaData>(description);
+          const labels = content.attributes.labels ?? [];
+          const copiedFrom = content.attributes.copiedFrom;
 
-          if (exclude.some(label => labels.includes(label))) {
+          if (
+            exclude.some(label => labels.includes(label)) ||
+            (
+              copiedFrom !== undefined &&
+              originalSteps[copiedFrom] === undefined
+            )
+          ) {
             tests[t].deleteStep(s);
             continue;
           }
@@ -141,11 +157,17 @@ export async function create(): Promise<void> {
 
           for (var tv = tagValidations.length - 1; tv >= 0; tv--) {
             const description = tagValidations[tv].options.description ?? "";
-            const content = fm(description);
-            // @ts-ignore
-            const labels: string[] = content.attributes.labels ?? [];
+            const content = fm<MetaData>(description);
+            const labels = content.attributes.labels ?? [];
+            const copiedFrom = content.attributes.copiedFrom;
 
-            if (exclude.some(label => labels.includes(label))) {
+            if (
+              exclude.some(label => labels.includes(label)) ||
+              (
+                copiedFrom !== undefined &&
+                originalTagValidations[copiedFrom] === undefined
+              )
+            ) {
               steps[s].deleteTagValidation(tv);
             }
           }
@@ -154,11 +176,17 @@ export async function create(): Promise<void> {
 
           for (var dlv = dataLayerValidations.length - 1; dlv >= 0; dlv--) {
             const description = dataLayerValidations[dlv].options.description ?? "";
-            const content = fm(description);
-            // @ts-ignore
-            const labels: string[] = content.attributes.labels ?? [];
+            const content = fm<MetaData>(description);
+            const labels = content.attributes.labels ?? [];
+            const copiedFrom = content.attributes.copiedFrom;
 
-            if (exclude.some(label => labels.includes(label))) {
+            if (
+              exclude.some(label => labels.includes(label)) ||
+              (
+                copiedFrom !== undefined &&
+                originalDataLayerValidations[copiedFrom] === undefined
+              )
+            ) {
               steps[s].deleteDataLayerValidation(dlv);
             }
           }
@@ -168,11 +196,17 @@ export async function create(): Promise<void> {
 
         for (var tv = tagValidations.length - 1; tv >= 0; tv--) {
           const description = tagValidations[tv].options.description ?? "";
-          const content = fm(description);
-          // @ts-ignore
-          const labels: string[] = content.attributes.labels ?? [];
+          const content = fm<MetaData>(description);
+          const labels = content.attributes.labels ?? [];
+          const copiedFrom = content.attributes.copiedFrom;
 
-          if (exclude.some(label => labels.includes(label))) {
+          if (
+            exclude.some(label => labels.includes(label)) ||
+            (
+              copiedFrom !== undefined &&
+              originalTagValidations[copiedFrom] === undefined
+            )
+          ) {
             tests[t].deleteTagValidation(tv);
           }
         }
