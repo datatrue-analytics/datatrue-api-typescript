@@ -130,9 +130,6 @@ export default class Step extends Resource {
       tagValidations.forEach((tagValidationObj: Record<string, any>) => {
         const tagValidation = TagValidation.fromJSON(tagValidationObj, copy);
         tagValidation.setContextID(id);
-        if (copy) {
-          tagValidation.setResourceID(undefined);
-        }
         step.insertTagValidation(tagValidation);
       });
     }
@@ -145,9 +142,6 @@ export default class Step extends Resource {
             copy
           );
           dataLayerValidation.setContextID(id);
-          if (copy) {
-            dataLayerValidation.setContextID(undefined);
-          }
           step.insertDataLayerValidation(dataLayerValidation);
         }
       );

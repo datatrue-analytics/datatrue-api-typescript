@@ -93,20 +93,14 @@ export default class Test extends Resource implements Runnable {
       steps.forEach((stepObj: Record<string, any>) => {
         const step = Step.fromJSON(stepObj, copy);
         step.setContextID(id);
-        if (copy) {
-          step.setResourceID(undefined);
-        }
         test.insertStep(step);
       });
     }
 
     if (tag_validations !== undefined) {
       tag_validations.forEach((tagValidationObj: Record<string, any>) => {
-        const tagValidation = TagValidation.fromJSON(tagValidationObj);
+        const tagValidation = TagValidation.fromJSON(tagValidationObj, copy);
         tagValidation.setContextID(id);
-        if (copy) {
-          tagValidation.setResourceID(undefined);
-        }
         test.insertTagValidation(tagValidation);
       });
     }

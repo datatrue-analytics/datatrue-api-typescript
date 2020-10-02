@@ -51,9 +51,6 @@ export default class Account extends Resource {
       suites.forEach((suiteObj: Record<string, any>, index: number) => {
         const suite = Suite.fromJSON(suiteObj, copy);
         suite.setContextID(id);
-        if (copy) {
-          suite.setResourceID(undefined);
-        }
         suite.setOptions({ position: index + 1 });
         account.suites?.push(suite);
       });
