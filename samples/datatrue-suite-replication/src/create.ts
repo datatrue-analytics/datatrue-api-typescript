@@ -1,7 +1,7 @@
 import * as DataTrue from "@datatrue/api";
 import fm from "front-matter";
-import { getTokens } from "./getTokens";
 import yaml from "js-yaml";
+import { getTokens } from "./getTokens";
 
 interface MetaData {
   labels?: string[],
@@ -9,9 +9,8 @@ interface MetaData {
 }
 
 function getDescription(description: string, id: number): string {
-  const content = fm(description ?? "");
+  const content = fm<MetaData>(description ?? "");
   const attributes = content.attributes ?? {};
-  // @ts-ignore
   attributes.copiedFrom = id;
   return `---
 ${yaml.safeDump(attributes)}---
