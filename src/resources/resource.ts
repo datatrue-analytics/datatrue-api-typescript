@@ -183,9 +183,9 @@ export default abstract class Resource {
    */
   public async save(): Promise<void> {
     const after = async (): Promise<void> => {
-      const promises = this.toDelete.slice().map(child => {
+      const promises = this.toDelete.slice().reverse().map((child, i) => {
         return child.delete().then(() => {
-          this.toDelete.splice(this.toDelete.indexOf(child), 1);
+          this.toDelete.splice(-1 - i, 1);
         });
       });
       await Promise.all(promises);
