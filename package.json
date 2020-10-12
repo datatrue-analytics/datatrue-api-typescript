@@ -30,8 +30,7 @@
   "devDependencies": {
     "@google/clasp": "^2.3.0",
     "@types/google-apps-script": "^1.0.16",
-    "@types/node": "^12.12.62",
-    "@types/webpack": "^4.41.22",
+    "@types/node": "^12.12.67",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "clean-webpack-plugin": "^3.0.0",
