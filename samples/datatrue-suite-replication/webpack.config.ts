@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 // @ts-ignore
 import CreateFileWebpack from "create-file-webpack";

@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
