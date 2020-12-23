@@ -12,7 +12,7 @@
     "@datatrue/api": "github:datatrue-analytics/datatrue-api-typescript#master",
     "@google/clasp": "^2.3.0",
     "@types/google-apps-script": "^1.0.20",
-    "@types/node": "^14.14.15",
+    "@types/node": "^14.14.16",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "clean-webpack-plugin": "^3.0.0",
