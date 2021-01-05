@@ -13,7 +13,7 @@ function getDescription(description: string, id: number): string {
   const attributes = content.attributes ?? {};
   attributes.copiedFrom = id;
   return `---
-${yaml.safeDump(attributes)}---
+${yaml.dump(attributes)}---
 ${content.body ?? ""}`;
 }
 
