@@ -117,7 +117,7 @@ export default class Account extends Resource {
           const suiteDTOs: SuiteDTO[] = JSON.parse(response.body);
 
           self.suites = suiteDTOs.map((suiteObj: SuiteDTO) => {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             return Suite.fromDTO(suiteObj);
           });

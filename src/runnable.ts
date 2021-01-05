@@ -50,14 +50,14 @@ export default interface Runnable {
  * Run the resource in DataTrue
  *
  * @hidden
- * @param email_users a list of IDs for who should be emailed regarding the test run
+ * @param emailUsers a list of IDs for who should be emailed regarding the test run
  * @param variables variables to set for the test run
  * @param resourceTypeRun the type of the resource being run
  * @param resourceID the ID of the resource to run
  * @returns Promise of the job_id
  */
 export async function _run(
-  email_users: number[] = [],
+  emailUsers: number[] = [],
   variables: Record<string, string>,
   resourceTypeRun: string,
   resourceID: number,
@@ -76,7 +76,7 @@ export async function _run(
       "test_run": {
         "test_class": resourceTypeRun,
         "test_id": resourceID,
-        "email_users": email_users,
+        "email_users": emailUsers,
       },
       variables: variables,
     }),

@@ -191,7 +191,7 @@ export default class Suite extends Resource implements Runnable {
   }
 
   public async run(
-    email_users: number[] = [],
+    emailUsers: number[] = [],
     variables: Record<string, string> = {}
   ): Promise<string> {
     const resourceID = this.getResourceID();
@@ -200,7 +200,7 @@ export default class Suite extends Resource implements Runnable {
     } else {
       try {
         const jobID = await _run(
-          email_users,
+          emailUsers,
           variables,
           Suite.resourceTypeRun,
           resourceID
