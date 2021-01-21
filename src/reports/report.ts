@@ -1,8 +1,5 @@
 import config from "../config";
 
-/**
- * @hidden
- */
 interface Filter<T extends string> {
   field: T,
   operator: string,
@@ -10,9 +7,6 @@ interface Filter<T extends string> {
   value: Value,
 }
 
-/**
- * @hidden
- */
 interface FilterClause<T extends string> {
   operator?: "AND" | "OR",
   filters: Filter<T>[],
@@ -20,17 +14,11 @@ interface FilterClause<T extends string> {
 
 export type Direction = "ASC" | "DESC";
 
-/**
- * @hidden
- */
 interface Order {
   field: string,
   direction?: Direction,
 }
 
-/**
- * @hidden
- */
 interface Field<T> {
   name: T,
 }
@@ -41,9 +29,6 @@ type ArrayOneOrMore<T> = {
 
 export type Value = string | number | string[] | number[] | null;
 
-/**
- * @hidden
- */
 interface Request<Dimension extends string, Metric extends string> {
   account_id: number,
   dimensions?: Field<Dimension>[],
@@ -60,9 +45,6 @@ interface Request<Dimension extends string, Metric extends string> {
 
 export type Op = "==" | ">" | ">=" | "<" | "<=" | "=~" | "*=" | "BETWEEN";
 
-/**
- * @hidden
- */
 type Operator = (
   "EQUALS" |
   "GREATER_THAN" |
@@ -74,9 +56,6 @@ type Operator = (
   "BETWEEN"
 );
 
-/**
- * @hidden
- */
 const opToOperator: Record<Op, Operator> = {
   "==": "EQUALS",
   ">": "GREATER_THAN",

@@ -49,7 +49,6 @@ export default interface Runnable {
 /**
  * Run the resource in DataTrue
  *
- * @hidden
  * @param emailUsers a list of IDs for who should be emailed regarding the test run
  * @param variables variables to set for the test run
  * @param resourceTypeRun the type of the resource being run
@@ -92,7 +91,6 @@ export async function _run(
 /**
  * Retrieve progress for a job
  *
- * @hidden
  * @param jobID ID of the job to fetch progress for
  * @returns Promise of the job status
  */

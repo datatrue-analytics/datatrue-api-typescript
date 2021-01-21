@@ -3,9 +3,6 @@ import NodeClient from "./httpClient/nodeClient";
 const config = {
   apiEndpoint: "https://datatrue.com",
   userToken: "",
-  /**
-   * @hidden
-   */
   httpClient: new NodeClient(),
 };
 
