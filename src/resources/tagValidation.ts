@@ -49,7 +49,9 @@ export default class TagValidation extends Resource {
 
   public tagDefinition: TagDefinition;
   public options: TagValidationOptions = {
-    do_validation: true,
+    interception: {
+      do_validation: true,
+    },
   };
 
   public constructor(
@@ -144,6 +146,18 @@ export default class TagValidation extends Resource {
     options: TagValidationOptions,
     override: boolean = false
   ): void {
+    if (override) {
+      this.options = options;
+    } else {
+      this.options = {
+        ...this.options,
+        ...options,
+        interception: {
+          ...this.options.interception,
+          ...options.interception,
+        },
+      };
+    }
     super.setOptions(options, override);
   }
 
