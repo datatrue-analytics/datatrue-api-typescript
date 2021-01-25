@@ -1,8 +1,5 @@
 import config from "../config";
 
-/**
- * @hidden
- */
 const resourceTypes: Record<string, string> = {
   dataLayerValidations: "data_layer_validations",
   steps: "steps",
@@ -11,9 +8,6 @@ const resourceTypes: Record<string, string> = {
   tests: "tests",
 };
 
-/**
- * @hidden
- */
 export interface ResourceOptions {
   description?: string,
   position?: number,

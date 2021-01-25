@@ -15,7 +15,6 @@ export interface QueryValidation {
 
 export interface TagValidationOptions extends ResourceOptions {
   enabled?: boolean,
-  do_validation?: boolean,
   detect_duplicates?: boolean,
   validate_absence?: boolean,
   hostname_validation?: string,
@@ -25,6 +24,7 @@ export interface TagValidationOptions extends ResourceOptions {
   query_detection?: string,
   account_id?: string,
   interception?: {
+    do_validation?: boolean,
     intercept?: boolean,
     intercept_status?: string,
     intercept_headers?: string,
