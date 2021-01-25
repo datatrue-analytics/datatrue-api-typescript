@@ -177,8 +177,8 @@ export default class TagValidation extends Resource {
       },
     };
 
-    if (obj.do_validation !== undefined) {
-      obj.do_validation = obj.do_validation ? "1" : "0";
+    if (obj.interception?.do_validation !== undefined) {
+      obj.interception.do_validation = obj.do_validation ? "1" : "0";
     }
 
     if (obj.interception?.intercept !== undefined) {
