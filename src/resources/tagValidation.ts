@@ -87,8 +87,8 @@ export default class TagValidation extends Resource {
       ...options
     } = obj;
 
-    if (options.do_validation !== undefined) {
-      options.do_validation = options.do_validation === "1" ? true : false;
+    if (options.interception?.do_validation !== undefined) {
+      options.interception.do_validation = options.interception.do_validation === "1" ? true : false;
     }
 
     if (options.interception?.intercept !== undefined) {
@@ -178,7 +178,7 @@ export default class TagValidation extends Resource {
     };
 
     if (obj.interception?.do_validation !== undefined) {
-      obj.interception.do_validation = obj.do_validation ? "1" : "0";
+      obj.interception.do_validation = obj.interception.do_validation ? "1" : "0";
     }
 
     if (obj.interception?.intercept !== undefined) {
