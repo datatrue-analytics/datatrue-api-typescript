@@ -9,7 +9,7 @@
   "author": "Omja Das",
   "dependencies": {},
   "devDependencies": {
-    "@datatrue/api": "github:datatrue-analytics/datatrue-api-typescript#master",
+    "@datatrue/api": "^0.1.1",
     "@google/clasp": "^2.3.0",
     "@types/google-apps-script": "^1.0.22",
     "@types/node": "^14.14.22",
