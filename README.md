@@ -17,4 +17,5 @@ npm install --save @datatrue/api
 To add the wrapper to your Google Apps Script project add `MMg9RodswIUGjlkpEy1JVJUBOq5sxVIsY` to the dependencies of your `appsscript.json` file. If you are developing using typescript you may wish to install using npm in order to gain access to type declarations.
 
 ```bash
-npm install --save-dev @datatrue/api```
+npm install --save-dev @datatrue/api
+```
