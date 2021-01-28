@@ -4,6 +4,10 @@ A wrapper for the DataTrue Management and CI APIs.
 
 This wrapper can be used in Node.js and Google Apps Script environments.
 
+## Docs
+
+Refer [here](https://datatrue-analytics.github.io/datatrue-api-typescript/) for documentation.
+
 ## Node.js
 
 To use with Node.js install the `@datatrue/api` package.
