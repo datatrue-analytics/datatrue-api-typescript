@@ -1,6 +1,8 @@
 # datatrue-api-typescript
 
-A wrapper for the DataTrue Management and CI APIs.
+![Build](https://github.com/datatrue-analytics/datatrue-api-typescript/workflows/Build/badge.svg)
+
+A wrapper for the DataTrue Management, CI, and Reporting APIs.
 
 This wrapper can be used in Node.js, browser, and Google Apps Script environments.
 
