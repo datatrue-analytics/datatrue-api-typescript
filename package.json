@@ -1,7 +1,7 @@
 {
   "name": "@datatrue/api",
-  "version": "0.1.5",
-  "description": "An API wrapper for the DataTrue APIs written in TypeScript",
+  "version": "0.1.6",
+  "description": "An API wrapper for the DataTrue APIs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

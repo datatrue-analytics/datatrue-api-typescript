@@ -1,6 +1,7 @@
-# datatrue-api-typescript
+# @datatrue/api
 
 ![Build](https://github.com/datatrue-analytics/datatrue-api-typescript/workflows/Build/badge.svg)
+![npm](https://img.shields.io/npm/v/@datatrue/api)
 
 A wrapper for the DataTrue Management, CI, and Reporting APIs.
 
