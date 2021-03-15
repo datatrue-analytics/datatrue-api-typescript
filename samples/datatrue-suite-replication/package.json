@@ -10,7 +10,7 @@
   "devDependencies": {
     "@datatrue/api": "^0.1.6",
     "@google/clasp": "^2.3.0",
-    "@types/google-apps-script": "^1.0.27",
+    "@types/google-apps-script": "^1.0.28",
     "@types/js-yaml": "^4.0.0",
     "@types/node": "^14.14.34",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
