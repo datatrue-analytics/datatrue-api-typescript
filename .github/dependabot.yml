@@ -1,0 +1,38 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "07:00"
+    timezone: Australia/Sydney
+  open-pull-requests-limit: 10
+  reviewers:
+  - omjadas
+- package-ecosystem: npm
+  directory: "/samples/datatrue-solution-design"
+  schedule:
+    interval: daily
+    time: "07:00"
+    timezone: Australia/Sydney
+  open-pull-requests-limit: 10
+  reviewers:
+  - omjadas
+- package-ecosystem: npm
+  directory: "/samples/datatrue-suite-replication"
+  schedule:
+    interval: daily
+    time: "07:00"
+    timezone: Australia/Sydney
+  open-pull-requests-limit: 10
+  reviewers:
+  - omjadas
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "07:00"
+    timezone: Australia/Sydney
+  open-pull-requests-limit: 10
+  reviewers:
+  - omjadas
