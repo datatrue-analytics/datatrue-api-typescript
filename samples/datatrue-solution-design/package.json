@@ -13,7 +13,7 @@
     "@types/google-apps-script": "^1.0.33",
     "@types/node": "^14.14.45",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
-    "@typescript-eslint/parser": "^4.23.0",
+    "@typescript-eslint/parser": "^4.24.0",
     "clean-webpack-plugin": "^3.0.0",
     "create-file-webpack": "^1.0.2",
     "eslint": "^7.26.0",
