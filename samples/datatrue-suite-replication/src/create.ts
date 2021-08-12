@@ -29,10 +29,18 @@ export async function create(): Promise<void> {
 
   if (suite === "Suite ID" && column === 1) {
     // Get table dimensions
-    for (var height = 0; SpreadsheetApp.getActive().getRange(`A${base + height + 1}`).getBackground() !== "#ffffff" && height < 20; height++) {
+    for (
+      var height = 0;
+      SpreadsheetApp.getActive().getRange(`A${base + height + 1}`).getBackground() !== "#ffffff" && height < 1000;
+      height++
+    ) {
       // do nothing
     }
-    for (var width = 0; SpreadsheetApp.getActive().getRange(`R${base}C${width + 1}`).getBackground() !== "#ffffff" && width < 20; width++) {
+    for (
+      var width = 0;
+      SpreadsheetApp.getActive().getRange(`R${base}C${width + 1}`).getBackground() !== "#ffffff" && width < 1000;
+      width++
+    ) {
       // do nothing
     }
 

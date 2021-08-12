@@ -1,7 +1,7 @@
 import NodeClient from "./httpClient/nodeClient";
 
 const config = {
-  apiEndpoint: "https://datatrue.com",
+  apiEndpoint: "https://app.datatrue.com",
   userToken: "",
   httpClient: new NodeClient(),
 };
