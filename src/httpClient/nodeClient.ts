@@ -23,8 +23,12 @@ export default class NodeClient implements HTTPClient {
         status: res.status,
         body: body,
       };
-    } catch (e) {
-      throw new Error(e.message);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        throw new Error(e.message);
+      } else {
+        throw e;
+      }
     }
   }
 }

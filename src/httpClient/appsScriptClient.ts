@@ -22,8 +22,12 @@ export default class AppsScriptClient implements HTTPClient {
         status: response.getResponseCode(),
         body: response.getContentText(),
       });
-    } catch (e) {
-      return Promise.reject(new Error(e.message));
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        return Promise.reject(new Error(e.message));
+      } else {
+        return Promise.reject(e);
+      }
     }
   }
 }
