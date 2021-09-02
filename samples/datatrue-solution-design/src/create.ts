@@ -114,10 +114,10 @@ export async function create(): Promise<void> {
           pathname_validation: path,
           hostname_detection: hostname,
           pathname_detection: path,
-          do_validation: true,
           interception: {
             intercept: true,
             intercept_status: "200",
+            do_validation: true,
             intercept_body: `
             <html>
               <head>
