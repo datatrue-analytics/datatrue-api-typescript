@@ -19,7 +19,7 @@ export default class Account extends Resource {
 
   public static async fromID(id: number): Promise<Account> {
     const resource = await super.getResource(id, Account.resourceType);
-    return Account.fromJSON(JSON.parse(resource));
+    return Account.fromJSON(JSON.parse(resource) as Record<string, any>);
   }
 
   public static fromJSON(

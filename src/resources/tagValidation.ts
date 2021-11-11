@@ -4,10 +4,19 @@ import Resource, { ResourceOptions } from "./resource";
 import Step from "./step";
 import Test from "./test";
 
+export enum Operator {
+  EQUALS = "equals",
+  IS_ONE_OF = "is_one_of",
+  STARTS_WITH = "starts_with",
+  ENDS_WITH = "ends_with",
+  CONTAINS = "contains",
+  REGEXP_MATCH = "regexp_match",
+}
+
 export interface QueryValidation {
   key: string,
   value: string,
-  regex: boolean,
+  operator: Operator,
   json_path?: string,
   use_json_path: boolean,
   decode_result_as?: string,
@@ -23,10 +32,10 @@ export interface TagValidationOptions extends ResourceOptions {
   pathname_detection?: string,
   query_detection?: string,
   account_id?: string,
+  do_validation?: boolean,
   interception?: {
-    do_validation?: boolean,
     intercept?: boolean,
-    intercept_status?: string,
+    intercept_status?: number,
     intercept_headers?: string,
     intercept_body?: string,
   },
@@ -48,11 +57,7 @@ export default class TagValidation extends Resource {
   private queryValidations: QueryValidation[] = [];
 
   public tagDefinition: TagDefinition;
-  public options: TagValidationOptions = {
-    interception: {
-      do_validation: true,
-    },
-  };
+  public options: TagValidationOptions = {};
 
   public constructor(
     name: string,
@@ -70,7 +75,7 @@ export default class TagValidation extends Resource {
 
   public static async fromID(id: number): Promise<TagValidation> {
     const resource = await super.getResource(id, TagValidation.resourceType);
-    return TagValidation.fromJSON(JSON.parse(resource));
+    return TagValidation.fromJSON(JSON.parse(resource) as Record<string, any>);
   }
 
   public static fromJSON(
@@ -86,14 +91,6 @@ export default class TagValidation extends Resource {
       query_validation: queryValidation,
       ...options
     } = obj;
-
-    if (options.interception?.do_validation !== undefined) {
-      options.interception.do_validation = options.interception.do_validation === "1" ? true : false;
-    }
-
-    if (options.interception?.intercept !== undefined) {
-      options.interception.intercept = options.interception.intercept === "1" ? true : false;
-    }
 
     let contextID: number | undefined = undefined;
     let contextType: TagValidationContexts | undefined = undefined;
@@ -176,14 +173,6 @@ export default class TagValidation extends Resource {
         ...this.options.interception,
       },
     };
-
-    if (obj.interception?.do_validation !== undefined) {
-      obj.interception.do_validation = obj.interception.do_validation ? "1" : "0";
-    }
-
-    if (obj.interception?.intercept !== undefined) {
-      obj.interception.intercept = obj.interception.intercept ? "1" : "0";
-    }
 
     return Promise.resolve(obj);
   }

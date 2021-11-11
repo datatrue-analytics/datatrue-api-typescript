@@ -1,5 +1,6 @@
 import Resource, { ResourceOptions } from "./resource";
 import { IframeSelectorTypes, WebSelectorTypes } from "./step";
+import { Operator } from "./tagValidation";
 
 export enum DataLayerValidationSource {
   DOM = "dom",
@@ -28,7 +29,7 @@ export interface DataLayerValidationOptions extends ResourceOptions {
 export interface PropertyValidation {
   name: string,
   value: string,
-  regex?: boolean,
+  operator: Operator,
 }
 
 export default class DataLayerValidation extends Resource {
@@ -55,7 +56,7 @@ export default class DataLayerValidation extends Resource {
       DataLayerValidation.resourceType
     );
 
-    return DataLayerValidation.fromJSON(JSON.parse(resource));
+    return DataLayerValidation.fromJSON(JSON.parse(resource) as Record<string, any>);
   }
 
   public static fromJSON(
@@ -82,11 +83,8 @@ export default class DataLayerValidation extends Resource {
           const obj: PropertyValidation = {
             name: propertyValidationObj.name,
             value: propertyValidationObj.value,
+            operator: propertyValidationObj.operator,
           };
-
-          if (propertyValidationObj.regex !== undefined) {
-            obj.regex = propertyValidationObj.regex === "1" ? true : false;
-          }
 
           dataLayerValidation.insertPropertyValidation(obj);
         }
@@ -127,10 +125,6 @@ export default class DataLayerValidation extends Resource {
           name: propertyValidation.name,
           value: propertyValidation.value,
         };
-
-        if (propertyValidation.regex !== undefined) {
-          obj.regex = propertyValidation.regex ? "1" : "0";
-        }
 
         return obj;
       }),
