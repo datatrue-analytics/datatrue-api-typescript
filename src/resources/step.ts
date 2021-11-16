@@ -3,29 +3,30 @@ import Resource, { ResourceOptions } from "./resource";
 import TagValidation from "./tagValidation";
 
 export enum StepActions {
-  GOTO_URL = 0,
-  CLICK_LINK = 1,
-  CLICK_BUTTON = 2,
-  TEXT_FIELD = 3,
-  SELECT_LIST = 4,
-  CLICK_ELEMENT = 5,
-  HOVER = 6,
-  COVERAGE = 7,
-  ENTER = 8,
-  CLOSE = 9,
-  EMAIL = 10,
-  GO_BACK = 11,
-  SCROLL_TO = 12,
-  RUN_SCRIPT = 13,
-  START_APPLICATION = 14,
-  SEND_KEYS = 15,
-  CLICK_MOBILE_ELEMENT = 16,
-  RESTART_APP = 17,
-  TAP_COORDS = 18,
-  HIDE_KEYBOARD = 19,
-  SWIPE = 20,
-  MOBILE_SELECT_LIST = 21,
-  PRESS_BACK = 22,
+  GOTO_URL = "goto_url",
+  CLICK_LINK = "click_link",
+  CLICK_BUTTON = "click_button",
+  TEXT_FIELD = "text_field",
+  CLEAR_TEXT_FIELD = "clear_text_field",
+  SELECT_LIST = "select_list",
+  CLICK_ELEMENT = "click_element",
+  HOVER = "hover",
+  COVERAGE = "coverage",
+  ENTER = "enter",
+  CLOSE = "close",
+  EMAIL = "email",
+  GO_BACK = "go_back",
+  SCROLL_TO = "scroll_to",
+  RUN_SCRIPT = "run_script",
+  START_APPLICATION = "start_application",
+  SEND_KEYS = "send_keys",
+  CLICK_MOBILE_ELEMENT = "click_mobile_element",
+  RESTART_APP = "restart_app",
+  TAP_COORDS = "tap_coords",
+  HIDE_KEYBOARD = "hide_keyboard",
+  SWIPE = "swipe",
+  MOBILE_SELECT_LIST = "mobile_select_list",
+  PRESS_BACK = "press_back",
 }
 
 export enum WebSelectorTypes {
@@ -58,6 +59,7 @@ export interface StepOptions extends ResourceOptions {
   iframe_selector?: string,
   pause?: number,
   wait_while_present?: string,
+  use_common_tag_validations?: boolean,
   settings?: StepSettings,
 }
 
@@ -67,7 +69,6 @@ export enum StepStrategies {
 }
 
 export interface StepSettings {
-  use_common_tag_validations?: boolean,
   strategy?: StepStrategies,
   page_depth?: number,
   page_limit?: number,
@@ -103,7 +104,7 @@ export default class Step extends Resource {
 
   public static async fromID(id: number): Promise<Step> {
     const resource = await super.getResource(id, Step.resourceType);
-    return Step.fromJSON(JSON.parse(resource));
+    return Step.fromJSON(JSON.parse(resource) as Record<string, any>);
   }
 
   public static fromJSON(

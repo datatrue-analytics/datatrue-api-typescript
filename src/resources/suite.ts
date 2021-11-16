@@ -12,8 +12,8 @@ export interface SuiteOptions extends ResourceOptions {
 }
 
 export enum SuiteTypes {
-  WEB = 0,
-  MOBILE_APP = 1
+  WEB = "web",
+  MOBILE_APP = "mobile_app",
 }
 
 export enum SensitiveDataSettings {
@@ -60,7 +60,7 @@ export default class Suite extends Resource implements Runnable {
 
   public static async fromID(id: number): Promise<Suite> {
     const resource = await super.getResource(id, Suite.resourceType);
-    const suiteObj = JSON.parse(resource);
+    const suiteObj = JSON.parse(resource) as SuiteDTO;
     return Suite.fromDTO(suiteObj);
   }
 

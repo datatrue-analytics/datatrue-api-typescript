@@ -11,10 +11,10 @@ export interface TestOptions extends ResourceOptions {
 }
 
 export enum TestTypes {
-  SIMULATION = 0,
-  COVERAGE = 1,
-  EMAIL = 2,
-  MOBILE = 3,
+  SIMULATION = "simulation",
+  COVERAGE = "coverage",
+  EMAIL = "email",
+  MOBILE_APP = "mobile_app",
 }
 
 export enum VariableTypes {
@@ -33,7 +33,7 @@ export interface Variables {
 export interface TestDTO {
   id: number,
   name: string,
-  description: string,
+  description?: string,
   created_at: number,
   updated_at: number,
   test_type: number,
@@ -66,7 +66,7 @@ export default class Test extends Resource implements Runnable {
 
   public static async fromID(id: number): Promise<Test> {
     const resource = await super.getResource(id, Test.resourceType);
-    return Test.fromJSON(JSON.parse(resource));
+    return Test.fromJSON(JSON.parse(resource) as Record<string, any>);
   }
 
   public static fromJSON(
