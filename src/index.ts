@@ -8,7 +8,7 @@ import DataLayerValidation, { DataLayerValidationOptions, DataLayerValidationSou
 import Resource from "./resources/resource";
 import Step, { IframeSelectorTypes, MobileSelectorTypes, SelectorTypes, StepActions, StepOptions, StepSettings, WebSelectorTypes } from "./resources/step";
 import Suite, { SensitiveDataSettings, SuiteOptions, SuiteTypes } from "./resources/suite";
-import TagValidation, { QueryValidation, TagDefinition, TagValidationContexts, TagValidationOptions } from "./resources/tagValidation";
+import TagValidation, { Operator, QueryValidation, TagDefinition, TagValidationContexts, TagValidationOptions } from "./resources/tagValidation";
 import Test, { TestOptions, TestTypes, Variables, VariableTypes } from "./resources/test";
 import Runnable, { JobStatus } from "./runnable";
 
@@ -46,6 +46,7 @@ export {
   TagValidation,
   TagValidationOptions,
   QueryValidation,
+  Operator,
   TagDefinition,
   TagValidationContexts,
 
