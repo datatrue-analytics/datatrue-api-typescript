@@ -114,10 +114,10 @@ export async function create(): Promise<void> {
           pathname_validation: path,
           hostname_detection: hostname,
           pathname_detection: path,
+          do_validation: true,
           interception: {
             intercept: true,
-            intercept_status: "200",
-            do_validation: true,
+            intercept_status: 200,
             intercept_body: `
             <html>
               <head>
@@ -202,13 +202,13 @@ export async function create(): Promise<void> {
       if (row[i + 3] !== "") {
         const queryValidation: DataTrue.QueryValidation = {
           key: param,
-          regex: false,
+          operator: DataTrue.Operator.CONTAINS,
           value: row[i + 3],
           use_json_path: false,
         };
         if (queryValidation.value.startsWith("regex://")) {
           queryValidation.value = queryValidation.value.replace("regex://", "");
-          queryValidation.regex = true;
+          queryValidation.operator = DataTrue.Operator.REGEXP_MATCH;
         }
         tagValidation.insertQueryValidation(queryValidation);
       }
