@@ -12,7 +12,7 @@
     "@google/clasp": "^2.4.1",
     "@types/google-apps-script": "^1.0.45",
     "@types/js-yaml": "^4.0.5",
-    "@types/node": "^16.11.24",
+    "@types/node": "^16.11.25",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "clean-webpack-plugin": "^4.0.0",
