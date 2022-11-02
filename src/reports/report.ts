@@ -158,10 +158,10 @@ export abstract class Report<
     if (filterClause.filters.length) {
       if (dimension) {
         this.dimensionFilterClauses.push(
-          filterClause as FilterClause<Dimension>
+          filterClause as unknown as FilterClause<Dimension>
         );
       } else {
-        this.metricFilterClauses.push(filterClause as FilterClause<Metric>);
+        this.metricFilterClauses.push(filterClause as unknown as FilterClause<Metric>);
       }
     }
 
