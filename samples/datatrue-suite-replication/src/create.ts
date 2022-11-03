@@ -20,28 +20,22 @@ ${content.body ?? ""}`;
 export async function create(): Promise<void> {
   getTokens();
 
-  const userProperties = PropertiesService.getUserProperties();
-  DataTrue.config.userToken = userProperties.getProperty("DATATRUE_USER_TOKEN");
-
   const base = SpreadsheetApp.getActive().getActiveRange().getRow();
   const column = SpreadsheetApp.getActive().getActiveRange().getColumn();
   const suite = SpreadsheetApp.getActive().getRange(`A${base + 2}`).getDisplayValue();
 
   if (suite === "Suite ID" && column === 1) {
     // Get table dimensions
-    for (
-      var height = 0;
-      SpreadsheetApp.getActive().getRange(`A${base + height + 1}`).getBackground() !== "#ffffff" && height < 1000;
-      height++
-    ) {
-      // do nothing
+
+    let height = 0;
+    let width = 0;
+
+    while (SpreadsheetApp.getActive().getRange(`A${base + height + 1}`).getBackground() !== "#ffffff" && height < 1000) {
+      height += 1;
     }
-    for (
-      var width = 0;
-      SpreadsheetApp.getActive().getRange(`R${base}C${width + 1}`).getBackground() !== "#ffffff" && width < 1000;
-      width++
-    ) {
-      // do nothing
+
+    while (SpreadsheetApp.getActive().getRange(`R${base}C${width + 1}`).getBackground() !== "#ffffff" && width < 1000) {
+      width += 1;
     }
 
     // Get replication details
