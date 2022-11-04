@@ -120,14 +120,7 @@ export default class DataLayerValidation extends Resource {
     const obj: Record<string, any> = {
       id: this.resourceID,
       name: this.name,
-      property_validations: this.propertyValidations.map(propertyValidation => {
-        const obj: Record<string, any> = {
-          name: propertyValidation.name,
-          value: propertyValidation.value,
-        };
-
-        return obj;
-      }),
+      property_validations: this.propertyValidations,
       ...this.options,
     };
 
