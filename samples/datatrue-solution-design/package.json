@@ -11,7 +11,7 @@
     "@datatrue/api": "^0.2.3",
     "@google/clasp": "^2.4.2",
     "@types/google-apps-script": "^1.0.57",
-    "@types/node": "^18.11.19",
+    "@types/node": "^18.13.0",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
     "clean-webpack-plugin": "^4.0.0",
