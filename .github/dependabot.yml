@@ -9,6 +9,10 @@ updates:
   open-pull-requests-limit: 10
   reviewers:
   - omjadas
+  groups:
+    typescript-eslint:
+      patterns:
+        - "@typescript-eslint/*"
 - package-ecosystem: npm
   directory: "/samples/datatrue-solution-design"
   schedule:
@@ -18,6 +22,10 @@ updates:
   open-pull-requests-limit: 10
   reviewers:
   - omjadas
+  groups:
+    typescript-eslint:
+      patterns:
+        - "@typescript-eslint/*"
 - package-ecosystem: npm
   directory: "/samples/datatrue-suite-replication"
   schedule:
@@ -27,6 +35,10 @@ updates:
   open-pull-requests-limit: 10
   reviewers:
   - omjadas
+  groups:
+    typescript-eslint:
+      patterns:
+        - "@typescript-eslint/*"
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
