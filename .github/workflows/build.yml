@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: 20
       - name: npm install
@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: 20
       - name: npm ci
@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: 20
       - name: npm ci
