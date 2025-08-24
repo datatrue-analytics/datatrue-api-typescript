@@ -20,7 +20,7 @@
     "eslint": "^9.34.0",
     "front-matter": "^4.0.2",
     "js-yaml": "^4.1.0",
-    "ts-loader": "^9.5.2",
+    "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "webpack": "^5.101.3",
