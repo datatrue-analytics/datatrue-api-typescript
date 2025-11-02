@@ -28,7 +28,7 @@
   },
   "homepage": "https://datatrue-analytics.github.io/datatrue-api-typescript/",
   "devDependencies": {
-    "@google/clasp": "^2.3.0",
+    "@google/clasp": "^3.1.1",
     "@types/google-apps-script": "^2.0.0",
     "@types/node": "^24.0.1",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
